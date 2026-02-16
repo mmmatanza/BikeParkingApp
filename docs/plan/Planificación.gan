@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-01-21" view-index="0" gantt-divider-location="485" resource-divider-location="300" version="3.3.3322" locale="es_ES">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Nombre" width="267" order="0"/>
+        <field id="tpd4" name="Fecha de inicio" width="101" order="1"/>
+        <field id="tpd5" name="Fecha de fin" width="101" order="2"/>
+        <field id="tpd15" name="Notas" width="20" order="3"/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nombre" width="210" order="0"/>
+        <field id="1" name="Función" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" uid="f981f1baedd242fe9429aacd395b7a4c" name="Definir el alcance del proyecto" meeting="false" start="2026-02-09" duration="2" complete="0" expand="true">
+            <depend id="1" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="1" uid="29ca6f354b504c71b6f90e24c28297d7" name="Determinar la metodología y las herramientas de trabajo" meeting="false" start="2026-02-11" duration="3" complete="0" expand="true">
+            <depend id="3" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="3" uid="46a1f07567bf4ec19b34fdebd6d7c10d" name="Planificación del proyecto" meeting="false" start="2026-02-16" duration="2" complete="0" expand="true">
+            <depend id="5" type="2" difference="0" hardness="Strong"/>
+        </task>
+        <task id="9" uid="ff8252030b484594abf5e3b39d8a190f" name="Iteración 1: Configuración Inicial y Login" meeting="false" start="2026-02-18" duration="14" complete="0" expand="true">
+            <task id="5" uid="9e64eca179544e5a82fde0453672fd37" name="Análisis de requisitos" meeting="false" start="2026-02-18" duration="2" complete="0" expand="true">
+                <depend id="6" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="6" uid="5418674549c0457c89212bd05dcec529" name="Fase de diseño" meeting="false" start="2026-02-20" duration="2" complete="0" expand="true">
+                <depend id="7" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="7" uid="439090b83f8f4e65b0086669a7aa4daa" name="Implementación" meeting="false" start="2026-02-24" duration="8" complete="0" expand="true">
+                <depend id="8" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="8" uid="d6df6ec692394f068f7186ac3410bb30" name="Pruebas" meeting="false" start="2026-03-06" duration="2" complete="0" expand="true">
+                <depend id="12" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="11" uid="0bd560f2c19a4cb5a7a90b1f904083c4" name="Iteración 2: Funcionalidades básicas" color="#000000" meeting="false" start="2026-03-10" duration="14" complete="0" expand="true">
+            <task id="12" uid="8b0fc9e9c77e4e869dda04865c6be1a0" name="Análisis de requisitos" color="#8cb6ce" meeting="false" start="2026-03-10" duration="2" complete="0" expand="true">
+                <depend id="13" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="13" uid="02cc93ee13b741a686c9d95f201b1d3e" name="Fase de diseño" color="#8cb6ce" meeting="false" start="2026-03-12" duration="2" complete="0" expand="true">
+                <depend id="14" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="14" uid="229065daec574a338e01d6d688596b6c" name="Implementación" color="#8cb6ce" meeting="false" start="2026-03-16" duration="8" complete="0" expand="true">
+                <depend id="15" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="15" uid="c81efe815a5b4850932406052f4b72b0" name="Pruebas" color="#8cb6ce" meeting="false" start="2026-03-26" duration="2" complete="0" expand="true">
+                <depend id="17" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="16" uid="c5e22d728818401c8024ee8cb4c4f1e1" name="Iteración 3: Integración de un chatbot" color="#000000" meeting="false" start="2026-03-30" duration="14" complete="0" expand="true">
+            <task id="17" uid="c3e5f8cb080c4f8a83fb8b351b69a066" name="Análisis de requisitos" color="#8cb6ce" meeting="false" start="2026-03-30" duration="2" complete="0" expand="true">
+                <depend id="18" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="18" uid="9569ab2535144f3483a91a586109d4e0" name="Fase de diseño" color="#8cb6ce" meeting="false" start="2026-04-01" duration="2" complete="0" expand="true">
+                <depend id="19" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="19" uid="56ad2924c56c470fb823d998b909104a" name="Implementación" color="#8cb6ce" meeting="false" start="2026-04-03" duration="8" complete="0" expand="true">
+                <depend id="20" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="20" uid="46427d5d79594005a20a9396b04dcff0" name="Pruebas" color="#8cb6ce" meeting="false" start="2026-04-15" duration="2" complete="0" expand="true">
+                <depend id="22" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="21" uid="95acc9acdccb42708f211dca7c922638" name="Iteración 4: Predicción de la ocupación" color="#000000" meeting="false" start="2026-04-17" duration="14" complete="0" expand="true">
+            <task id="22" uid="4f075b3851e440f985494a08d3fc02ac" name="Análisis de requisitos" color="#8cb6ce" meeting="false" start="2026-04-17" duration="2" complete="0" expand="true">
+                <depend id="23" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="23" uid="7cb63779e45542af876fa3c01df0653a" name="Fase de diseño" color="#8cb6ce" meeting="false" start="2026-04-21" duration="2" complete="0" expand="true">
+                <depend id="24" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="24" uid="136e248fd60345e298b366c584e777dd" name="Implementación" color="#8cb6ce" meeting="false" start="2026-04-23" duration="8" complete="0" expand="true">
+                <depend id="25" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="25" uid="68ae0306642d4cfe95d8702b7574312c" name="Pruebas" color="#8cb6ce" meeting="false" start="2026-05-05" duration="2" complete="0" expand="true">
+                <depend id="27" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="26" uid="b46fcc7b01ca4e8abb9e068535e8a4d4" name="Iteración 5: Alertas inteligentes y gamificación" color="#000000" meeting="false" start="2026-05-07" duration="14" complete="0" expand="true">
+            <task id="27" uid="e220ec4b525f4837973a43350d0c896c" name="Análisis de requisitos" color="#8cb6ce" meeting="false" start="2026-05-07" duration="2" complete="0" expand="true">
+                <depend id="28" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="28" uid="670c2977500949f9925eb383efeaef31" name="Fase de diseño" color="#8cb6ce" meeting="false" start="2026-05-11" duration="2" complete="0" expand="true">
+                <depend id="29" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="29" uid="b3bbab518985408483fd5773d894b62b" name="Implementación" color="#8cb6ce" meeting="false" start="2026-05-13" duration="8" complete="0" expand="true">
+                <depend id="30" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="30" uid="6849536dfe534971aae502c0e88dec2f" name="Pruebas" color="#8cb6ce" meeting="false" start="2026-05-25" duration="2" complete="0" expand="true">
+                <depend id="31" type="2" difference="0" hardness="Strong"/>
+            </task>
+        </task>
+        <task id="31" uid="d3fe4795918e46a7a80061fd70a8e21c" name="Completar memoria del proyecto" meeting="false" start="2026-05-27" duration="10" complete="0" expand="true"/>
+    </tasks>
+    <resources/>
+    <allocations/>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
