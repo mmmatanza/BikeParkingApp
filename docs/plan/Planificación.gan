@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-11" view-index="0" gantt-divider-location="426" resource-divider-location="300" version="3.3.3322" locale="es_ES">
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2026-02-16" view-index="0" gantt-divider-location="412" resource-divider-location="300" version="3.3.3322" locale="es_ES">
     <description/>
     <view zooming-state="default:2" id="gantt-chart">
-        <field id="tpd3" name="Nombre" width="232" order="0"/>
-        <field id="tpd4" name="Fecha de inicio" width="89" order="1"/>
-        <field id="tpd5" name="Fecha de fin" width="89" order="2"/>
+        <field id="tpd3" name="Nombre" width="224" order="0"/>
+        <field id="tpd4" name="Fecha de inicio" width="86" order="1"/>
+        <field id="tpd5" name="Fecha de fin" width="86" order="2"/>
         <field id="tpd15" name="Notas" width="20" order="3"/>
         <option id="filter.completedTasks" value="false"/>
         <option id="filter.dueTodayTasks" value="false"/>
@@ -47,14 +47,14 @@
         <task id="3" uid="46a1f07567bf4ec19b34fdebd6d7c10d" name="Planificación del proyecto" meeting="false" start="2026-02-16" duration="2" complete="100" expand="true">
             <depend id="5" type="2" difference="0" hardness="Strong"/>
         </task>
-        <task id="9" uid="ff8252030b484594abf5e3b39d8a190f" name="Iteración 1: Configuración Inicial y Login" meeting="false" start="2026-02-18" duration="16" complete="21" expand="true">
+        <task id="9" uid="ff8252030b484594abf5e3b39d8a190f" name="Iteración 1: Configuración Inicial y Login" meeting="false" start="2026-02-18" duration="16" complete="30" expand="true">
             <task id="5" uid="9e64eca179544e5a82fde0453672fd37" name="Análisis de requisitos" meeting="false" start="2026-02-18" duration="3" complete="100" expand="true">
                 <depend id="6" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="6" uid="5418674549c0457c89212bd05dcec529" name="Fase de diseño" meeting="false" start="2026-02-23" duration="3" complete="0" expand="true">
                 <depend id="7" type="2" difference="2" hardness="Strong"/>
             </task>
-            <task id="7" uid="439090b83f8f4e65b0086669a7aa4daa" name="Implementación" meeting="false" start="2026-03-02" duration="6" complete="0" expand="true">
+            <task id="7" uid="439090b83f8f4e65b0086669a7aa4daa" name="Implementación" meeting="false" start="2026-03-02" duration="6" complete="20" expand="true">
                 <depend id="8" type="2" difference="0" hardness="Strong"/>
             </task>
             <task id="8" uid="d6df6ec692394f068f7186ac3410bb30" name="Pruebas" meeting="false" start="2026-03-10" duration="2" complete="0" expand="true">
