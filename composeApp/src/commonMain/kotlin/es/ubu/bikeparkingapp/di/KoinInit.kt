@@ -7,6 +7,7 @@ import org.koin.core.KoinApplication
 fun initKoin(): KoinApplication {
     return startKoin {
         modules(
+            appModule,
             supabaseModule,
             viewModelsModule
         )
