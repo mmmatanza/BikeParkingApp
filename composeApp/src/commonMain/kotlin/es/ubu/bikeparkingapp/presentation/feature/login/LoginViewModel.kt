@@ -4,15 +4,22 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.ubu.bikeparkingapp.domain.usecase.LoginUseCase
+import es.ubu.bikeparkingapp.domain.model.AuthState
+import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    getAuthStateUseCase: GetAuthStateUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(LoginState())
     val state: State<LoginState> = _state
+    val authState: Flow<AuthState> = getAuthStateUseCase()
+
+
 
     fun onEmailChange(email: String) {
         _state.value = _state.value.copy(email = email)

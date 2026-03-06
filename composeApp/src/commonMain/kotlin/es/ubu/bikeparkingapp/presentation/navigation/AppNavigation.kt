@@ -5,6 +5,6 @@ import cafe.adriel.voyager.navigator.Navigator
 import es.ubu.bikeparkingapp.presentation.feature.login.LoginScreen
 
 @Composable
-fun AppNavigator() {
+fun AppNavigator(){
     Navigator(LoginScreen())
 }

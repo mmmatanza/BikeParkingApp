@@ -24,8 +24,8 @@ fun LoginContent(
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onLoginClick: () -> Unit,
-    onLoginSuccess: () -> Unit,
-    onRegisterClick: () -> Unit
+    onRegisterClick: () -> Unit,
+    onPasswordResetClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -68,6 +68,9 @@ fun LoginContent(
 
         TextButton(onClick = onRegisterClick) {
             Text("¿No tienes cuenta? Regístrate")
+        }
+        TextButton(onClick = onPasswordResetClick) {
+            Text("¿Olvidaste la contraseña? Restablécela")
         }
     }
 }

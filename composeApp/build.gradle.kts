@@ -66,6 +66,9 @@ kotlin {
             // Ktor
             implementation(libs.ktor.client.cio)
 
+            // Iconos extendidos
+            implementation(libs.material.icons.extended)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -1,10 +1,16 @@
 package es.ubu.bikeparkingapp.presentation.feature.main
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.model.AuthState
+import es.ubu.bikeparkingapp.presentation.feature.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -12,8 +18,35 @@ class MainScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = koinViewModel< MainViewModel>()
-        MainContent(state = viewModel.state.value)
+        val viewModel = koinViewModel<MainViewModel>()
+        val state = viewModel.state.value
+
+        // Se observa el estado de autenticación del ViewModel
+        LaunchedEffect(viewModel.authState){
+            viewModel.authState.collect { authState ->
+                if(authState==AuthState.Unauthenticated)
+                    navigator.replaceAll(LoginScreen())
+            }
+        }
+
+        // Si cambia el estado de error, se muestra un diálogo con el mensaje de error
+            if (viewModel.state.value.error != null) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearError() },
+                    confirmButton = {
+                        Button(onClick = { viewModel.clearError() }) {
+                            Text("Aceptar")
+                        }
+                    },
+                    title = {
+                        Text("Error")
+                    },
+                    text = {
+                        Text(state.error ?: "Error desconocido")
+                    }
+                )
+            }
+        MainContent(state = viewModel.state.value, viewModel::onSignoutClick)
 
     }
 }

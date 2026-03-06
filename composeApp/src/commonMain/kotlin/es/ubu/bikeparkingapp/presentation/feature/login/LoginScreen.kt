@@ -5,14 +5,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
@@ -23,11 +20,13 @@ class LoginScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = koinViewModel<LoginViewModel>()
         val state = viewModel.state.value
-        var showDialog by remember { mutableStateOf(false) }
 
-        LaunchedEffect(state.isLoggedIn) {
-            if(state.isLoggedIn)
-                navigator.replace(MainScreen())
+        // Se observa el estado de autenticación del ViewModel
+        LaunchedEffect(viewModel.authState){
+            viewModel.authState.collect { authState ->
+                if(authState==AuthState.Authenticated)
+                    navigator.replaceAll(MainScreen())
+            }
         }
 
         if (state.error != null) {
@@ -42,7 +41,7 @@ class LoginScreen : Screen {
                     Text("Error")
                 },
                 text = {
-                    Text(state.error ?: "Error desconocido")
+                    Text(state.error)
                 }
             )
         }
@@ -52,11 +51,11 @@ class LoginScreen : Screen {
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onLoginClick = viewModel::onLoginClick,
-            onLoginSuccess = {
-                navigator.replace(MainScreen())
-            },
             onRegisterClick = {
                 //navigator.push(RegisterScreen())
+            },
+            onPasswordResetClick = {
+                //navigator.push(PasswordResetScreen())
             }
         )
     }

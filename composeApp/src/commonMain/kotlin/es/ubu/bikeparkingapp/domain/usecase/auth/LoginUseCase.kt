@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.domain.usecase
+package es.ubu.bikeparkingapp.domain.usecase.auth
 
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 

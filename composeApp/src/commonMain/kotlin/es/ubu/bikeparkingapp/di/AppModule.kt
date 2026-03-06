@@ -2,7 +2,9 @@ package es.ubu.bikeparkingapp.di
 
 import es.ubu.bikeparkingapp.data.repositories.SupabaseAuthRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
-import es.ubu.bikeparkingapp.domain.usecase.LoginUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.presentation.feature.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
 import io.github.jan.supabase.SupabaseClient
@@ -22,6 +24,8 @@ val appModule = module {
     single<AuthRepository> { SupabaseAuthRepository(get()) }
     // Casos de Uso
     factory { LoginUseCase(get()) }
+    factory { SignoutUseCase(get()) }
+    factory { GetAuthStateUseCase(get()) }
 }
 
 // Módulo para los ViewModels
