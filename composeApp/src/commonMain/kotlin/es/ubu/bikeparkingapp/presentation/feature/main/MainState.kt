@@ -1,7 +1,10 @@
 package es.ubu.bikeparkingapp.presentation.feature.main
 
+/**
+ * Representa el estado de la pantalla principal.
+ *
+ * @property error Mensaje de error, si ocurre uno.
+ */
 data class MainState (
-    val points:Int = 0,
-    val error: String? = null,
-    val isLoggedIn: Boolean = true
+    val error: String? = null
 )

@@ -31,6 +31,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+/**
+ * Representa el contenido principal de la pantalla principal.
+ *
+ * @property state Estado actual de la pantalla.
+ * @property onLogout Función para manejar el evento de cerrar sesión.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent(

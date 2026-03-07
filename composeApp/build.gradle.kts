@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val localProps = Properties().apply {
@@ -21,10 +22,10 @@ kotlin {
         }
     }
     
-    js {
-        browser()
-        binaries.executable()
-    }
+    //js {
+    //    browser()
+    //    binaries.executable()
+    //}
     
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
@@ -38,6 +39,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         wasmJsMain.dependencies {
+            implementation(libs.russhlwolf.multiplatform.settings)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -68,6 +70,10 @@ kotlin {
 
             // Iconos extendidos
             implementation(libs.material.icons.extended)
+
+            // Para almacenamiento de datos simples
+            implementation(libs.russhlwolf.multiplatform.settings)
+            implementation(libs.russhlwolf.multiplatform.settings.serialization)
 
         }
         commonTest.dependencies {

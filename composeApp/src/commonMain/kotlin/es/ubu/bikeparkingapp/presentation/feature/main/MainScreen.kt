@@ -14,6 +14,9 @@ import es.ubu.bikeparkingapp.presentation.feature.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Representa la pantalla principal de la aplicación.
+ */
 class MainScreen : Screen {
     @Composable
     override fun Content() {

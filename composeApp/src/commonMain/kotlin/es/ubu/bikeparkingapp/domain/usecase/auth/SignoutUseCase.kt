@@ -2,7 +2,12 @@ package es.ubu.bikeparkingapp.domain.usecase.auth
 
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
-class SignoutUseCase(private val repository: AuthRepository) {
+/**
+ * Representa el caso de uso para cerrar sesión.
+ *
+ * @property authRepository Repositorio de autenticación.
+ */
+class SignoutUseCase(private val authRepository: AuthRepository) {
     suspend operator fun invoke() =
-        repository.signout()
+        authRepository.signout()
 }

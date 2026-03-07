@@ -11,9 +11,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
+import es.ubu.bikeparkingapp.presentation.feature.register.RegisterScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
 
+/**
+ * Representa la pantalla de inicio de sesión.
+ */
 class LoginScreen : Screen {
     @Composable
     override fun Content() {
@@ -52,7 +56,7 @@ class LoginScreen : Screen {
             onPasswordChange = viewModel::onPasswordChange,
             onLoginClick = viewModel::onLoginClick,
             onRegisterClick = {
-                //navigator.push(RegisterScreen())
+                navigator.push(RegisterScreen())
             },
             onPasswordResetClick = {
                 //navigator.push(PasswordResetScreen())

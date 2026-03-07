@@ -10,6 +10,12 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+/**
+ * Representa el viewModel para la pantalla principal.
+ *
+ * @property signoutUseCase Caso de uso para cerrar sesión.
+ * @property getAuthStateUseCase Caso de uso para obtener el estado de autenticación.
+ */
 class MainViewModel(
     private val signoutUseCase: SignoutUseCase,
     getAuthStateUseCase: GetAuthStateUseCase

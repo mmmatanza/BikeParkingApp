@@ -1,5 +1,6 @@
-package es.ubu.bikeparkingapp.data.repositories
+package es.ubu.bikeparkingapp.data.repository
 
+import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
@@ -9,6 +10,11 @@ import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 
+/**
+ * Representa la implementación del repositorio de autenticación en Supabase.
+ *
+ * @property client Cliente Supabase para interactuar con la base de datos.
+ */
 class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepository {
     override fun getAuthStateFlow(): Flow<AuthState> =
         client.auth.sessionStatus.transform { status ->
@@ -36,6 +42,27 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
     override suspend fun signout(): Result<Unit> {
         return runCatching {
             client.auth.signOut()
+        }
+    }
+
+    override suspend fun register(
+        email: String,
+        password: String
+    ): Result<String> {
+        return runCatching {
+            val result = client.auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+            }
+            result?.id ?: error("No user after register")
+        }.recoverCatching {
+            throw Exception("Ha ocurrido un error. Inténtalo de nuevo.")
+        }
+    }
+
+    override suspend fun getCurrentUserId(): Result<String> {
+        return runCatching {
+            client.auth.currentUserOrNull()?.id ?: error("El usuario no tiene sesión activa.")
         }
     }
 }

@@ -10,6 +10,12 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+/**
+ * Representa el ViewModel para la pantalla de inicio de sesión.
+ *
+ * @property loginUseCase Caso de uso para iniciar sesión.
+ * @property getAuthStateUseCase Caso de uso para obtener el estado de autenticación.
+ */
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     getAuthStateUseCase: GetAuthStateUseCase
@@ -42,7 +48,7 @@ class LoginViewModel(
 
             val result = loginUseCase(email, password)
             result.onSuccess {
-                _state.value = _state.value.copy(isLoading = false, isLoggedIn = true)
+                _state.value = _state.value.copy(isLoading = false)
             }.onFailure { error ->
                 _state.value = _state.value.copy(isLoading = false)
                 _state.value = _state.value.copy(error = error.message)

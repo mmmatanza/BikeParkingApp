@@ -4,12 +4,4 @@ import org.koin.core.context.startKoin
 import org.koin.core.KoinApplication
 
 // Aquí se incluyen los módulos de Koin para inyección de dependencias
-fun initKoin(): KoinApplication {
-    return startKoin {
-        modules(
-            appModule,
-            supabaseModule,
-            viewModelsModule
-        )
-    }
-}
+expect fun initKoin(context: Any? = null): KoinApplication
