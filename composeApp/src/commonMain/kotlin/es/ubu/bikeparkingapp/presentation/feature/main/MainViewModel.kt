@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
@@ -32,10 +33,13 @@ class MainViewModel(
 
     fun onSignoutClick() {
         viewModelScope.launch {
-            signoutUseCase()
-                .onFailure { error ->
-                    _state.value = _state.value.copy(error = error.message)
+            signoutUseCase().onFailure { error ->
+                val message = when (error) {
+                    is NoNetworkException -> "No hay conexión a internet."
+                    else -> "Ha ocurrido un error al cerrar sesión."
                 }
+                _state.value = _state.value.copy(message)
+            }
         }
     }
 

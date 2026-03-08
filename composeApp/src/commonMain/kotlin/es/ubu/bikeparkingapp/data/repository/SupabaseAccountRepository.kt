@@ -5,9 +5,12 @@ import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.AccountException
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+
 
 /**
  * Representa la implementación del repositorio de cuentas en Supabase.
@@ -28,6 +31,13 @@ class SupabaseAccountRepository(
                 }
                 .decodeSingle<AccountDto>()
                 .toDomain()
+        }.recoverCatching { cause ->
+            when {
+                cause.message?.contains("Unable to resolve host") == true ||
+                        cause.message?.contains("Failed to connect") == true ->
+                    throw NoNetworkException()
+                else -> throw AccountException(cause)
+            }
         }
     }
 
@@ -51,6 +61,13 @@ class SupabaseAccountRepository(
                 }
                 .decodeSingle<AccountDto>()
                 .toDomain()
+        }.recoverCatching { cause ->
+            when {
+                cause.message?.contains("Unable to resolve host") == true ||
+                        cause.message?.contains("Failed to connect") == true ->
+                    throw NoNetworkException()
+                else -> throw AccountException(cause)
+            }
         }
     }
 

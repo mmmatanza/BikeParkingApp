@@ -1,6 +1,6 @@
 package es.ubu.bikeparkingapp.data.repository
 
-import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.AccountException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
@@ -9,6 +9,10 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
+import es.ubu.bikeparkingapp.domain.exception.AuthException
+import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import io.github.jan.supabase.exceptions.HttpRequestException
 
 /**
  * Representa la implementación del repositorio de autenticación en Supabase.
@@ -30,11 +34,17 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
             )
         }
 
-    override suspend fun login(email: String, pass: String): Result<Unit> {
+    override suspend fun login(email: String, pass: String): Result<String> {
         return runCatching {
             client.auth.signInWith(Email) {
                 this.email = email
                 this.password = pass
+            }
+            client.auth.currentUserOrNull()?.id ?: throw NoActiveSessionException()
+        }.recoverCatching { cause ->
+            when (cause) {
+                is HttpRequestException -> throw NoNetworkException()
+                else -> throw AuthException(cause)
             }
         }
     }
@@ -42,6 +52,11 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
     override suspend fun signout(): Result<Unit> {
         return runCatching {
             client.auth.signOut()
+        }.recoverCatching { cause ->
+            when (cause) {
+                is HttpRequestException -> throw NoNetworkException()
+                else -> throw AuthException(cause)
+            }
         }
     }
 
@@ -55,14 +70,29 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
                 this.password = password
             }
             result?.id ?: error("No user after register")
-        }.recoverCatching {
-            throw Exception("Ha ocurrido un error. Inténtalo de nuevo.")
+        }.recoverCatching { cause ->
+            when (cause) {
+                is HttpRequestException -> throw NoNetworkException()
+                else -> throw AuthException(cause)
+            }
+        }
+    }
+
+    override suspend fun requestPasswordReset(email: String): Result<Unit> {
+        return runCatching {
+            // Si el email no existe no se produce excepción ni mensaje de error
+            client.auth.resetPasswordForEmail(email)
+        }.recoverCatching { cause ->
+            when (cause) {
+                is HttpRequestException -> throw NoNetworkException()
+                else -> throw AuthException(cause)
+            }
         }
     }
 
     override suspend fun getCurrentUserId(): Result<String> {
         return runCatching {
-            client.auth.currentUserOrNull()?.id ?: error("El usuario no tiene sesión activa.")
+            client.auth.currentUserOrNull()?.id ?: throw NoActiveSessionException()
         }
     }
 }

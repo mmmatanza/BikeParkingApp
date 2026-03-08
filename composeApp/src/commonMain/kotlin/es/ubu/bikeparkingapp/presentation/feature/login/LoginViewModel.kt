@@ -4,6 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import es.ubu.bikeparkingapp.domain.exception.AccountException
+import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
@@ -43,15 +46,15 @@ class LoginViewModel(
         val email = _state.value.email
         val password = _state.value.password
 
-        _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch {
-
-            val result = loginUseCase(email, password)
-            result.onSuccess {
-                _state.value = _state.value.copy(isLoading = false)
-            }.onFailure { error ->
-                _state.value = _state.value.copy(isLoading = false)
-                _state.value = _state.value.copy(error = error.message)
+            loginUseCase(email, password).onFailure { error ->
+                val message = when (error) {
+                    is NoNetworkException -> "No hay conexión a internet."
+                    is NoActiveSessionException -> "Error al generar una sesión activa."
+                    is AccountException -> "Error al obtener la cuenta."
+                    else -> "Ha ocurrido un error. Revisa tu correo y contraseña e inténtalo de nuevo."
+                }
+                _state.value = _state.value.copy(error = message)
             }
         }
 

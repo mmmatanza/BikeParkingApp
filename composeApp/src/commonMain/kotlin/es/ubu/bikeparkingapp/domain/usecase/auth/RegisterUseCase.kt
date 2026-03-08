@@ -37,8 +37,6 @@ class RegisterUseCase(
                 role = role
             ).getOrThrow()
 
-            accountRepository.saveLocally(account)
-
             authRepository.signout().getOrThrow()
 
             account

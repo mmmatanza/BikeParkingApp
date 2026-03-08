@@ -5,6 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -49,8 +50,11 @@ class MainScreen : Screen {
                     }
                 )
             }
-        MainContent(state = viewModel.state.value, viewModel::onSignoutClick)
-
+        MainContent(
+            state = viewModel.state.value,
+            authState = viewModel.authState.collectAsState(AuthState.Loading).value,
+            onLogout = viewModel::onSignoutClick
+        )
     }
 }
 

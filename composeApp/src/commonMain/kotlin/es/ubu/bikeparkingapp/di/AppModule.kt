@@ -8,9 +8,11 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.presentation.feature.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
+import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetViewModel
 import es.ubu.bikeparkingapp.presentation.feature.register.RegisterViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
@@ -32,10 +34,11 @@ val appModule = module {
     single<AccountRepository> { SupabaseAccountRepository(get(),get()) }
 
     // Casos de Uso
-    factory { LoginUseCase(get()) }
+    factory { LoginUseCase(get(), get()) }
     factory { SignoutUseCase(get()) }
     factory { GetAuthStateUseCase(get()) }
     factory { RegisterUseCase(get(), get()) }
+    factory { RequestPasswordResetUseCase(get()) }
 }
 
 // Módulo para los ViewModels
@@ -43,6 +46,7 @@ val viewModelsModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::RegisterViewModel)
+    viewModelOf(::PasswordResetViewModel)
 }
 
 // Módulo para la creación del cliente Supabase

@@ -5,12 +5,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
+import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetScreen
 import es.ubu.bikeparkingapp.presentation.feature.register.RegisterScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.koin.compose.viewmodel.koinViewModel
@@ -52,6 +54,7 @@ class LoginScreen : Screen {
 
         LoginContent(
             state = viewModel.state.value,
+            authState = viewModel.authState.collectAsState(AuthState.Loading).value,
             onEmailChange = viewModel::onEmailChange,
             onPasswordChange = viewModel::onPasswordChange,
             onLoginClick = viewModel::onLoginClick,
@@ -59,7 +62,7 @@ class LoginScreen : Screen {
                 navigator.push(RegisterScreen())
             },
             onPasswordResetClick = {
-                //navigator.push(PasswordResetScreen())
+                navigator.push(PasswordResetScreen())
             }
         )
     }

@@ -1,6 +1,9 @@
 package es.ubu.bikeparkingapp.domain.model
 
-// Indica el estado de autenticación del usuario
+/**
+ * Representa el estado de autenticación.
+ *
+ */
 sealed class AuthState {
     object Loading : AuthState()
     object Authenticated : AuthState()

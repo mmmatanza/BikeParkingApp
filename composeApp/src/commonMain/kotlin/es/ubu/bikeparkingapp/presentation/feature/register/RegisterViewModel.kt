@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
 import kotlinx.coroutines.launch
 
@@ -77,10 +78,13 @@ class RegisterViewModel(
                 name = _state.value.name,
                 taxId = _state.value.taxId,
                 role = _state.value.role
-            )
-            if(result.isFailure){
-                _state.value = _state.value.copy(error = result.exceptionOrNull()?.message)
-            } else{
+            ).onFailure { error ->
+                val message = when (error) {
+                    is NoNetworkException -> "No hay conexión a internet."
+                    else -> "Ha ocurrido un error. Revisa bien los datos o prueba con otros."
+                }
+                _state.value = _state.value.copy(error = message)
+            }.onSuccess {
                 _state.value = _state.value.copy(isSuccess = true)
             }
         }
