@@ -70,12 +70,12 @@ val supabaseModule = module {
     single { get<SupabaseClient>().postgrest }
 }
 
-// Modulo para almacenamiento local
+// Módulo para almacenamiento local
 val localStorageModule = module {
     single {
         AccountLocalDataSource(get())
     }
 }
 
-// Modulo para obtener las settings
+// Módulo para obtener las settings
 expect val settingsModule: Module

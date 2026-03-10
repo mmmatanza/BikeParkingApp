@@ -7,14 +7,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.email_invalid
+import bikeparkingapp.composeapp.generated.resources.generic_error
+import bikeparkingapp.composeapp.generated.resources.no_active_session
+import bikeparkingapp.composeapp.generated.resources.no_internet
+import bikeparkingapp.composeapp.generated.resources.password_empty
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
+import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
 import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetScreen
 import es.ubu.bikeparkingapp.presentation.feature.register.RegisterScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -47,7 +58,13 @@ class LoginScreen : Screen {
                     Text("Error")
                 },
                 text = {
-                    Text(state.error)
+                    when(state.error){
+                        is EmailInvalidException -> Text(stringResource(Res.string.email_invalid))
+                        is PasswordEmptyException -> Text(stringResource(Res.string.password_empty))
+                        is NoNetworkException -> Text(stringResource(Res.string.no_internet))
+                        is NoActiveSessionException -> Text(stringResource(Res.string.no_active_session))
+                        else -> Text(stringResource(Res.string.generic_error))
+                    }
                 }
             )
         }

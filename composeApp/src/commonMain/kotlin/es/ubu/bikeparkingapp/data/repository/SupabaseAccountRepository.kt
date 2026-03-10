@@ -5,7 +5,6 @@ import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
-import es.ubu.bikeparkingapp.domain.exception.AccountException
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -36,7 +35,7 @@ class SupabaseAccountRepository(
                 cause.message?.contains("Unable to resolve host") == true ||
                         cause.message?.contains("Failed to connect") == true ->
                     throw NoNetworkException()
-                else -> throw AccountException(cause)
+                else -> throw Exception(cause)
             }
         }
     }
@@ -66,7 +65,7 @@ class SupabaseAccountRepository(
                 cause.message?.contains("Unable to resolve host") == true ||
                         cause.message?.contains("Failed to connect") == true ->
                     throw NoNetworkException()
-                else -> throw AccountException(cause)
+                else -> throw Exception(cause)
             }
         }
     }

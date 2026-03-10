@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
@@ -20,7 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.do_not_have_an_account
+import bikeparkingapp.composeapp.generated.resources.email
+import bikeparkingapp.composeapp.generated.resources.forgot_password
+import bikeparkingapp.composeapp.generated.resources.login
+import bikeparkingapp.composeapp.generated.resources.password
+import bikeparkingapp.composeapp.generated.resources.welcome
 import es.ubu.bikeparkingapp.domain.model.AuthState
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido de la pantalla de inicio de sesión.
@@ -61,18 +71,19 @@ fun LoginContent(
             modifier = Modifier
                 .widthIn(max = 480.dp)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = "Bienvenido", fontSize = 32.sp)
+            Text(text = stringResource(Res.string.welcome), fontSize = 32.sp)
 
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
                 value = state.email,
                 onValueChange = onEmailChange,
-                label = { Text("Correo electrónico") },
+                label = { Text(stringResource(Res.string.email)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -82,7 +93,7 @@ fun LoginContent(
             OutlinedTextField(
                 value = state.password,
                 onValueChange = onPasswordChange,
-                label = { Text("Contraseña") },
+                label = { Text(stringResource(Res.string.password)) },
                 modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 singleLine = true
@@ -94,14 +105,14 @@ fun LoginContent(
                 onClick = onLoginClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp)
             ) {
-                Text("Iniciar Sesión")
+                Text(stringResource(Res.string.login))
             }
 
             TextButton(onClick = onRegisterClick) {
-                Text("¿No tienes cuenta? Regístrate")
+                Text(stringResource(Res.string.do_not_have_an_account))
             }
             TextButton(onClick = onPasswordResetClick) {
-                Text("¿Olvidaste la contraseña? Restablécela")
+                Text(stringResource(Res.string.forgot_password))
             }
         }
     }

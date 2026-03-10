@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import es.ubu.bikeparkingapp.domain.exception.RegisterException.*
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
 import kotlinx.coroutines.launch
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 
 
 /**
@@ -46,16 +48,14 @@ class RegisterViewModel(
     }
 
     // Función para validar el formulario
-    private fun validate(): String? {
+    private fun validate(): Int? {
         val state = _state.value
 
-        if (state.name.isBlank()) return "El nombre no puede estar vacío."
-
-        if (!isValidEmail(state.email)) return "El correo electrónico no es válido."
-
-        if (state.taxId.isBlank()) return "El NIF no puede estar vacío."
-
-        if (state.password != state.passwordConfirmation) return "Las contraseñas no coinciden."
+        if (state.name.isBlank()) throw NameEmptyException()
+        if (!isValidEmail(state.email)) throw EmailInvalidException()
+        if (state.taxId.isBlank()) throw TaxIdEmptyException()
+        if (state.password != state.passwordConfirmation) throw PasswordMismatchException()
+        if (!isValidPassword(state.password)) throw WeakPasswordException()
 
         return null
     }
@@ -65,30 +65,36 @@ class RegisterViewModel(
         return Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$").matches(email)
     }
 
-    fun onRegisterClick(){
-        val validationError = validate()
-        if (validationError != null) {
-            _state.value = _state.value.copy(error = validationError)
-            return
-        }
-        viewModelScope.launch{
-            val result = registerUseCase(
-                email = _state.value.email,
-                password = _state.value.password,
-                name = _state.value.name,
-                taxId = _state.value.taxId,
-                role = _state.value.role
-            ).onFailure { error ->
-                val message = when (error) {
-                    is NoNetworkException -> "No hay conexión a internet."
-                    else -> "Ha ocurrido un error. Revisa bien los datos o prueba con otros."
-                }
-                _state.value = _state.value.copy(error = message)
-            }.onSuccess {
-                _state.value = _state.value.copy(isSuccess = true)
-            }
-        }
+    // Función para verificar que la contraseña no es débil
+    private fun isValidPassword(password: String): Boolean {
+        if (password.length < 8) return false
+        if (!password.any { it.isUpperCase() }) return false
+        if (!password.any { it in "!@#\$%^&*()_+-=[]{}|;':\",./<>?" }) return false
+        return true
+    }
 
+    fun onRegisterClick(){
+        try{
+            validate()
+            viewModelScope.launch{
+                registerUseCase(
+                    email = _state.value.email,
+                    password = _state.value.password,
+                    name = _state.value.name,
+                    taxId = _state.value.taxId,
+                    role = _state.value.role
+                ).onFailure { error ->
+                    when (error) {
+                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
+                        else -> _state.value = _state.value.copy(error = Exception(error.message))
+                    }
+                }.onSuccess {
+                    _state.value = _state.value.copy(isSuccess = true)
+                }
+            }
+        } catch (e: Exception) {
+            _state.value.copy(error = e)
+        }
     }
 
     fun clearError() {

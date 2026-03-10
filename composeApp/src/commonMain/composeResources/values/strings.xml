@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Texto -->
+    <string name="welcome">Welcome</string>
+    <string name="my_panel">My Panel</string>
+    <string name="reset_advice">We have sent you an email to reset your password.</string>
+    <string name="attention">Attention</string>
+
+    <!-- Botones -->
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="signout">Sign Out</string>
+    <string name="do_not_have_an_account">Do not have an account? Register</string>
+    <string name="forgot_password">Did you forget your password?</string>
+    <string name="back">Back</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="accept">Aceptar</string>
+
+    <!-- Errores -->
+    <string name="error">Error</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="name_empty">The name cannot be empty.</string>
+    <string name="email_invalid">The email is invalid.</string>
+    <string name="tax_id_empty">The DNI/NIF/CIF cannot be empty.</string>
+    <string name="password_mismatch">The passwords do not match.</string>
+    <string name="weak_password">The password is too weak. It must contain at least
+        8 characters, one uppercase letter, one lowercase letter,
+        one number and one special character.</string>
+    <string name="generic_error">An error has occurred. Please try again.</string>
+    <string name="no_active_session">No active session.</string>
+    <string name="password_empty">The password cannot be empty.</string>
+
+    <!-- Campos -->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="password_confirmation">Password confirmation</string>
+    <string name="name">Name</string>
+    <string name="tax_id">Tax ID</string>
+    <string name="role">Role</string>
+    <string name="administrator">Administrator</string>
+    <string name="user">User</string>
+
+</resources>

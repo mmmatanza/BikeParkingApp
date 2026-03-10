@@ -4,9 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.ubu.bikeparkingapp.domain.exception.AccountException
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
+import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
 import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
@@ -42,21 +44,45 @@ class LoginViewModel(
         _state.value = _state.value.copy(error = null)
     }
 
-    fun onLoginClick() {
+    private fun isValidEmail(email: String): Boolean {
+        return Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$").matches(email)
+    }
+
+    fun validate() {
+
         val email = _state.value.email
         val password = _state.value.password
 
-        viewModelScope.launch {
-            loginUseCase(email, password).onFailure { error ->
-                val message = when (error) {
-                    is NoNetworkException -> "No hay conexión a internet."
-                    is NoActiveSessionException -> "Error al generar una sesión activa."
-                    is AccountException -> "Error al obtener la cuenta."
-                    else -> "Ha ocurrido un error. Revisa tu correo y contraseña e inténtalo de nuevo."
-                }
-                _state.value = _state.value.copy(error = message)
-            }
+        if (!isValidEmail(email)) {
+            _state.value = _state.value.copy(error = EmailInvalidException())
+            return
         }
 
+        if (password.isBlank()) {
+            _state.value = _state.value.copy(error = PasswordEmptyException())
+            return
+        }
     }
+
+    fun onLoginClick() {
+        try {
+            val email = _state.value.email
+            val password = _state.value.password
+            validate()
+            viewModelScope.launch {
+                loginUseCase(email, password).onFailure { error ->
+                    when (error) {
+                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
+                        is NoActiveSessionException -> _state.value = _state.value.copy(error = error)
+                        is InvalidCredentialsException -> _state.value = _state.value.copy(error = error)
+                        else -> _state.value = _state.value.copy(error = Exception(error.message))
+                    }
+                }
+            }
+        } catch (exception: Exception) {
+            _state.value.copy(error = exception)
+        }
+    }
+
+
 }

@@ -6,5 +6,5 @@ package es.ubu.bikeparkingapp.presentation.feature.main
  * @property error Mensaje de error, si ocurre uno.
  */
 data class MainState (
-    val error: String? = null
+    val error: Exception? = null
 )

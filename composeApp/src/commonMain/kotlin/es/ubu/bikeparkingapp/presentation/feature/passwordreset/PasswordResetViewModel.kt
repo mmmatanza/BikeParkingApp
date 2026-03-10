@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import kotlinx.coroutines.launch
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 
 /**
  * Representa el viewModel para la pantalla de restablecer contraseña.
@@ -24,7 +25,7 @@ class PasswordResetViewModel(
     private fun validate(): String? {
         val state = _state.value
 
-        if (!isValidEmail(state.email)) return "El correo electrónico no es válido."
+        if (!isValidEmail(state.email)) throw EmailInvalidException()
 
         return null
     }
@@ -43,28 +44,27 @@ class PasswordResetViewModel(
     }
 
     fun onPasswordResetClick(){
-        val validationError = validate()
-        if (validationError != null) {
-            _state.value = _state.value.copy(error = validationError)
-            return
-        }
-        viewModelScope.launch{
-            requestPasswordResetUseCase(
-                email = _state.value.email
-            ).onFailure { error ->
-                val message = when (error) {
-                    is NoNetworkException -> "No hay conexión a internet."
-                    else -> "Ha ocurrido un error al restablecer la contraseña."
+        try {
+            validate()
+            viewModelScope.launch{
+                requestPasswordResetUseCase(
+                    email = _state.value.email
+                ).onFailure { error ->
+                    when (error) {
+                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
+                        else -> _state.value = _state.value.copy(error = Exception(error.message))
+                    }
+                }.onSuccess {
+                    _state.value = _state.value.copy(success = true)
                 }
-                _state.value = _state.value.copy(error = message)
-            }.onSuccess {
-                _state.value = _state.value.copy(success = true)
             }
+        } catch (exception: EmailInvalidException){
+            _state.value = _state.value.copy(error = exception)
         }
     }
 
     fun onEmailChange(email: String){
-        _state.value = _state.value.copy(email = email,)
+        _state.value = _state.value.copy(email = email)
     }
 
 }

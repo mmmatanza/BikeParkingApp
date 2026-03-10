@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -16,6 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.back
+import bikeparkingapp.composeapp.generated.resources.email
+import bikeparkingapp.composeapp.generated.resources.reset_password
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido de la pantalla de restablecer contraseña.
@@ -41,6 +48,7 @@ fun PasswordResetContent(
             modifier = Modifier
                 .widthIn(max = 480.dp)
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -49,7 +57,7 @@ fun PasswordResetContent(
             OutlinedTextField(
                 value = state.email,
                 onValueChange = onEmailChange,
-                label = { Text("Correo electrónico") },
+                label = { Text(stringResource(Res.string.email)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true
             )
@@ -60,7 +68,7 @@ fun PasswordResetContent(
                 onClick = onPasswordResetClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp)
             ) {
-                Text("Resetear Contraseña")
+                Text(stringResource(Res.string.reset_password))
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -69,7 +77,7 @@ fun PasswordResetContent(
                 onClick = onBackClick,
                 modifier = Modifier.fillMaxWidth().height(50.dp)
             ) {
-                Text("Atrás")
+                Text(stringResource(Res.string.back))
             }
 
         }

@@ -118,4 +118,3 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
-

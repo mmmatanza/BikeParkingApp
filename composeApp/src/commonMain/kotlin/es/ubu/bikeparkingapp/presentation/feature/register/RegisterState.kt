@@ -1,6 +1,7 @@
 package es.ubu.bikeparkingapp.presentation.feature.register
 
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.RegisterException
 
 /**
  * Representa el estado de la pantalla de registro.
@@ -21,7 +22,7 @@ data class RegisterState (
     val name: String = "",
     val taxId: String = "",
     val role: Role = Role.USER,
-    val error: String? = null,
+    val error: Exception? = null,
     val isSuccess: Boolean = false
 )
 

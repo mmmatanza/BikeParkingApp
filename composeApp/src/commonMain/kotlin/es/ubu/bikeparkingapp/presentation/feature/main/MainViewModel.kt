@@ -34,11 +34,11 @@ class MainViewModel(
     fun onSignoutClick() {
         viewModelScope.launch {
             signoutUseCase().onFailure { error ->
-                val message = when (error) {
-                    is NoNetworkException -> "No hay conexión a internet."
-                    else -> "Ha ocurrido un error al cerrar sesión."
+                when (error) {
+                    is NoNetworkException -> _state.value = _state.value.copy(error = error)
+                    else -> _state.value = _state.value.copy(error = Exception(error.message))
                 }
-                _state.value = _state.value.copy(message)
+
             }
         }
     }

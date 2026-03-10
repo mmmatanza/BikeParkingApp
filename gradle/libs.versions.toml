@@ -20,6 +20,7 @@ supabase = "3.4.1"
 ktor = "3.4.1"
 material-icons = "1.7.3"
 russhlwolf-multiplatform-settings = "1.3.0"
+moko-resources = "0.26.0"
 
 
 [libraries]
@@ -56,6 +57,10 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 material-icons-extended = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "material-icons" }
 russhlwolf-multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "russhlwolf-multiplatform-settings" }
 russhlwolf-multiplatform-settings-serialization = { module = "com.russhwolf:multiplatform-settings-serialization", version.ref = "russhlwolf-multiplatform-settings"}
+moko-resources = { module = "dev.icerock.moko:resources", version.ref = "moko-resources" }
+moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko-resources" }
+moko-resources-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "moko-resources"}
+
 
 
 [plugins]
@@ -65,3 +70,4 @@ composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMul
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+moko-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko-resources" }

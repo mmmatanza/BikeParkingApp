@@ -1,3 +1,6 @@
 package es.ubu.bikeparkingapp.domain.exception
 
-class NoActiveSessionException : Exception("No hay ninguna sesión activa.")
+/**
+ * Representa la excepción que se lanza cuando no hay una sessión activa
+ */
+class NoActiveSessionException() : Exception()

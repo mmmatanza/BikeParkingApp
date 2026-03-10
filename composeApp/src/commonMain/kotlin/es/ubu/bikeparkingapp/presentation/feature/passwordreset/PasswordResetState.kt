@@ -7,7 +7,7 @@ package es.ubu.bikeparkingapp.presentation.feature.passwordreset
  * @property success Indica si el proceso de restablecimiento de contraseña fue exitoso.
  */
 data class PasswordResetState (
-    val error: String? = null,
+    val error: Exception? = null,
     val email: String = "",
     val success: Boolean=false
 )

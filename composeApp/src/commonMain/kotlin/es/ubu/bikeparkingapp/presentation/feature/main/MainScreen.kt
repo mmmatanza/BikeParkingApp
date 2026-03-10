@@ -7,12 +7,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.accept
+import bikeparkingapp.composeapp.generated.resources.error
+import bikeparkingapp.composeapp.generated.resources.generic_error
+import bikeparkingapp.composeapp.generated.resources.no_internet
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -39,14 +46,17 @@ class MainScreen : Screen {
                     onDismissRequest = { viewModel.clearError() },
                     confirmButton = {
                         Button(onClick = { viewModel.clearError() }) {
-                            Text("Aceptar")
+                            Text(stringResource(Res.string.accept))
                         }
                     },
                     title = {
-                        Text("Error")
+                        Text(stringResource(Res.string.error))
                     },
                     text = {
-                        Text(state.error ?: "Error desconocido")
+                        when (state.error){
+                            is NoNetworkException -> Text(stringResource(Res.string.no_internet))
+                            else -> Text(stringResource(Res.string.generic_error))
+                        }
                     }
                 )
             }

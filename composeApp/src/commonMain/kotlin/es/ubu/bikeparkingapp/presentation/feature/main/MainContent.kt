@@ -32,7 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.my_panel
+import bikeparkingapp.composeapp.generated.resources.signout
 import es.ubu.bikeparkingapp.domain.model.AuthState
+import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido principal de la pantalla principal.
@@ -60,7 +64,7 @@ fun MainContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Mi Panel", fontWeight = FontWeight.Bold) }
+                title = { Text(stringResource(Res.string.my_panel), fontWeight = FontWeight.Bold) }
             )
         }
     ) { paddingValues ->
@@ -80,7 +84,7 @@ fun MainContent(
                 // Botón de cerrar sesión
                 item {
                     MenuOptionCard(
-                        title = "Cerrar Sesión",
+                        title = stringResource(Res.string.signout),
                         icon = Icons.Default.ExitToApp,
                         color = MaterialTheme.colorScheme.errorContainer,
                         onClick = onLogout

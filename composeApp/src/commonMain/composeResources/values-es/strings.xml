@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <!-- Texto -->
+    <string name="welcome">Bienvenido</string>
+    <string name="my_panel">Mi Panel</string>
+    <string name="reset_advice">Se ha enviado un correo electrónico de restablecimiento a la dirección indicada.</string>
+    <string name="attention">Atención</string>
+
+    <!-- Botones -->
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="signout">Cerrar sesión</string>
+    <string name="do_not_have_an_account">¿No tienes cuenta? Regístrate" </string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
+    <string name="back">Atrás</string>
+    <string name="reset_password">Restablecer contraseña</string>
+    <string name="accept">Aceptar</string>
+
+    <!-- Errores -->
+    <string name="error">Error</string>
+    <string name="no_internet">No hay conexión a internet"</string>
+    <string name="name_empty">El nombre no puede estar vacío.</string>
+    <string name="email_invalid">El correo electrónico no es válido.</string>
+    <string name="tax_id_empty">El DNI/NIF/CIF no puede estar vacío.</string>
+    <string name="password_mismatch">Las contraseñas no coinciden.</string>
+    <string name="weak_password">La contraseña es demasiado débil. Debe contener al menos
+        8 caracteres, una letra mayúscula, una letra minúscula,
+        un número y un carácter especial.</string>
+    <string name="generic_error">Ha ocurrido un error. Por favor, inténtalo de nuevo.</string>
+    <string name="no_active_session">No hay ninguna sesión activa."</string>
+    <string name="password_empty">La contraseña no puede estar vacía.</string>
+
+
+    <!-- Campos -->
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="password_confirmation">Repetir contraseña</string>
+    <string name="name">Nombre</string>
+    <string name="tax_id">DNI/NIF/CIF</string>
+    <string name="role">Rol</string>
+    <string name="administrator">Administrador</string>
+    <string name="user">Usuario</string>
+
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+    <string name="login">Iniciar sesión</string>
+    <string name="register">Registrarse</string>
+    <string name="forgot_password">¿Has olvidado tu contraseña?</string>
+
+    <!-- Campos -->
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+
+</resources>

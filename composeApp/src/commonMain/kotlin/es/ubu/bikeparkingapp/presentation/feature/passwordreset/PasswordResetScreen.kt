@@ -4,10 +4,17 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.accept
+import bikeparkingapp.composeapp.generated.resources.attention
+import bikeparkingapp.composeapp.generated.resources.error
+import bikeparkingapp.composeapp.generated.resources.no_internet
+import bikeparkingapp.composeapp.generated.resources.reset_advice
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -26,14 +33,14 @@ class PasswordResetScreen : Screen {
                 onDismissRequest = { viewModel.clearSuccess() },
                 confirmButton = {
                     Button(onClick = { viewModel.clearSuccess() }) {
-                        Text("Aceptar")
+                        Text(stringResource(Res.string.accept))
                     }
                 },
                 title = {
-                    Text("Aviso")
+                    Text(stringResource(Res.string.attention))
                 },
                 text = {
-                    Text("Se ha enviado un correo electrónico de restablecimiento a la dirección indicada.")
+                    Text(stringResource(Res.string.reset_advice))
                 }
             )
         }
@@ -43,14 +50,17 @@ class PasswordResetScreen : Screen {
                 onDismissRequest = { viewModel.clearError() },
                 confirmButton = {
                     Button(onClick = { viewModel.clearError() }) {
-                        Text("Aceptar")
+                        Text(stringResource(Res.string.accept))
                     }
                 },
                 title = {
-                    Text("Aviso")
+                    Text(stringResource(Res.string.error))
                 },
                 text = {
-                    Text(state.error)
+                    when(state.error){
+                        is NoNetworkException -> Text(stringResource(Res.string.no_internet))
+                        else -> Text(stringResource(Res.string.error))
+                    }
                 }
             )
         }
