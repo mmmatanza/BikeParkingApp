@@ -34,6 +34,13 @@ kotlin {
     }
     
     sourceSets {
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.turbine)
+        }
+
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
@@ -75,9 +82,6 @@ kotlin {
             implementation(libs.russhlwolf.multiplatform.settings)
             implementation(libs.russhlwolf.multiplatform.settings.serialization)
 
-        }
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
         }
     }
 }

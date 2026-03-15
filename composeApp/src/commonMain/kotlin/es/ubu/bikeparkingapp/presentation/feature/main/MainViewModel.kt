@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  */
 class MainViewModel(
     private val signoutUseCase: SignoutUseCase,
-    getAuthStateUseCase: GetAuthStateUseCase
+    private val getAuthStateUseCase: GetAuthStateUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MainState())

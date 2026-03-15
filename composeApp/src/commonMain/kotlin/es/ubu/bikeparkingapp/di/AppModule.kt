@@ -6,10 +6,15 @@ import es.ubu.bikeparkingapp.data.repository.SupabaseAuthRepository
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCaseImpl
 import es.ubu.bikeparkingapp.presentation.feature.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
 import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetViewModel
@@ -34,11 +39,11 @@ val appModule = module {
     single<AccountRepository> { SupabaseAccountRepository(get(),get()) }
 
     // Casos de Uso
-    factory { LoginUseCase(get(), get()) }
-    factory { SignoutUseCase(get()) }
-    factory { GetAuthStateUseCase(get()) }
-    factory { RegisterUseCase(get(), get()) }
-    factory { RequestPasswordResetUseCase(get()) }
+    single<LoginUseCase> { LoginUseCaseImpl(get(), get()) }
+    single<SignoutUseCase> { SignoutUseCaseImpl(get()) }
+    single<GetAuthStateUseCase> { GetAuthStateUseCaseImpl(get()) }
+    single<RegisterUseCase> { RegisterUseCaseImpl(get(), get()) }
+    single<RequestPasswordResetUseCase> { RequestPasswordResetUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels

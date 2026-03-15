@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
  */
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
-    getAuthStateUseCase: GetAuthStateUseCase
+    private val getAuthStateUseCase: GetAuthStateUseCase
 ) : ViewModel() {
 
     private val _state = mutableStateOf(LoginState())
@@ -53,15 +53,11 @@ class LoginViewModel(
         val email = _state.value.email
         val password = _state.value.password
 
-        if (!isValidEmail(email)) {
-            _state.value = _state.value.copy(error = EmailInvalidException())
-            return
-        }
+        if (!isValidEmail(email))
+            throw EmailInvalidException()
 
-        if (password.isBlank()) {
-            _state.value = _state.value.copy(error = PasswordEmptyException())
-            return
-        }
+        if (password.isBlank())
+            throw PasswordEmptyException()
     }
 
     fun onLoginClick() {
@@ -80,7 +76,7 @@ class LoginViewModel(
                 }
             }
         } catch (exception: Exception) {
-            _state.value.copy(error = exception)
+            _state.value = _state.value.copy(error = exception)
         }
     }
 

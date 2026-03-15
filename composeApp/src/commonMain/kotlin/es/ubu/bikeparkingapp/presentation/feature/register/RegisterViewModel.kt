@@ -93,7 +93,7 @@ class RegisterViewModel(
                 }
             }
         } catch (e: Exception) {
-            _state.value.copy(error = e)
+            _state.value = _state.value.copy(error = e)
         }
     }
 

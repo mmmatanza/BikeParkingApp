@@ -10,7 +10,7 @@
     <string name="login">Iniciar sesión</string>
     <string name="register">Registrarse</string>
     <string name="signout">Cerrar sesión</string>
-    <string name="do_not_have_an_account">¿No tienes cuenta? Regístrate" </string>
+    <string name="do_not_have_an_account">¿No tienes cuenta? Regístrate </string>
     <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="back">Atrás</string>
     <string name="reset_password">Restablecer contraseña</string>
@@ -18,7 +18,7 @@
 
     <!-- Errores -->
     <string name="error">Error</string>
-    <string name="no_internet">No hay conexión a internet"</string>
+    <string name="no_internet">No hay conexión a internet</string>
     <string name="name_empty">El nombre no puede estar vacío.</string>
     <string name="email_invalid">El correo electrónico no es válido.</string>
     <string name="tax_id_empty">El DNI/NIF/CIF no puede estar vacío.</string>
@@ -27,7 +27,7 @@
         8 caracteres, una letra mayúscula, una letra minúscula,
         un número y un carácter especial.</string>
     <string name="generic_error">Ha ocurrido un error. Por favor, inténtalo de nuevo.</string>
-    <string name="no_active_session">No hay ninguna sesión activa."</string>
+    <string name="no_active_session">No hay ninguna sesión activa.</string>
     <string name="password_empty">La contraseña no puede estar vacía.</string>
 
 
