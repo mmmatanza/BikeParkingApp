@@ -6,6 +6,7 @@ import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.helper.FakeGetAuthStateUseCase
 import es.ubu.bikeparkingapp.helper.FakeLoginUseCase
+import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

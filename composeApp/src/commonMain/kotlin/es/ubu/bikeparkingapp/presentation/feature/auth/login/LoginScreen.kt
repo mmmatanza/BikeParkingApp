@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.login
+package es.ubu.bikeparkingapp.presentation.feature.auth.login
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -22,8 +22,8 @@ import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
-import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetScreen
-import es.ubu.bikeparkingapp.presentation.feature.register.RegisterScreen
+import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetScreen
+import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,10 +39,11 @@ class LoginScreen : Screen {
         val state = viewModel.state.value
 
         // Se observa el estado de autenticación del ViewModel
-        LaunchedEffect(viewModel.authState){
-            viewModel.authState.collect { authState ->
-                if(authState==AuthState.Authenticated)
-                    navigator.replaceAll(MainScreen())
+        LaunchedEffect(state.loginSuccess) {
+            if (state.loginSuccess) {
+                // Para web es necesario limpiar el estado de loginSuccess
+                viewModel.onNavigatedToMain()
+                navigator.replaceAll(MainScreen())
             }
         }
 

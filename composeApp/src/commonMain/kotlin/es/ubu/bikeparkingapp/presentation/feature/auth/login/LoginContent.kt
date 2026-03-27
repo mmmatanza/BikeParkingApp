@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.login
+package es.ubu.bikeparkingapp.presentation.feature.auth.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

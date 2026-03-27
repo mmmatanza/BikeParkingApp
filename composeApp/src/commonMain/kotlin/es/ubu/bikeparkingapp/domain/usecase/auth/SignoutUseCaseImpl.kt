@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.domain.usecase.auth
 
+import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
@@ -7,7 +8,15 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
  *
  * @property authRepository Repositorio de autenticación.
  */
-class SignoutUseCaseImpl(private val authRepository: AuthRepository): SignoutUseCase {
-    override suspend operator fun invoke() =
-        authRepository.signout()
+class SignoutUseCaseImpl(
+    private val authRepository: AuthRepository,
+    private val accountRepository: AccountRepository
+): SignoutUseCase {
+    override suspend operator fun invoke(): Result<Unit> {
+        // Limpiamos los datos locales
+        accountRepository.clearAccount()
+
+        // Cerramos la sesión
+        return authRepository.signout()
+    }
 }

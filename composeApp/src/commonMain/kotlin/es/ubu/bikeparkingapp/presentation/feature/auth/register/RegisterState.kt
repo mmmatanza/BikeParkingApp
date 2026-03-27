@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.register
+package es.ubu.bikeparkingapp.presentation.feature.auth.register
 
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.RegisterException

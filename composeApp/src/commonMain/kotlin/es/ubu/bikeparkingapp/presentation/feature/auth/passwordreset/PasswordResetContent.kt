@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.passwordreset
+package es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

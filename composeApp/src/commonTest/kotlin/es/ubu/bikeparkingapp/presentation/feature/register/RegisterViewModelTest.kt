@@ -14,6 +14,7 @@ import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException
 import es.ubu.bikeparkingapp.helper.TestData.testAccount
+import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlin.test.AfterTest

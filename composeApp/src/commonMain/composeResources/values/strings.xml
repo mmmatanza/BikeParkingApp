@@ -40,4 +40,7 @@
     <string name="administrator">Administrator</string>
     <string name="user">User</string>
 
+    <!-- Gestión de parkings -->
+    <string name="my_parkings">My parkings</string>
+
 </resources>

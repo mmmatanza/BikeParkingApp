@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.passwordreset
+package es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf

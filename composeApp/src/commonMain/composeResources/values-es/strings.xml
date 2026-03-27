@@ -30,7 +30,6 @@
     <string name="no_active_session">No hay ninguna sesión activa.</string>
     <string name="password_empty">La contraseña no puede estar vacía.</string>
 
-
     <!-- Campos -->
     <string name="email">Correo electrónico</string>
     <string name="password">Contraseña</string>
@@ -40,5 +39,8 @@
     <string name="role">Rol</string>
     <string name="administrator">Administrador</string>
     <string name="user">Usuario</string>
+
+    <!-- Gestión de parkings -->
+    <string name="my_parkings">Mis parkings</string>
 
 </resources>

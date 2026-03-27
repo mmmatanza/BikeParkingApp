@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.passwordreset
+package es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset
 
 /**
  * Representa el estado de la pantalla de restablecer contraseña.

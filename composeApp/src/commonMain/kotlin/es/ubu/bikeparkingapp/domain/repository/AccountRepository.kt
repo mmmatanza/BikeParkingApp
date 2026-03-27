@@ -15,4 +15,5 @@ interface AccountRepository {
                               role: Role): Result<Account>
     suspend fun saveLocally(account: Account)
     suspend fun getCachedAccount(): Account?
+    suspend fun clearAccount()
 }

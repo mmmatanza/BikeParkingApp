@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.register
+package es.ubu.bikeparkingapp.presentation.feature.auth.register
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button

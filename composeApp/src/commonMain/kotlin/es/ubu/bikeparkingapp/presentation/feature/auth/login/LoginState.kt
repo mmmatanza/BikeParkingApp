@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.login
+package es.ubu.bikeparkingapp.presentation.feature.auth.login
 /**
  * Representa el estado de la pantalla de inicio de sesión.
  *
@@ -10,5 +10,6 @@ package es.ubu.bikeparkingapp.presentation.feature.login
 data class LoginState(
     val email: String = "",
     val password: String = "",
-    val error: Exception? = null
+    val error: Exception? = null,
+    val loginSuccess: Boolean = false
 )

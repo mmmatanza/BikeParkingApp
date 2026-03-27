@@ -3,6 +3,7 @@ package es.ubu.bikeparkingapp.presentation.feature.passwordreset
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.helper.FakeRequestPasswordResetUseCase
+import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher

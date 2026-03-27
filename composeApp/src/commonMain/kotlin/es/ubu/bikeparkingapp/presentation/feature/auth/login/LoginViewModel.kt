@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.login
+package es.ubu.bikeparkingapp.presentation.feature.auth.login
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +30,10 @@ class LoginViewModel(
     val state: State<LoginState> = _state
     val authState: Flow<AuthState> = getAuthStateUseCase()
 
+
+    fun onNavigatedToMain(){
+        _state.value = _state.value.copy(loginSuccess = false)
+    }
 
 
     fun onEmailChange(email: String) {
@@ -66,7 +70,11 @@ class LoginViewModel(
             val password = _state.value.password
             validate()
             viewModelScope.launch {
-                loginUseCase(email, password).onFailure { error ->
+                loginUseCase(email, password)
+                    .onSuccess {
+                        _state.value = _state.value.copy(loginSuccess = true)
+                    }
+                    .onFailure { error ->
                     when (error) {
                         is NoNetworkException -> _state.value = _state.value.copy(error = error)
                         is NoActiveSessionException -> _state.value = _state.value.copy(error = error)

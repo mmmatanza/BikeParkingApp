@@ -17,7 +17,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
-import es.ubu.bikeparkingapp.presentation.feature.login.LoginScreen
+import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -33,33 +33,33 @@ class MainScreen : Screen {
         val state = viewModel.state.value
 
         // Se observa el estado de autenticación del ViewModel
-        LaunchedEffect(viewModel.authState){
-            viewModel.authState.collect { authState ->
-                if(authState==AuthState.Unauthenticated)
+        LaunchedEffect(Unit) {
+            viewModel.authState.collect { auth ->
+                if (auth == AuthState.Unauthenticated)
                     navigator.replaceAll(LoginScreen())
             }
         }
 
         // Si cambia el estado de error, se muestra un diálogo con el mensaje de error
-            if (viewModel.state.value.error != null) {
-                AlertDialog(
-                    onDismissRequest = { viewModel.clearError() },
-                    confirmButton = {
-                        Button(onClick = { viewModel.clearError() }) {
-                            Text(stringResource(Res.string.accept))
-                        }
-                    },
-                    title = {
-                        Text(stringResource(Res.string.error))
-                    },
-                    text = {
-                        when (state.error){
-                            is NoNetworkException -> Text(stringResource(Res.string.no_internet))
-                            else -> Text(stringResource(Res.string.generic_error))
-                        }
+        if (state.error != null) {
+            AlertDialog(
+                onDismissRequest = { viewModel.clearError() },
+                confirmButton = {
+                    Button(onClick = { viewModel.clearError() }) {
+                        Text(stringResource(Res.string.accept))
                     }
-                )
-            }
+                },
+                title = {
+                    Text(stringResource(Res.string.error))
+                },
+                text = {
+                    when (state.error) {
+                        is NoNetworkException -> Text(stringResource(Res.string.no_internet))
+                        else -> Text(stringResource(Res.string.generic_error))
+                    }
+                }
+            )
+        }
         MainContent(
             state = viewModel.state.value,
             authState = viewModel.authState.collectAsState(AuthState.Loading).value,

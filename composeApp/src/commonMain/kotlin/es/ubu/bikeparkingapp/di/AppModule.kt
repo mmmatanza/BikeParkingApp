@@ -15,10 +15,12 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCaseImpl
-import es.ubu.bikeparkingapp.presentation.feature.login.LoginViewModel
+import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
+import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCaseImpl
+import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
-import es.ubu.bikeparkingapp.presentation.feature.passwordreset.PasswordResetViewModel
-import es.ubu.bikeparkingapp.presentation.feature.register.RegisterViewModel
+import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
+import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -40,10 +42,11 @@ val appModule = module {
 
     // Casos de Uso
     single<LoginUseCase> { LoginUseCaseImpl(get(), get()) }
-    single<SignoutUseCase> { SignoutUseCaseImpl(get()) }
+    single<SignoutUseCase> { SignoutUseCaseImpl(get(), get()) }
     single<GetAuthStateUseCase> { GetAuthStateUseCaseImpl(get()) }
     single<RegisterUseCase> { RegisterUseCaseImpl(get(), get()) }
     single<RequestPasswordResetUseCase> { RequestPasswordResetUseCaseImpl(get()) }
+    single<GetUserRoleUseCase> { GetUserRoleUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels

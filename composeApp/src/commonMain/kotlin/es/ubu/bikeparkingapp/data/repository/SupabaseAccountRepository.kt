@@ -77,4 +77,9 @@ class SupabaseAccountRepository(
     override suspend fun getCachedAccount(): Account? {
         return localDataSource.get()
     }
+
+    override suspend fun clearAccount() {
+        localDataSource.clear()
+    }
+
 }

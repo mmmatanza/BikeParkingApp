@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -34,7 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.my_panel
+import bikeparkingapp.composeapp.generated.resources.my_parkings
 import bikeparkingapp.composeapp.generated.resources.signout
+import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import org.jetbrains.compose.resources.stringResource
 
@@ -81,6 +84,18 @@ fun MainContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
+                // Mis parkings
+                if ((state.userRole != null) && (state.userRole == Role.ADMIN)) {
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.my_parkings),
+                            icon = Icons.Default.LocalParking,
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            onClick = onLogout
+                        )
+                    }
+                }
+
                 // Botón de cerrar sesión
                 item {
                     MenuOptionCard(

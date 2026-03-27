@@ -6,7 +6,7 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCaseImpl
 import es.ubu.bikeparkingapp.helper.FakeAccountRepository
 import es.ubu.bikeparkingapp.helper.FakeAuthRepository
 import es.ubu.bikeparkingapp.helper.TestData.testAccount
-import es.ubu.bikeparkingapp.presentation.feature.register.RegisterViewModel
+import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
