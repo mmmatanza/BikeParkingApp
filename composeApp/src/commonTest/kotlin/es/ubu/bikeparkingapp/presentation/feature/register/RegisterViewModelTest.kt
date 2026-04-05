@@ -1,24 +1,24 @@
 package es.ubu.bikeparkingapp.presentation.feature.register
 
+import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
+import es.ubu.bikeparkingapp.domain.exception.RegisterException
 import es.ubu.bikeparkingapp.helper.FakeRegisterUseCase
+import es.ubu.bikeparkingapp.helper.TestData.testAccount
+import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
-import kotlinx.coroutines.test.setMain
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertIs
-import es.ubu.bikeparkingapp.domain.entity.Role
-import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
-import es.ubu.bikeparkingapp.domain.exception.RegisterException
-import es.ubu.bikeparkingapp.helper.TestData.testAccount
-import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
+import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 

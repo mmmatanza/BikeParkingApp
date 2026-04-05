@@ -10,12 +10,12 @@ import es.ubu.bikeparkingapp.domain.repository.AccountRepository
  * @property accountRepository Repositorio de cuentas.
  */
 class GetUserRoleUseCaseImpl(
-    private val repository: AccountRepository
+    private val accountRepository: AccountRepository
 ) : GetUserRoleUseCase {
     override suspend fun invoke(): Result<Role> {
         return try {
             // Llamamos al repositorio para obtener la info del usuario
-            val user = repository.getCachedAccount()
+            val user = accountRepository.getCachedAccount()
 
             if (user != null) {
                 Result.success(user.role)

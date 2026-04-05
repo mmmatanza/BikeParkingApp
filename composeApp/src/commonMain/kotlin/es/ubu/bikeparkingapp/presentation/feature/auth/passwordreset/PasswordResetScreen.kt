@@ -19,7 +19,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Representa la pantalla de restablecer contraseña.
- *
  */
 class PasswordResetScreen : Screen {
     @Composable

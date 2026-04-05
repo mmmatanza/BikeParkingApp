@@ -6,7 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.tooling.preview.Preview
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.accept
 import bikeparkingapp.composeapp.generated.resources.error
@@ -18,7 +17,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
-import es.ubu.bikeparkingapp.presentation.theme.AppTheme
+import es.ubu.bikeparkingapp.presentation.feature.parking.myparkingareas.MyParkingAreasScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -63,15 +62,8 @@ class MainScreen : Screen {
         MainContent(
             state = viewModel.state.value,
             authState = viewModel.authState.collectAsState(AuthState.Loading).value,
+            onMyParkingAreas = {navigator.push(MyParkingAreasScreen())},
             onLogout = viewModel::onSignoutClick
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    AppTheme {
-        MainScreen()
     }
 }

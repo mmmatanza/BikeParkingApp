@@ -23,7 +23,6 @@ import org.koin.compose.viewmodel.koinViewModel
 
 /**
  * Representa la pantalla de registro.
- *
  */
 class RegisterScreen: Screen {
     @Composable

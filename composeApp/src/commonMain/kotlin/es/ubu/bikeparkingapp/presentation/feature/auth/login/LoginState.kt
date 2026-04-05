@@ -1,7 +1,6 @@
 package es.ubu.bikeparkingapp.presentation.feature.auth.login
 /**
  * Representa el estado de la pantalla de inicio de sesión.
- *
  * @property email Correo electrónico del usuario.
  * @property password Contraseña del usuario.
  * @property isLoading Indica si la pantalla está cargando.

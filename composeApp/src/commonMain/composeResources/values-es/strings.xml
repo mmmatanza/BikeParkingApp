@@ -15,6 +15,7 @@
     <string name="back">Atrás</string>
     <string name="reset_password">Restablecer contraseña</string>
     <string name="accept">Aceptar</string>
+    <string name="cancel">Cancelar</string>
 
     <!-- Errores -->
     <string name="error">Error</string>
@@ -41,6 +42,33 @@
     <string name="user">Usuario</string>
 
     <!-- Gestión de parkings -->
-    <string name="my_parkings">Mis parkings</string>
+    <string name="my_parking_areas_section">Mis parkings</string>
+    <string name="no_parking_areas">No hay parkings o aún están cargando</string>
+    <string name="opening_time">Horario de apertura</string>
+    <string name="closing_time">Horario de cierre</string>
+    <string name="capacity">Capacidad</string>
+    <string name="select_location">Seleccionar ubicación</string>
+    <string name="location_selected">Ubicación seleccionada</string>
+    <string name="add_parking_area">Añadir parking</string>
+    <string name="save_parking_area">Guardar parking</string>
+    <string name="clear_coords">Limpiar coordenadas</string>
+    <string name="parking_management">Gestión de parking</string>
+    <string name="status">Estado</string>
+    <string name="out_of_service">Fuera de servicio</string>
+    <string name="in_service">En servicio</string>
+    <string name="view_occupancy">Ver ocupación</string>
+    <string name="edit_details">Editar detalles</string>
+    <string name="deactivate">Desactivar</string>
+    <string name="available_spots">Plazas disponibles</string>
+    <string name="closed">Cerrado</string>
+    <string name="schedule">Horario</string>
+    <string name="deactivate_parking">Desactivar parking</string>
+    <string name="deactivate_parking_confirm">¿Estás seguro de que quieres desactivar este parking?</string>
+    <string name="toggle_state">Cambiar estado</string>
+    <string name="toggle_state_confirm">¿Estás seguro de que quieres cambiar el estado de este parking?</string>
+    <string name="parking_rules">Reglas del parking</string>
+    <string name="add_parking_rule">Añadir regla</string>
+    <string name="remove_parking_rule">Eliminar regla</string>
+    <string name="rule_sample">Ej: No animales</string>
 
 </resources>

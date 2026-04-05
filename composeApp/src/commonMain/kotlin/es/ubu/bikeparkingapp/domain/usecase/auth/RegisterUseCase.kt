@@ -2,8 +2,6 @@ package es.ubu.bikeparkingapp.domain.usecase.auth
 
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
-import es.ubu.bikeparkingapp.domain.repository.AccountRepository
-import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
  * Representa la interfaz del caso de uso para registrar un usuario.

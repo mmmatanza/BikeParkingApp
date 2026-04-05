@@ -1,0 +1,45 @@
+package es.ubu.bikeparkingapp.data.mapper
+
+import es.ubu.bikeparkingapp.data.dto.ParkingAreaDto
+import es.ubu.bikeparkingapp.domain.entity.ParkingArea
+
+/**
+ * Representa la conversión de un objeto [ParkingAreaDto] a un objeto [ParkingArea].
+ *
+ */
+fun ParkingAreaDto.toDomain(): ParkingArea {
+    return ParkingArea(
+        id = this.id,
+        ownerId = this.ownerId,
+        name = this.name,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        capacity = this.capacity,
+        currentOccupancy = this.currentOccupancy,
+        isOperative = this.isOperative,
+        isActive = this.isActive,
+        openingTime = this.openingTime,
+        closingTime = this.closingTime,
+        rules = this.rules
+    )
+}
+
+/**
+ * Representa la conversión de un objeto [ParkingArea] a un objeto [ParkingAreaDto].
+ *
+ */
+fun ParkingArea.toDto(): ParkingAreaDto {
+    return ParkingAreaDto(
+        ownerId = this.ownerId,
+        name = this.name,
+        latitude = this.latitude,
+        longitude = this.longitude,
+        capacity = this.capacity,
+        currentOccupancy = this.currentOccupancy,
+        isOperative = this.isOperative,
+        isActive = this.isActive,
+        openingTime = this.openingTime,
+        closingTime = this.closingTime,
+        rules = this.rules
+    )
+}

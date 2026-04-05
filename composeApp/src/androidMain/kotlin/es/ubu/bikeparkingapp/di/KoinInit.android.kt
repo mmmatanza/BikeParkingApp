@@ -12,7 +12,8 @@ actual fun initKoin(context: Any?): KoinApplication {
             supabaseModule,
             viewModelsModule,
             localStorageModule,
-            settingsModule
+            settingsModule,
+            locationModule
         )
     }
 }

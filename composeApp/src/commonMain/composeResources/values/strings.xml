@@ -14,7 +14,9 @@
     <string name="forgot_password">Did you forget your password?</string>
     <string name="back">Back</string>
     <string name="reset_password">Reset Password</string>
-    <string name="accept">Aceptar</string>
+    <string name="accept">Accept</string>
+    <string name="cancel">Cancel</string>
+
 
     <!-- Errores -->
     <string name="error">Error</string>
@@ -41,6 +43,33 @@
     <string name="user">User</string>
 
     <!-- Gestión de parkings -->
-    <string name="my_parkings">My parkings</string>
+    <string name="my_parking_areas_section">My parking areas</string>
+    <string name="no_parking_areas">No parking areas available or they are still loading</string>
+    <string name="opening_time">Opening time</string>
+    <string name="closing_time">Closing time</string>
+    <string name="capacity">Capacity</string>
+    <string name="select_location">Select location</string>
+    <string name="location_selected">Location selected</string>
+    <string name="add_parking_area">Add parking area</string>
+    <string name="save_parking_area">Save parking area</string>
+    <string name="clear_coords">Clear coordinates</string>
+    <string name="parking_management">Gestión de parking</string>
+    <string name="status">Status</string>
+    <string name="out_of_service">Out of service</string>
+    <string name="in_service">In service</string>
+    <string name="view_occupancy">Show occupancy</string>
+    <string name="edit_details">Edit details</string>
+    <string name="deactivate">Deactivate</string>
+    <string name="available_spots">Available spots</string>
+    <string name="closed">Closed</string>
+    <string name="schedule">Schedule</string>
+    <string name="deactivate_parking">Deactivate parking area</string>
+    <string name="deactivate_parking_confirm">Are you sure you want to deactivate this parking area?</string>
+    <string name="toggle_state">Toggle state</string>
+    <string name="toggle_state_confirm">Are you sure you want to toggle the state of this parking area?</string>
+    <string name="parking_rules">Parking rules</string>
+    <string name="add_parking_rule">Add rule</string>
+    <string name="remove_parking_rule">Remove rule</string>
+    <string name="rule_sample">Example: No animals</string>
 
 </resources>

@@ -5,16 +5,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
-import es.ubu.bikeparkingapp.domain.exception.RegisterException.*
+import es.ubu.bikeparkingapp.domain.exception.RegisterException.NameEmptyException
+import es.ubu.bikeparkingapp.domain.exception.RegisterException.PasswordMismatchException
+import es.ubu.bikeparkingapp.domain.exception.RegisterException.TaxIdEmptyException
+import es.ubu.bikeparkingapp.domain.exception.RegisterException.WeakPasswordException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
 import kotlinx.coroutines.launch
-import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 
 
 /**
  * Representa el viewModel para la pantalla de registro.
- *
  * @property registerUseCase Caso de uso para registrar un usuario.
  */
 class RegisterViewModel(

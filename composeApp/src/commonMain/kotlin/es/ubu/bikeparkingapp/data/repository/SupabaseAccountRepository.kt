@@ -5,10 +5,10 @@ import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 
 
 /**

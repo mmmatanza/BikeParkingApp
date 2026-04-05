@@ -4,15 +4,14 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import kotlinx.coroutines.launch
-import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 
 /**
  * Representa el viewModel para la pantalla de restablecer contraseña.
  * @property requestPasswordResetUseCase Caso de uso para restablecer la contraseña.
- *
  */
 class PasswordResetViewModel(
     private val requestPasswordResetUseCase: RequestPasswordResetUseCase

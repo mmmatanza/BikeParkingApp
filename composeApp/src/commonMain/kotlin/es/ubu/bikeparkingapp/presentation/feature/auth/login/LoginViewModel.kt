@@ -17,7 +17,6 @@ import kotlinx.coroutines.launch
 
 /**
  * Representa el ViewModel para la pantalla de inicio de sesión.
- *
  * @property loginUseCase Caso de uso para iniciar sesión.
  * @property getAuthStateUseCase Caso de uso para obtener el estado de autenticación.
  */

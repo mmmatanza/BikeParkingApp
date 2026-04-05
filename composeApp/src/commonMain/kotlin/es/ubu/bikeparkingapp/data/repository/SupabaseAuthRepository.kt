@@ -1,18 +1,18 @@
 package es.ubu.bikeparkingapp.data.repository
 
+import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
+import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transform
-import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
-import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.exceptions.RestException
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 
 /**
  * Representa la implementación del repositorio de autenticación en Supabase.

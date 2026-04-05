@@ -21,7 +21,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.my_panel
-import bikeparkingapp.composeapp.generated.resources.my_parkings
+import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
 import bikeparkingapp.composeapp.generated.resources.signout
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.model.AuthState
@@ -43,8 +42,9 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido principal de la pantalla principal.
- *
  * @property state Estado actual de la pantalla.
+ * @property authState Estado de autenticación.
+ * @property onMyParkingAreas Función para manejar el evento de ver mis parkings.
  * @property onLogout Función para manejar el evento de cerrar sesión.
  */
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +52,7 @@ import org.jetbrains.compose.resources.stringResource
 fun MainContent(
     state: MainState,
     authState: AuthState,
+    onMyParkingAreas: () -> Unit,
     onLogout: () -> Unit
 ) {
     if (authState == AuthState.Loading) {
@@ -88,10 +89,10 @@ fun MainContent(
                 if ((state.userRole != null) && (state.userRole == Role.ADMIN)) {
                     item {
                         MenuOptionCard(
-                            title = stringResource(Res.string.my_parkings),
+                            title = stringResource(Res.string.my_parking_areas_section),
                             icon = Icons.Default.LocalParking,
                             color = MaterialTheme.colorScheme.errorContainer,
-                            onClick = onLogout
+                            onClick = onMyParkingAreas
                         )
                     }
                 }

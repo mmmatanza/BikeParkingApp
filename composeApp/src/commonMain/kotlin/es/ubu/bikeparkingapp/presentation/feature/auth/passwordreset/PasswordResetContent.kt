@@ -26,12 +26,10 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido de la pantalla de restablecer contraseña.
- *
  * @property state Estado actual de la pantalla.
  * @property onEmailChange Función para manejar cambios en el campo de correo electrónico.
  * @property onPasswordResetClick Función para manejar el evento de restablecer contraseña.
  * @property onBackClick Función para manejar el evento de retroceso.
- *
  */
 @Composable
 fun PasswordResetContent(

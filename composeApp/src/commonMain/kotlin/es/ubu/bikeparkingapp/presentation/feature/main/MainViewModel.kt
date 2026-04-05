@@ -4,7 +4,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
@@ -88,5 +87,6 @@ class MainViewModel(
             }
         }
     }
+
 
 }

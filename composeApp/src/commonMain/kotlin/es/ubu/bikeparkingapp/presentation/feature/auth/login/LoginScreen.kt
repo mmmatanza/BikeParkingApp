@@ -6,7 +6,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.tooling.preview.Preview
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.email_invalid
 import bikeparkingapp.composeapp.generated.resources.generic_error
@@ -21,10 +20,9 @@ import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.domain.model.AuthState
-import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
 import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetScreen
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterScreen
-import es.ubu.bikeparkingapp.presentation.theme.AppTheme
+import es.ubu.bikeparkingapp.presentation.feature.main.MainScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -83,13 +81,5 @@ class LoginScreen : Screen {
                 navigator.push(PasswordResetScreen())
             }
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    AppTheme {
-        LoginScreen()
     }
 }

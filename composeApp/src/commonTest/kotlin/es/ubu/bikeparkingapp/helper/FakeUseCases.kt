@@ -7,7 +7,6 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
-import es.ubu.bikeparkingapp.helper.TestData.testAccount
 import kotlinx.coroutines.flow.flowOf
 
 class FakeLoginUseCase : LoginUseCase {

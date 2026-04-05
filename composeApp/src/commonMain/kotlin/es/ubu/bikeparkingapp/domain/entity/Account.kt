@@ -1,7 +1,7 @@
 package es.ubu.bikeparkingapp.domain.entity
 
-import kotlin.time.Instant
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 /**
  * Representa a una cuenta dentro del sistema.

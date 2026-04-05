@@ -34,7 +34,6 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido de la pantalla de inicio de sesión.
- *
  * @property state Estado actual de la pantalla.
  * @property onEmailChange Función para manejar cambios en el campo de correo electrónico.
  * @property onPasswordChange Función para manejar cambios en el campo de contraseña.

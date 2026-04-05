@@ -1,11 +1,9 @@
 package es.ubu.bikeparkingapp.presentation.feature.auth.register
 
 import es.ubu.bikeparkingapp.domain.entity.Role
-import es.ubu.bikeparkingapp.domain.exception.RegisterException
 
 /**
  * Representa el estado de la pantalla de registro.
- *
  * @property email Correo electrónico del usuario.
  * @property password Contraseña del usuario.
  * @property passwordConfirmation Confirmación de la contraseña del usuario.

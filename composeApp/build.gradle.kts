@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
@@ -22,16 +21,18 @@ kotlin {
         }
     }
     
-    //js {
-    //    browser()
-    //    binaries.executable()
-    //}
-    
+    js {
+        browser()
+        binaries.executable()
+    }
+
+    /*
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
         binaries.executable()
     }
+     */
     
     sourceSets {
 
@@ -44,9 +45,25 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            // Ktor
+            implementation(libs.ktor.client.cio)
+            // Ubicación
+            implementation(libs.compass.geolocation.mobile)
         }
+        /*
         wasmJsMain.dependencies {
             implementation(libs.russhlwolf.multiplatform.settings)
+        }
+         */
+        val jsMain by getting {
+            dependencies {
+                // Aquí russhwolf usará LocalStorage del navegador
+                implementation(libs.russhlwolf.multiplatform.settings)
+                // Ktor
+                implementation(libs.ktor.client.js)
+                // Ubicación
+                implementation(libs.compass.geolocation.browser)
+            }
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -72,15 +89,21 @@ kotlin {
             implementation(libs.supabase.auth)
             implementation(libs.supabase.postgrest)
 
-            // Ktor
-            implementation(libs.ktor.client.cio)
-
             // Iconos extendidos
             implementation(libs.material.icons.extended)
 
             // Para almacenamiento de datos simples
             implementation(libs.russhlwolf.multiplatform.settings)
             implementation(libs.russhlwolf.multiplatform.settings.serialization)
+
+            // Ktor
+            implementation(libs.ktor.client.core)
+
+            // Mapas
+            implementation(libs.maplibre.compose)
+
+            // Ubicación
+            implementation(libs.compass.geolocation)
 
         }
     }

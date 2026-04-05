@@ -7,7 +7,6 @@ import kotlin.time.Instant
 
 /**
  * Representa la conversión de un objeto [AccountDto] a un objeto [Account].
- *
  */
 fun AccountDto.toDomain() = Account(
     accountId = accountId,
