@@ -18,7 +18,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
-import es.ubu.bikeparkingapp.presentation.feature.parking.addparkingarea.AddParkingAreaScreen
+import es.ubu.bikeparkingapp.presentation.feature.parking.upsertparkingarea.UpsertParkingAreaScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -80,7 +80,7 @@ class ParkingManagementScreen(
                 onToggleServiceDismiss = viewModel::onToggleServiceDismiss,
                 onToggleServiceConfirm = viewModel::onToggleConfirm,
                 onViewOccupancyClick = {},
-                onEditDetailsClick = {parkingId -> navigator.push(AddParkingAreaScreen(parkingId))}
+                onEditDetailsClick = {parkingId -> navigator.push(UpsertParkingAreaScreen(parkingId))}
             )
         )
     }

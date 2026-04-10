@@ -2,6 +2,7 @@ package es.ubu.bikeparkingapp.domain.usecase.parking
 
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
+import kotlinx.datetime.DayOfWeek
 
 /**
  * Representa el caso de uso para actualizar un parking.
@@ -15,17 +16,20 @@ class UpdateParkingAreaUseCaseImpl(
         parkingId: String,
         ownerId: String,
         name: String,
+        address: String,
         capacity: Int,
         openingTime: String,
         closingTime: String,
         latitude: Double,
         longitude: Double,
-        rules: List<String>
+        rules: List<String>,
+        openDays: Set<DayOfWeek>
     ): Result<Unit> {
         val parkingArea = ParkingArea(
             id = parkingId,
             ownerId = ownerId,
             name = name,
+            address = address,
             latitude = latitude,
             longitude = longitude,
             capacity = capacity,
@@ -34,6 +38,7 @@ class UpdateParkingAreaUseCaseImpl(
             isActive = true,
             openingTime = openingTime,
             closingTime = closingTime,
+            openDays = openDays,
             rules = rules
         )
         return parkingAreaRepository.updateParkingArea(parkingArea)

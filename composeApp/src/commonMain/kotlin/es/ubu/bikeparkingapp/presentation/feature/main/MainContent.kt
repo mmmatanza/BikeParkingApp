@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.LocalParking
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,6 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.find_parking
 import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
 import bikeparkingapp.composeapp.generated.resources.signout
@@ -46,6 +48,7 @@ import org.jetbrains.compose.resources.stringResource
  * @property authState Estado de autenticación.
  * @property onMyParkingAreas Función para manejar el evento de ver mis parkings.
  * @property onLogout Función para manejar el evento de cerrar sesión.
+ * @property onNavigateToNearbyParkingAreas Función para manejar el evento de navegar a áreas de parking cercanas.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,7 +56,8 @@ fun MainContent(
     state: MainState,
     authState: AuthState,
     onMyParkingAreas: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onNavigateToNearbyParkingAreas: () -> Unit
 ) {
     if (authState == AuthState.Loading) {
         Box(
@@ -85,7 +89,7 @@ fun MainContent(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // Mis parkings
+                // Pantallas del administrador
                 if ((state.userRole != null) && (state.userRole == Role.ADMIN)) {
                     item {
                         MenuOptionCard(
@@ -93,6 +97,18 @@ fun MainContent(
                             icon = Icons.Default.LocalParking,
                             color = MaterialTheme.colorScheme.errorContainer,
                             onClick = onMyParkingAreas
+                        )
+                    }
+                }
+
+                // Pantallas del usuario
+                if ((state.userRole != null) && (state.userRole == Role.USER)) {
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.find_parking),
+                            icon = Icons.Default.Search,
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            onClick = onNavigateToNearbyParkingAreas
                         )
                     }
                 }

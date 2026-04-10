@@ -37,10 +37,19 @@
     <string name="password">Password</string>
     <string name="password_confirmation">Password confirmation</string>
     <string name="name">Name</string>
+    <string name="address">Address</string>
     <string name="tax_id">Tax ID</string>
     <string name="role">Role</string>
     <string name="administrator">Administrator</string>
     <string name="user">User</string>
+    <string name="open_days">Open days</string>
+    <string name="monday_initial_letter">M</string>
+    <string name="tuesday_initial_letter">T</string>
+    <string name="wednesday_initial_letter">W</string>
+    <string name="thursday_initial_letter">R</string>
+    <string name="friday_initial_letter">F</string>
+    <string name="saturday_initial_letter">S</string>
+    <string name="sunday_initial_letter">U</string>
 
     <!-- Gestión de parkings -->
     <string name="my_parking_areas_section">My parking areas</string>
@@ -71,5 +80,11 @@
     <string name="add_parking_rule">Add rule</string>
     <string name="remove_parking_rule">Remove rule</string>
     <string name="rule_sample">Example: No animals</string>
+    <string name="not_available_parking_areas">Not available parking areas</string>
+    <!-- Hacer reserva -->
+    <string name="find_parking">Find parking</string>
+    <string name="confirm_reservation">Confirm reservation</string>
+    <string name="no_parking_found">No parking areas found near you</string>
+
 
 </resources>

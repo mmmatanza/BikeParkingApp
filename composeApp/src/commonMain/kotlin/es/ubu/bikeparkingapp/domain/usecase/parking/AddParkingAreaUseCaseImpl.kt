@@ -2,6 +2,7 @@ package es.ubu.bikeparkingapp.domain.usecase.parking
 
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
+import kotlinx.datetime.DayOfWeek
 
 /**
  * Representa el caso de uso para añadir un parking.
@@ -14,17 +15,20 @@ class AddParkingAreaUseCaseImpl(
     override suspend operator fun invoke(
         ownerId: String,
         name: String,
+        address: String,
         capacity: Int,
         openingTime: String,
         closingTime: String,
         latitude: Double,
         longitude: Double,
-        rules: List<String>
+        rules: List<String>,
+        openDays: Set<DayOfWeek>
     ): Result<Unit> {
         val parkingArea = ParkingArea(
             id = null,
             ownerId = ownerId,
             name = name,
+            address = address,
             latitude = latitude,
             longitude = longitude,
             capacity = capacity,
@@ -33,7 +37,8 @@ class AddParkingAreaUseCaseImpl(
             isActive = true,
             openingTime = openingTime,
             closingTime = closingTime,
-            rules = rules
+            rules = rules,
+            openDays = openDays
         )
         return parkingAreaRepository.addParkingArea(parkingArea)
     }

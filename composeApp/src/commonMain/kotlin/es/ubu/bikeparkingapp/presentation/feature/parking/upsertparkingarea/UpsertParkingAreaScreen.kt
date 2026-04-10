@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.presentation.feature.parking.addparkingarea
+package es.ubu.bikeparkingapp.presentation.feature.parking.upsertparkingarea
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,20 +24,22 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Representa la pantalla de agregar parking.
+ * Representa la pantalla de agregar o modificar parking.
  * @property parkingAreaIdToEdit Id del parking a editar.
  */
-class AddParkingAreaScreen(
+class UpsertParkingAreaScreen(
     private val parkingAreaIdToEdit: String? = null
 ) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = koinViewModel<AddParkingAreaViewModel>()
+        val viewModel = koinViewModel<UpsertParkingAreaViewModel>()
         val state = viewModel.state.value
 
         LaunchedEffect(parkingAreaIdToEdit) {
-            parkingAreaIdToEdit?.let { viewModel.loadParkingArea(it) }
+            parkingAreaIdToEdit?.let {
+                if (!state.isAlreadyLoaded) viewModel.loadParkingArea(it)
+            }
         }
 
         if (state.isSuccess) {
@@ -72,10 +74,11 @@ class AddParkingAreaScreen(
             )
         }
 
-        AddParkingAreaContent(
+        UpsertParkingAreaContent(
             state,
-            AddParkingAreaActions(
+            UpsertParkingAreaActions(
                 onNameChange = viewModel::onNameChange,
+                onAddressChange = viewModel::onAddressChange,
                 onCapacityChange = viewModel::onCapacityChange,
                 onOpeningTimeChange = viewModel::onOpeningTimeChange,
                 onClosingTimeChange = viewModel::onClosingTimeChange,
@@ -94,7 +97,8 @@ class AddParkingAreaScreen(
                 validateForm = viewModel::validateForm,
                 onRuleInputChange = viewModel::onRuleInputChange,
                 onAddRule = viewModel::onAddRule,
-                onRemoveRule = viewModel::onRemoveRule
+                onRemoveRule = viewModel::onRemoveRule,
+                onDayToggle = viewModel::onDayToggle
             )
         )
     }

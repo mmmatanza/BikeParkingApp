@@ -46,18 +46,45 @@ class SupabaseParkingAreaRepository(
         }
     }
 
-    override suspend fun addParkingArea(parkingArea: ParkingArea):Result<Unit>{
+    override suspend fun getNearbyParkingAreas(
+        latitude: Double,
+        longitude: Double,
+        distance: Double // Distancia en metros desde la que se buscan los parkings
+    ): Result<List<ParkingArea>> {
+        return runCatching {
+            client.postgrest.rpc(
+                function = "get_nearby_parking_areas",
+                parameters = buildJsonObject {
+                    put("user_lat", latitude)
+                    put("user_long", longitude)
+                    put("radius_meters", distance)
+                }
+            ).decodeList<ParkingAreaDto>()
+                .map { it.toDomain() }
+        }.recoverCatching { cause ->
+            handleException(cause)
+        }
+    }
+
+    override suspend fun addParkingArea(parkingArea: ParkingArea): Result<Unit> {
         return runCatching {
             client.postgrest.rpc(
                 function = "add_parking_area",
                 parameters = buildJsonObject {
                     put("p_owner_id", parkingArea.ownerId)
                     put("p_name", parkingArea.name)
+                    put("p_address", parkingArea.address)
                     put("p_latitude", parkingArea.latitude)
                     put("p_longitude", parkingArea.longitude)
                     put("p_capacity", parkingArea.capacity)
                     put("p_opening_time", parkingArea.openingTime)
                     put("p_closing_time", parkingArea.closingTime)
+                    put("p_open_days", buildJsonArray {
+                        parkingArea.openDays
+                            .map { it.ordinal }
+                            .sorted()
+                            .forEach { add(it) }
+                    })
                     put("p_rules", buildJsonArray {
                         parkingArea.rules.forEach { add(it) }
                     })
@@ -76,9 +103,18 @@ class SupabaseParkingAreaRepository(
                 parameters = buildJsonObject {
                     put("p_parking_area_id", parkingArea.id)
                     put("p_name", parkingArea.name)
+                    put("p_address", parkingArea.address)
+                    put("p_latitude", parkingArea.latitude)
+                    put("p_longitude", parkingArea.longitude)
                     put("p_capacity", parkingArea.capacity)
                     put("p_opening_time", parkingArea.openingTime)
                     put("p_closing_time", parkingArea.closingTime)
+                    put("p_open_days", buildJsonArray {
+                        parkingArea.openDays
+                            .map { it.ordinal }
+                            .sorted()
+                            .forEach { add(it) }
+                    })
                     put("p_rules", buildJsonArray {
                         parkingArea.rules.forEach { add(it) }
                     })
@@ -102,14 +138,19 @@ class SupabaseParkingAreaRepository(
         }
     }
 
-    override suspend fun toggleOperativeState(parkingId: String, isOperative: Boolean): Result<Unit> {
+    override suspend fun toggleOperativeState(
+        parkingId: String,
+        isOperative: Boolean
+    ): Result<Unit> {
         return runCatching {
             client.from("parkingareas")
                 .update({ set("is_operative", isOperative) }) {
                     filter { eq("parking_area_id", parkingId) }
                 }
             Unit
-            }
+        }.recoverCatching { cause ->
+            handleException(cause)
+        }
     }
 
     /**
@@ -121,6 +162,7 @@ class SupabaseParkingAreaRepository(
             message.contains("Unable to resolve host") ||
                     message.contains("Failed to connect") ->
                 throw NoNetworkException()
+
             else -> throw Exception(cause)
         }
     }

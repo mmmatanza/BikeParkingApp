@@ -17,5 +17,4 @@ expect fun MapSelectionContent(
     onLocationSelected: () -> Unit,
     onClearCoordinates: () -> Unit,
     onBackClick: () -> Unit
-
 )

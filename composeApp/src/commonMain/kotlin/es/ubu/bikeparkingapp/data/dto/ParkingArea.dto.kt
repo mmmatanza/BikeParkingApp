@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
  * @property id Identificador del parking
  * @property ownerId Identificador del propietario
  * @property name Nombre del parking
+ * @property address Dirección del parking
  * @property latitude Latitud del parking
  * @property longitude Longitud del parking
  * @property capacity Capacidad del parking
@@ -17,6 +18,7 @@ import kotlinx.serialization.Serializable
  * @property isActive Indica si sigue activo el parking o ha sido dado de baja
  * @property openingTime Horario de apertura
  * @property closingTime Horario de cierre
+ * @property openDays Días de apertura
  * @property rules Reglas del parking
  */
 @Serializable
@@ -24,6 +26,7 @@ data class ParkingAreaDto(
     @SerialName("parking_area_id") val id: String? = null,
     @SerialName("owner_id") val ownerId: String,
     val name: String,
+    val address: String,
     val latitude: Double,
     val longitude: Double,
     val capacity: Int,
@@ -32,5 +35,6 @@ data class ParkingAreaDto(
     @SerialName("is_active") val isActive: Boolean,
     @SerialName("opening_time") val openingTime: String,
     @SerialName("closing_time") val closingTime: String,
+    @SerialName("open_days") val openDays: List<Int>,
     val rules: List<String> = emptyList()
 )

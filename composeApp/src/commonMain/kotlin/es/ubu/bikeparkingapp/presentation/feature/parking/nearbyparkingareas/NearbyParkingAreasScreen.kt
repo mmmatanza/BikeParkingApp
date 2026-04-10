@@ -1,10 +1,14 @@
-package es.ubu.bikeparkingapp.presentation.feature.parking.myparkingareas
+package es.ubu.bikeparkingapp.presentation.feature.parking.nearbyparkingareas
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.accept
 import bikeparkingapp.composeapp.generated.resources.error
@@ -13,39 +17,20 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
-import es.ubu.bikeparkingapp.presentation.feature.parking.parkingmanagement.ParkingManagementScreen
-import es.ubu.bikeparkingapp.presentation.feature.parking.upsertparkingarea.UpsertParkingAreaScreen
+import es.ubu.bikeparkingapp.presentation.feature.parking.parkingreservation.ParkingReservationScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Representa la pantalla de lista de parkings.
+ * Representa la pantalla de áreas de parking cercanas.
  */
-class MyParkingAreasScreen : Screen {
+class NearbyParkingAreasScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = koinViewModel<MyParkingAreasViewModel>()
+        val viewModel = koinViewModel<NearbyParkingAreasViewModel>()
         val state = viewModel.state.value
 
-        LaunchedEffect(Unit) {
-            viewModel.loadParkingAreas()
-        }
-
-        MyParkingAreasContent(
-            state,
-            onBackClick = navigator::pop,
-            onAddParkingAreaClick = {
-                navigator.push(UpsertParkingAreaScreen())
-            },
-            onParkingAreaTouch = { parkingAreaId ->
-                navigator.push(
-                    ParkingManagementScreen(
-                        parkingAreaId
-                    )
-                )
-            }
-        )
         if (state.error != null) {
             AlertDialog(
                 onDismissRequest = { viewModel.clearError() },
@@ -60,10 +45,26 @@ class MyParkingAreasScreen : Screen {
                 text = {
                     when (state.error) {
                         is NoNetworkException -> Text(stringResource(Res.string.no_internet))
+                        //else -> Text(stringResource(Res.string.generic_error))
                         else -> Text(state.error.message!!)
                     }
                 }
             )
         }
+
+        if (state.isLoading) {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            return
+        }
+
+        NearbyParkingAreasContent(
+            state,
+            onBackClick = { navigator.pop() },
+            onParkingAreaClick = {
+                navigator.push(ParkingReservationScreen(it))
+            }
+        )
     }
 }

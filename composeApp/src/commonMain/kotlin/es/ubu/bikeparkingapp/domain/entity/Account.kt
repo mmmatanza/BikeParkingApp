@@ -19,7 +19,9 @@ data class Account(
     val name: String,
     val taxId: String,
     val role: Role,
+    @Serializable(with = InstantSerializer::class)
     val createdAt: Instant,
+    @Serializable(with = InstantSerializer::class)
     val updatedAt: Instant
 )
 

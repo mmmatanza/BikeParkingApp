@@ -1,5 +1,6 @@
-package es.ubu.bikeparkingapp.presentation.feature.parking.addparkingarea
+package es.ubu.bikeparkingapp.presentation.feature.parking.upsertparkingarea
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -30,6 +33,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -48,30 +52,40 @@ import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.accept
 import bikeparkingapp.composeapp.generated.resources.add_parking_rule
+import bikeparkingapp.composeapp.generated.resources.address
 import bikeparkingapp.composeapp.generated.resources.back
 import bikeparkingapp.composeapp.generated.resources.cancel
 import bikeparkingapp.composeapp.generated.resources.capacity
 import bikeparkingapp.composeapp.generated.resources.closing_time
+import bikeparkingapp.composeapp.generated.resources.friday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.location_selected
+import bikeparkingapp.composeapp.generated.resources.monday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.name
+import bikeparkingapp.composeapp.generated.resources.open_days
 import bikeparkingapp.composeapp.generated.resources.opening_time
 import bikeparkingapp.composeapp.generated.resources.parking_rules
 import bikeparkingapp.composeapp.generated.resources.remove_parking_rule
 import bikeparkingapp.composeapp.generated.resources.rule_sample
+import bikeparkingapp.composeapp.generated.resources.saturday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.save_parking_area
 import bikeparkingapp.composeapp.generated.resources.select_location
+import bikeparkingapp.composeapp.generated.resources.sunday_initial_letter
+import bikeparkingapp.composeapp.generated.resources.thursday_initial_letter
+import bikeparkingapp.composeapp.generated.resources.tuesday_initial_letter
+import bikeparkingapp.composeapp.generated.resources.wednesday_initial_letter
+import kotlinx.datetime.DayOfWeek
 import org.jetbrains.compose.resources.stringResource
 
 /**
- * Representa el contenido de la pantalla de agregar parking.
+ * Representa el contenido de la pantalla de agregar o modificar parking.
  * @property state Estado actual de la pantalla.
  * @property actions Acciones que se pueden realizar en la pantalla.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddParkingAreaContent(
-    state: AddParkingAreaState,
-    actions: AddParkingAreaActions
+fun UpsertParkingAreaContent(
+    state: UpsertParkingAreaState,
+    actions: UpsertParkingAreaActions
 ) {
 
     // Estados para controlar el diálogo del TimePicker
@@ -162,6 +176,17 @@ fun AddParkingAreaContent(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Dirección del parking
+                OutlinedTextField(
+                    value = state.address,
+                    onValueChange = actions.onAddressChange,
+                    label = { Text(stringResource(Res.string.address)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // Capacidad del parking
                 OutlinedTextField(
                     value = if (state.capacity == 0) "" else state.capacity.toString(),
@@ -213,6 +238,14 @@ fun AddParkingAreaContent(
                         }
                     },
                     singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                DaySelector(
+                    selectedDays = state.openDays,
+                    onDayToggle = actions.onDayToggle,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -316,6 +349,63 @@ fun ParkingRulesSection(
                 )
                 IconButton(onClick = { onRemoveRule(index) }) {
                     Icon(Icons.Default.Close, contentDescription = stringResource(Res.string.remove_parking_rule))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun DaySelector(
+    selectedDays: Set<DayOfWeek>,
+    onDayToggle: (DayOfWeek) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val days = listOf(
+        DayOfWeek.MONDAY    to stringResource(Res.string.monday_initial_letter),
+        DayOfWeek.TUESDAY   to stringResource(Res.string.tuesday_initial_letter),
+        DayOfWeek.WEDNESDAY to stringResource(Res.string.wednesday_initial_letter),
+        DayOfWeek.THURSDAY  to stringResource(Res.string.thursday_initial_letter),
+        DayOfWeek.FRIDAY    to stringResource(Res.string.friday_initial_letter),
+        DayOfWeek.SATURDAY  to stringResource(Res.string.saturday_initial_letter),
+        DayOfWeek.SUNDAY    to stringResource(Res.string.sunday_initial_letter)
+    )
+
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(Res.string.open_days),
+            style = MaterialTheme.typography.titleSmall
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            days.forEach { (day, label) ->
+                val isSelected = day in selectedDays
+                val containerColor = if (isSelected)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.surface
+                val contentColor = if (isSelected)
+                    MaterialTheme.colorScheme.onPrimary
+                else
+                    MaterialTheme.colorScheme.onSurfaceVariant
+
+                Surface(
+                    onClick = { onDayToggle(day) },
+                    shape = CircleShape,
+                    color = containerColor,
+                    border = if (!isSelected) BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline
+                    ) else null,
+                    modifier = Modifier.size(40.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelMedium,
+                            color = contentColor
+                        )
+                    }
                 }
             }
         }

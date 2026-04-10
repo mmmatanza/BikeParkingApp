@@ -18,6 +18,7 @@ import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.feature.parking.myparkingareas.MyParkingAreasScreen
+import es.ubu.bikeparkingapp.presentation.feature.parking.nearbyparkingareas.NearbyParkingAreasScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -60,10 +61,11 @@ class MainScreen : Screen {
             )
         }
         MainContent(
-            state = viewModel.state.value,
+            state = state,
             authState = viewModel.authState.collectAsState(AuthState.Loading).value,
             onMyParkingAreas = {navigator.push(MyParkingAreasScreen())},
-            onLogout = viewModel::onSignoutClick
+            onLogout = viewModel::onSignoutClick,
+            onNavigateToNearbyParkingAreas = { navigator.push(NearbyParkingAreasScreen()) }
         )
     }
 }

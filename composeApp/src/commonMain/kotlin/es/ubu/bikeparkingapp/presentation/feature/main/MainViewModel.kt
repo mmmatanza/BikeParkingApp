@@ -83,10 +83,7 @@ class MainViewModel(
                     is NoNetworkException -> _state.value = _state.value.copy(error = error)
                     else -> _state.value = _state.value.copy(error = Exception(error.message))
                 }
-
             }
         }
     }
-
-
 }
