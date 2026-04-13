@@ -5,5 +5,5 @@ package es.ubu.bikeparkingapp.domain.usecase.parking
  *
  */
 interface DeactivateParkingAreaUseCase {
-    suspend operator fun invoke(parkingId: String): Result<Unit>
+    suspend operator fun invoke(parkingAreaId: String): Result<Unit>
 }

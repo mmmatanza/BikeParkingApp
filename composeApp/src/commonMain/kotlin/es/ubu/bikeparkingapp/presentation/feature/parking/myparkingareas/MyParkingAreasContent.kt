@@ -87,7 +87,7 @@ fun MyParkingAreasContent(
                     items(list) { parkingArea ->
                         OutlinedCard(
                             onClick = {
-                                onParkingAreaTouch(parkingArea.id!!)
+                                onParkingAreaTouch(parkingArea.parkingAreaId!!)
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {

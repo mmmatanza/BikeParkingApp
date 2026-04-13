@@ -4,7 +4,7 @@ import kotlinx.datetime.DayOfWeek
 
 /**
  * Representa el estado de la pantalla de agregar o modificar parking.
- * @property parkingId Id del parking.
+ * @property parkingAreaId Id del parking.
  * @property isEditing Indica si se está editando un parking existente.
  * @property error Error ocurrido durante la agregación de parking
  * @property name Nombre del parking.
@@ -20,7 +20,7 @@ import kotlinx.datetime.DayOfWeek
  * @property currentRuleInput Regla actual.
  */
 data class UpsertParkingAreaState(
-    val parkingId: String? = null,
+    val parkingAreaId: String? = null,
     val error: Exception? = null,
     val name: String = "",
     val address: String = "",

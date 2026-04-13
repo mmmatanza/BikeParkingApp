@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 /**
  * Representa los datos de un parking obtenidos de la base de datos.
  *
- * @property id Identificador del parking
+ * @property parkingAreaId Identificador del parking
  * @property ownerId Identificador del propietario
  * @property name Nombre del parking
  * @property address Dirección del parking
@@ -23,7 +23,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class ParkingAreaDto(
-    @SerialName("parking_area_id") val id: String? = null,
+    @SerialName("parking_area_id") val parkingAreaId: String? = null,
     @SerialName("owner_id") val ownerId: String,
     val name: String,
     val address: String,

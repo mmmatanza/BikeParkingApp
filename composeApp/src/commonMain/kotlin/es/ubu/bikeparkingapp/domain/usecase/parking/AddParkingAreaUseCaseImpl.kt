@@ -25,7 +25,7 @@ class AddParkingAreaUseCaseImpl(
         openDays: Set<DayOfWeek>
     ): Result<Unit> {
         val parkingArea = ParkingArea(
-            id = null,
+            parkingAreaId = null,
             ownerId = ownerId,
             name = name,
             address = address,

@@ -37,7 +37,7 @@ class UpsertParkingAreaViewModel(
                         isLoading = false,
                         isAlreadyLoaded = true,
                         isEditing = true,
-                        parkingId = parking.id,
+                        parkingAreaId = parking.parkingAreaId,
                         name = parking.name,
                         address = parking.address,
                         capacity = parking.capacity,
@@ -67,7 +67,7 @@ class UpsertParkingAreaViewModel(
             } else {
                 if (_state.value.isEditing){
                     updateParkingAreaUseCase(
-                        parkingId = _state.value.parkingId!!,
+                        parkingAreaId = _state.value.parkingAreaId!!,
                         ownerId = userId.getOrThrow(),
                         name = _state.value.name,
                         address = _state.value.address,

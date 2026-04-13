@@ -5,23 +5,15 @@ import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 /**
  * Representa el estado de la pantalla de reserva de plaza.
  * @property isLoading Indica si se está cargando la información.
+ * @property successfulReservation Indica si se ha realizado la reserva correctamente.
  * @property error Error ocurrido.
- * @property name Nombre del parking.
- * @property capacity Capacidad máxima del parking.
- * @property currentOccupancy Ocupación actual del parking.
- * @property openingTime Horario de apertura del parking.
- * @property closingTime Horario de cierre del parking.
- * @property rules Lista de reglas del parking.
- * @property isOperative Indica si el parking está operativo.
+ * @property parkingArea Parking al que se reserva.
+ * @property confirmReservation Indica si se ha confirmado la reserva.
  */
 data class ParkingReservationState(
     val isLoading: Boolean = false,
+    val successfulReservation: Boolean = false,
     val error: Exception? = null,
-    val name: String = "",
-    val capacity: Int = 0,
-    val currentOccupancy: Int = 0,
-    val openingTime: String = "",
-    val closingTime: String = "",
-    val rules: List<String> = emptyList(),
-    val isOperative: Boolean = false
+    val parkingArea: ParkingArea? = null,
+    val confirmReservationDialog: Boolean = false
 )

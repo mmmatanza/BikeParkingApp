@@ -10,7 +10,7 @@ import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 class DeactivateParkingAreaUseCaseImpl(
     private val parkingAreaRepository: ParkingAreaRepository
 ): DeactivateParkingAreaUseCase {
-    override suspend fun invoke(parkingId: String): Result<Unit> {
-        return parkingAreaRepository.deactivateParkingArea(parkingId)
+    override suspend fun invoke(parkingAreaId: String): Result<Unit> {
+        return parkingAreaRepository.deactivateParkingArea(parkingAreaId)
     }
 }

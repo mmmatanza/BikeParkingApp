@@ -25,19 +25,20 @@ class MyParkingAreasViewModel(
     }
 
     fun loadParkingAreas() {
+        _state.value = _state.value.copy(isLoading = true)
         viewModelScope.launch {
             getUserIdUseCase()
                 .onSuccess { userId ->
                     getParkingAreasUseCase(userId)
                         .onSuccess { list ->
-                            _state.value = _state.value.copy(parkingAreas = list)
+                            _state.value = _state.value.copy(parkingAreas = list, isLoading = false)
                         }
                         .onFailure { error ->
-                            _state.value = _state.value.copy(error = error as? Exception)
+                            _state.value = _state.value.copy(error = error as? Exception, isLoading = false)
                         }
                 }
                 .onFailure { error ->
-                    _state.value = _state.value.copy(error = error as? Exception)
+                    _state.value = _state.value.copy(error = error as? Exception, isLoading = false)
                 }
         }
     }

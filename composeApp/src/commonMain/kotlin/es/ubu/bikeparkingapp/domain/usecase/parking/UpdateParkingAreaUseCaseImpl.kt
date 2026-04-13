@@ -13,7 +13,7 @@ class UpdateParkingAreaUseCaseImpl(
     private val parkingAreaRepository: ParkingAreaRepository
 ) : UpdateParkingAreaUseCase {
     override suspend operator fun invoke(
-        parkingId: String,
+        parkingAreaId: String,
         ownerId: String,
         name: String,
         address: String,
@@ -26,7 +26,7 @@ class UpdateParkingAreaUseCaseImpl(
         openDays: Set<DayOfWeek>
     ): Result<Unit> {
         val parkingArea = ParkingArea(
-            id = parkingId,
+            parkingAreaId = parkingAreaId,
             ownerId = ownerId,
             name = name,
             address = address,

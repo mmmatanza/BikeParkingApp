@@ -10,20 +10,18 @@ import kotlin.time.Instant
  * @property parkingAreaId Identificador único del parking al que se reserva
  * @property inTime Fecha y hora de inicio de la reserva (el margen de entrada puede variar)
  * @property outTime Fecha y hora de finalización de la reserva
- * @property slots Número de plazas reservadas en la reserva
  * @property state Estado actual de la reserva
  * @property createdAt Fecha y hora de creación de la reserva
  */
 @Serializable
 data class Reservation(
-    val reservationId: String,
+    val reservationId: String?,
     val accountId: String,
     val parkingAreaId: String,
     @Serializable(with = InstantSerializer::class)
     val inTime: Instant,
     @Serializable(with = InstantSerializer::class)
     val outTime: Instant,
-    val slots: Int,
     val state: ReservationState,
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant

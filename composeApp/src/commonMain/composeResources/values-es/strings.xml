@@ -30,6 +30,7 @@
     <string name="generic_error">Ha ocurrido un error. Por favor, inténtalo de nuevo.</string>
     <string name="no_active_session">No hay ninguna sesión activa.</string>
     <string name="password_empty">La contraseña no puede estar vacía.</string>
+    <string name="account_has_active_reservation">Tu cuenta tiene una reserva activa</string>
 
     <!-- Campos -->
     <string name="email">Correo electrónico</string>
@@ -52,7 +53,7 @@
 
     <!-- Gestión de parkings -->
     <string name="my_parking_areas_section">Mis parkings</string>
-    <string name="no_parking_areas">No hay parkings o aún están cargando</string>
+    <string name="no_parking_areas">Aún no se han añadido parkings</string>
     <string name="opening_time">Horario de apertura</string>
     <string name="closing_time">Horario de cierre</string>
     <string name="capacity">Capacidad</string>
@@ -84,5 +85,9 @@
     <string name="find_parking">Buscar parking</string>
     <string name="confirm_reservation">Confirmar reserva</string>
     <string name="no_parking_found">No se han encontrado parkings cercanos</string>
+    <string name="no_rules">No hay normas específicas para este parking.</string>
+    <string name="available_spots_out_of"> plazas libres de </string>
+    <string name="reservation_advice">¿Quieres confirmar tu reserva?</string>
+    <string name="reservation_created">Se ha creado la reserva</string>
 
 </resources>

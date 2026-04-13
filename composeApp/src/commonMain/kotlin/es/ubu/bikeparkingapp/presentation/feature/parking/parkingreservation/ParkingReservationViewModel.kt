@@ -4,16 +4,23 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreaByIdUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.AddReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import kotlinx.coroutines.launch
 
 /**
  * Representa el viewModel para la pantalla de reserva de plaza.
  * @property getParkingAreaByIdUseCase Caso de uso para obtener un parking por su id.
+ * @property addReservationUseCase Caso de uso para añadir una reserva.
+ * @property getUserIdUseCase Caso de uso para obtener el id del usuario actual.
  */
 class ParkingReservationViewModel(
-    private val getParkingAreaByIdUseCase: GetParkingAreaByIdUseCase
+    private val getParkingAreaByIdUseCase: GetParkingAreaByIdUseCase,
+    private val addReservationUseCase: AddReservationUseCase,
+    private val getUserIdUseCase: GetUserIdUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(ParkingReservationState())
     val state: State<ParkingReservationState> = _state
@@ -24,18 +31,12 @@ class ParkingReservationViewModel(
             getParkingAreaByIdUseCase(parkingAreaId)
                 .onSuccess { parkingArea ->
                     _state.value = _state.value.copy(
-                        name = parkingArea.name,
-                        capacity = parkingArea.capacity,
-                        currentOccupancy = parkingArea.currentOccupancy,
-                        openingTime = parkingArea.openingTime,
-                        closingTime = parkingArea.closingTime,
-                        rules = parkingArea.rules,
-                        isOperative = parkingArea.isOperative,
+                        parkingArea = parkingArea,
                         isLoading = false
                     )
                 }
                 .onFailure { error ->
-                    when(error){
+                    when (error) {
                         is NoNetworkException -> _state.value = _state.value.copy(error = error)
                         else -> _state.value = _state.value.copy(error = Exception(error.message))
                     }
@@ -44,4 +45,46 @@ class ParkingReservationViewModel(
         }
     }
 
+    fun availableParking(): Boolean {
+        val area = _state.value.parkingArea ?: return false
+        val hasSpace = (area.capacity - area.currentOccupancy) > 0
+        return hasSpace && area.isOperative && area.isActive
+    }
+
+    fun clearError() {
+        _state.value = _state.value.copy(error = null)
+    }
+
+    fun clearState() {
+        _state.value = ParkingReservationState()
+    }
+
+    fun confirmReservationDialog() {
+        _state.value = _state.value.copy(confirmReservationDialog = true)
+    }
+
+    fun clearConfirmReservationDialog() {
+        _state.value = _state.value.copy(confirmReservationDialog = false)
+    }
+
+    fun addReservation() {
+        val parkingId = _state.value.parkingArea?.parkingAreaId ?: return
+        viewModelScope.launch {
+            getUserIdUseCase().onSuccess { accountId ->
+                addReservationUseCase(
+                    parkingAreaId = parkingId,
+                    accountId = accountId
+                ).onSuccess {
+                    _state.value = _state.value.copy(successfulReservation = true)
+                }.onFailure { error ->
+                    when (error) {
+                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
+                        is AccountHasActiveReservationException -> _state.value =
+                            _state.value.copy(error = error)
+                        else -> _state.value = _state.value.copy(error = Exception(error.message))
+                    }
+                }
+            }
+        }
+    }
 }

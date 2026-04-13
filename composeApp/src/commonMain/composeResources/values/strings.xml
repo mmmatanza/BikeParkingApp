@@ -31,6 +31,7 @@
     <string name="generic_error">An error has occurred. Please try again.</string>
     <string name="no_active_session">No active session.</string>
     <string name="password_empty">The password cannot be empty.</string>
+    <string name="account_has_active_reservation">Your account has an active reservation</string>
 
     <!-- Campos -->
     <string name="email">Email</string>
@@ -53,7 +54,7 @@
 
     <!-- Gestión de parkings -->
     <string name="my_parking_areas_section">My parking areas</string>
-    <string name="no_parking_areas">No parking areas available or they are still loading</string>
+    <string name="no_parking_areas">No parking areas available</string>
     <string name="opening_time">Opening time</string>
     <string name="closing_time">Closing time</string>
     <string name="capacity">Capacity</string>
@@ -85,6 +86,10 @@
     <string name="find_parking">Find parking</string>
     <string name="confirm_reservation">Confirm reservation</string>
     <string name="no_parking_found">No parking areas found near you</string>
+    <string name="no_rules">This parking area does not have any specific rules.</string>
+    <string name="available_spots_out_of"> available spots out of </string>
+    <string name="reservation_advice">Do you want to confirm your reservation?</string>
+    <string name="reservation_created">Reservation created</string>
 
 
 </resources>

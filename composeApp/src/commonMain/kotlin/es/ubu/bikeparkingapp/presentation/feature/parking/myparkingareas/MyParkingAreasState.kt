@@ -8,6 +8,7 @@ import es.ubu.bikeparkingapp.domain.entity.ParkingArea
  * @property parkingAreas Lista de parkings cargados.
  */
 data class MyParkingAreasState (
+    val isLoading: Boolean = false,
     val error: Exception? = null,
     val parkingAreas: List<ParkingArea>? = null
 )

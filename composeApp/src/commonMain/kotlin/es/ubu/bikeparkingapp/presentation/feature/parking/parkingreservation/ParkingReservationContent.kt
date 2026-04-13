@@ -40,9 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.available_spots_out_of
 import bikeparkingapp.composeapp.generated.resources.back
 import bikeparkingapp.composeapp.generated.resources.confirm_reservation
 import bikeparkingapp.composeapp.generated.resources.error
+import bikeparkingapp.composeapp.generated.resources.no_rules
 import bikeparkingapp.composeapp.generated.resources.parking_rules
 import bikeparkingapp.composeapp.generated.resources.schedule
 import org.jetbrains.compose.resources.stringResource
@@ -57,13 +59,14 @@ import org.jetbrains.compose.resources.stringResource
 fun ParkingReservationContent(
     state: ParkingReservationState,
     onBackClick: () -> Unit,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
+    availableParking: () -> Boolean
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(state.name) },
+                title = { state.parkingArea?.name?.let { Text(it) } },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -92,74 +95,82 @@ fun ParkingReservationContent(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 // Nombre del parking
-                Text(
-                    text = state.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    fontWeight = FontWeight.Bold,
-                    lineHeight = 40.sp
-                )
+                state.parkingArea?.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.headlineLarge,
+                        fontWeight = FontWeight.Bold,
+                        lineHeight = 40.sp
+                    )
+                }
 
                 // Card de disponibilidad
-                val availableSpots = state.capacity - state.currentOccupancy
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (availableSpots > 0)
-                            MaterialTheme.colorScheme.primaryContainer
-                        else
-                            MaterialTheme.colorScheme.errorContainer
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                state.parkingArea?.capacity?.let{
+                    val availableSpots = state.parkingArea.capacity - state.parkingArea.currentOccupancy
+                    Card(
+                        colors = CardDefaults.cardColors(
+                            containerColor = if (availableSpots > 0)
+                                MaterialTheme.colorScheme.primaryContainer
+                            else
+                                MaterialTheme.colorScheme.errorContainer
+                        ),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.CheckCircle,
-                            contentDescription = null
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            text = "$availableSpots plazas libres de ${state.capacity}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.SemiBold
-                        )
+                        Row(
+                            modifier = Modifier.padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.CheckCircle,
+                                contentDescription = null
+                            )
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                text = availableSpots.toString() + stringResource(Res.string.available_spots_out_of) + state.parkingArea.capacity,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
                     }
                 }
 
                 // Horario
-                SectionInfo(
-                    title = stringResource(Res.string.schedule),
-                    icon = Icons.Default.DateRange
-                ) {
-                    Text(
-                        text = "${state.openingTime.take(5)} - ${state.closingTime.take(5)}",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                state.parkingArea?.closingTime?.let {
+                    SectionInfo(
+                        title = stringResource(Res.string.schedule),
+                        icon = Icons.Default.DateRange
+                    ) {
+                        Text(
+                            text = "${state.parkingArea.openingTime.take(5)} - ${state.parkingArea.closingTime.take(5)}",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
                 }
 
                 // Normas
-                SectionInfo(
-                    title = stringResource(Res.string.parking_rules),
-                    icon = Icons.Default.Info
-                ) {
-                    if (state.rules.isEmpty()) {
-                        Text(
-                            text = "No hay normas específicas para este parking.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontStyle = FontStyle.Italic
-                        )
-                    } else {
-                        state.rules.forEach { rule ->
-                            Row(
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.Top
-                            ) {
-                                Text("• ", style = MaterialTheme.typography.bodyLarge)
-                                Text(
-                                    text = rule,
-                                    style = MaterialTheme.typography.bodyLarge
-                                )
+                state.parkingArea?.rules?.let {
+                    SectionInfo(
+                        title = stringResource(Res.string.parking_rules),
+                        icon = Icons.Default.Info
+                    ) {
+                        if (state.parkingArea.rules.isEmpty()) {
+                            Text(
+                                text = stringResource(Res.string.no_rules),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontStyle = FontStyle.Italic
+                            )
+                        } else {
+                            state.parkingArea.rules.forEach { rule ->
+                                Row(
+                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    verticalAlignment = Alignment.Top
+                                ) {
+                                    Text("• ", style = MaterialTheme.typography.bodyLarge)
+                                    Text(
+                                        text = rule,
+                                        style = MaterialTheme.typography.bodyLarge
+                                    )
+                                }
                             }
                         }
                     }
@@ -170,7 +181,7 @@ fun ParkingReservationContent(
                 // Botón de Confirmación
                 Button(
                     onClick = onConfirmClick,
-                    enabled = availableSpots > 0 && state.isOperative,
+                    enabled = availableParking(),
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape = MaterialTheme.shapes.extraLarge
                 ) {

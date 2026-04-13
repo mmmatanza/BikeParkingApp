@@ -72,7 +72,7 @@ class ParkingManagementViewModel(
 
     fun onChangeServiceState(isOperative: Boolean){
         viewModelScope.launch {
-            toggleOperativeStateUseCase(state.value.parking?.id ?: return@launch, isOperative)
+            toggleOperativeStateUseCase(state.value.parking?.parkingAreaId ?: return@launch, isOperative)
                 .onSuccess {
                     _state.value =
                         _state.value.copy(parking = _state.value.parking?.copy(isOperative = isOperative))
@@ -88,7 +88,7 @@ class ParkingManagementViewModel(
 
     fun onDeactivateParking(){
         viewModelScope.launch {
-            val parkingId = state.value.parking?.id ?: return@launch
+            val parkingId = state.value.parking?.parkingAreaId ?: return@launch
             deactivateParkingAreaUseCase(parkingId)
                 .onSuccess {
                     _state.value = _state.value.copy(successDeactivation = true)

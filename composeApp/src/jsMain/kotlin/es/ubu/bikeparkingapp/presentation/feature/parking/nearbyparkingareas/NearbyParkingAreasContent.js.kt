@@ -83,7 +83,7 @@ actual fun NearbyParkingAreasContent(
                         items(state.parkingAreas) { area ->
                             ParkingOptionItem(
                                 name = area.name,
-                                onClick = { onParkingAreaClick(area.id!!) }
+                                onClick = { onParkingAreaClick(area.parkingAreaId!!) }
                             )
                         }
 

@@ -9,7 +9,7 @@ import kotlin.time.Clock
 
 /**
  * Representa a un parking dentro del sistema.
- * @property id Identificador único del parking.
+ * @property parkingAreaId Identificador único del parking.
  * @property ownerId Identificador único del propietario del parking.
  * @property name Nombre del parking.
  * @property address Dirección del parking.
@@ -26,7 +26,7 @@ import kotlin.time.Clock
  */
 @Serializable
 data class ParkingArea(
-    val id: String?,
+    val parkingAreaId: String?,
     val ownerId: String,
     val name: String,
     val address: String,

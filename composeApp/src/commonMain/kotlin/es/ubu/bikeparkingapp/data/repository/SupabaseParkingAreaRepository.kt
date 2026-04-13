@@ -101,7 +101,7 @@ class SupabaseParkingAreaRepository(
             client.postgrest.rpc(
                 function = "update_parking_area",
                 parameters = buildJsonObject {
-                    put("p_parking_area_id", parkingArea.id)
+                    put("p_parking_area_id", parkingArea.parkingAreaId)
                     put("p_name", parkingArea.name)
                     put("p_address", parkingArea.address)
                     put("p_latitude", parkingArea.latitude)

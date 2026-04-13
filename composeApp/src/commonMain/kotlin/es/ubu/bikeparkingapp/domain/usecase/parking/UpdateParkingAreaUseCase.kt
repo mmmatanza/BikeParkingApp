@@ -7,7 +7,7 @@ import kotlinx.datetime.DayOfWeek
  */
 interface UpdateParkingAreaUseCase {
     suspend operator fun invoke(
-        parkingId: String,
+        parkingAreaId: String,
         ownerId: String,
         name: String,
         address: String,

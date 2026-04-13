@@ -37,7 +37,6 @@ CREATE TABLE parkingareas (
 CREATE INDEX parking_area_location_idx ON parkingareas USING GIST (parking_area_location);
 
 
-
 -- Tabla de reservas
 CREATE TABLE reservations (
     reservation_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -47,8 +46,6 @@ CREATE TABLE reservations (
     -- Tiempos
     in_time TIMESTAMPTZ NOT NULL,
     out_time TIMESTAMPTZ, -- Puede ser NULL si es flujo en vivo hasta el check-out
-    -- Cantidad de plazas
-    slots INTEGER NOT NULL DEFAULT 1 CHECK (slots > 0),
     -- Estado con restricción para asegurar que solo entren valores válidos del Enum
     state TEXT NOT NULL DEFAULT 'RESERVED'
         CHECK (state IN ('RESERVED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED', 'EXPIRED', 'OVERDUE')),
@@ -63,20 +60,3 @@ CREATE INDEX idx_reservations_account ON reservations(account_id);
 -- Índice para acelerar el cálculo de ocupación por parking
 CREATE INDEX idx_reservations_parking_active ON reservations(parking_area_id)
 WHERE state IN ('RESERVED', 'CHECKED_IN');
-
-
-
-
-
--- Trigger para actualizar updated_at
-CREATE OR REPLACE FUNCTION update_updated_at()
-RETURNS TRIGGER AS $$
-BEGIN
-    NEW.updated_at = NOW();
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_update_updated_at
-BEFORE UPDATE ON accounts
-FOR EACH ROW EXECUTE FUNCTION update_updated_at();

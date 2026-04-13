@@ -174,7 +174,7 @@ actual fun NearbyParkingAreasContent(
 fun createParkingJson(parkings: List<ParkingArea>): String {
     val features = parkings.joinToString(",") { parking ->
         """{"type":"Feature","geometry":{"type":"Point","coordinates":[${parking.longitude},${parking.latitude}]},"properties":{
-                "parkingId": "${parking.id}" 
+                "parkingId": "${parking.parkingAreaId}" 
             }}"""
     }
     return """{"type":"FeatureCollection","features":[$features]}"""

@@ -235,7 +235,7 @@ fun ParkingManagementContent(
                         }
                     }
                     OutlinedButton(
-                        onClick = {actions.onEditDetailsClick(parking?.id!!)},
+                        onClick = {actions.onEditDetailsClick(parking?.parkingAreaId!!)},
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(stringResource(Res.string.edit_details))

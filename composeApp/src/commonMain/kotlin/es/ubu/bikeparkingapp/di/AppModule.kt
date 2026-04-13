@@ -4,9 +4,11 @@ import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
 import es.ubu.bikeparkingapp.data.repository.SupabaseAccountRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAuthRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseParkingAreaRepository
+import es.ubu.bikeparkingapp.data.repository.SupabaseReservationRepository
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
+import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
@@ -31,6 +33,8 @@ import es.ubu.bikeparkingapp.domain.usecase.parking.ToggleOperativeStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.ToggleOperativeStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.AddReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.AddReservationUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
@@ -64,6 +68,8 @@ val appModule = module {
     single<AuthRepository> { SupabaseAuthRepository(get()) }
     single<AccountRepository> { SupabaseAccountRepository(get(),get()) }
     single<ParkingAreaRepository> { SupabaseParkingAreaRepository(get()) }
+    single<ReservationRepository> { SupabaseReservationRepository(get()) }
+
 
     // Casos de Uso
     // Auth
@@ -82,6 +88,7 @@ val appModule = module {
     single<ToggleOperativeStateUseCase>{ ToggleOperativeStateUseCaseImpl(get()) }
     single<GetParkingAreaByIdUseCase>{ GetParkingAreaByIdUseCaseImpl(get()) }
     single<GetNearbyParkingAreasUseCase>{ GetNearbyParkingAreasUseCaseImpl(get()) }
+    single<AddReservationUseCase>{ AddReservationUseCaseImpl(get(), get()) }
 }
 
 // Módulo para los ViewModels

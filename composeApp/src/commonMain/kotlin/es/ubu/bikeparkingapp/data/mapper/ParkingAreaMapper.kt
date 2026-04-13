@@ -10,7 +10,7 @@ import kotlinx.datetime.DayOfWeek
  */
 fun ParkingAreaDto.toDomain(): ParkingArea {
     return ParkingArea(
-        id = this.id,
+        parkingAreaId = this.parkingAreaId,
         ownerId = this.ownerId,
         name = this.name,
         address = this.address,
