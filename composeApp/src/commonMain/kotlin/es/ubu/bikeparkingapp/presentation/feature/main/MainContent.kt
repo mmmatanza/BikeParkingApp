@@ -14,7 +14,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.CardTravel
 import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
@@ -37,27 +38,25 @@ import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.find_parking
 import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
+import bikeparkingapp.composeapp.generated.resources.my_trips
 import bikeparkingapp.composeapp.generated.resources.signout
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.model.AuthState
+import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
 import org.jetbrains.compose.resources.stringResource
 
 /**
  * Representa el contenido principal de la pantalla principal.
  * @property state Estado actual de la pantalla.
  * @property authState Estado de autenticación.
- * @property onMyParkingAreas Función para manejar el evento de ver mis parkings.
- * @property onLogout Función para manejar el evento de cerrar sesión.
- * @property onNavigateToNearbyParkingAreas Función para manejar el evento de navegar a áreas de parking cercanas.
+ * @property actions Acciones de la pantalla.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent(
     state: MainState,
     authState: AuthState,
-    onMyParkingAreas: () -> Unit,
-    onLogout: () -> Unit,
-    onNavigateToNearbyParkingAreas: () -> Unit
+    actions: MainActions
 ) {
     if (authState == AuthState.Loading) {
         Box(
@@ -96,7 +95,7 @@ fun MainContent(
                             title = stringResource(Res.string.my_parking_areas_section),
                             icon = Icons.Default.LocalParking,
                             color = MaterialTheme.colorScheme.errorContainer,
-                            onClick = onMyParkingAreas
+                            onClick = actions.onMyParkingAreas
                         )
                     }
                 }
@@ -108,7 +107,15 @@ fun MainContent(
                             title = stringResource(Res.string.find_parking),
                             icon = Icons.Default.Search,
                             color = MaterialTheme.colorScheme.errorContainer,
-                            onClick = onNavigateToNearbyParkingAreas
+                            onClick = actions.onNavigateToNearbyParkingAreas
+                        )
+                    }
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.my_trips),
+                            icon = Icons.Default.CardTravel,
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            onClick = actions.onNavigateToMyTrips
                         )
                     }
                 }
@@ -117,9 +124,9 @@ fun MainContent(
                 item {
                     MenuOptionCard(
                         title = stringResource(Res.string.signout),
-                        icon = Icons.Default.ExitToApp,
+                        icon = Icons.AutoMirrored.Filled.ExitToApp,
                         color = MaterialTheme.colorScheme.errorContainer,
-                        onClick = onLogout
+                        onClick = actions.onLogout
                     )
                 }
             }
@@ -138,7 +145,8 @@ fun MenuOptionCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .handCursor(),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = color)
     ) {

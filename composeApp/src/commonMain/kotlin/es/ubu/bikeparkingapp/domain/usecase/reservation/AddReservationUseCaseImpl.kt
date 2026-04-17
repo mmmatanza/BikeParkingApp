@@ -1,11 +1,14 @@
 package es.ubu.bikeparkingapp.domain.usecase.reservation
 
 import es.ubu.bikeparkingapp.domain.entity.Reservation
+import es.ubu.bikeparkingapp.domain.entity.ReservationState
+import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
+import es.ubu.bikeparkingapp.domain.exception.ParkingClosingSoonException
+import es.ubu.bikeparkingapp.domain.exception.ParkingHasNoFreeSpotsException
+import es.ubu.bikeparkingapp.domain.exception.ParkingIsClosedException
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 import kotlinx.datetime.LocalTime
-import es.ubu.bikeparkingapp.domain.entity.ReservationState
-import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atTime
 import kotlinx.datetime.toInstant
@@ -33,7 +36,7 @@ class AddReservationUseCaseImpl(
         val parkingArea = parkingAreaRepository.getParkingAreaById(parkingAreaId).getOrNull()
             ?: throw Exception("Parking area not found")
 
-        val reservations = reservationRepository.countActiveReservations(accountId)
+        val reservations = reservationRepository.countUserActiveReservations(accountId)
         if (reservations>0) throw AccountHasActiveReservationException()
 
         // Obtener la hora actual
@@ -47,33 +50,39 @@ class AddReservationUseCaseImpl(
         val is24Hours = start == LocalTime(0, 0) && end == LocalTime(23, 59)
 
         // Comprobar que el parking está abierto y hay plazas
-        if (!parkingArea.openDays.contains(now.dayOfWeek))
-            throw IllegalStateException("El parking está cerrado el día de hoy (${now.dayOfWeek})")
-        if (!is24Hours && now.time !in start..end)
-            throw IllegalStateException("Fuera de horario comercial ($start - $end)")
+        if (!parkingArea.openDays.contains(now.dayOfWeek) || (!is24Hours && now.time !in start..end))
+            throw ParkingIsClosedException()
         if (parkingArea.capacity - parkingArea.currentOccupancy <= 0)
-            throw IllegalStateException("No hay plazas disponibles")
+            throw ParkingHasNoFreeSpotsException()
 
         // La reserva no llega al tiempo mínimo antes del cierre
         val minutesUntilClosing = if (is24Hours) Int.MAX_VALUE.toLong()
         else (now.date.atTime(end).toInstant(TimeZone.currentSystemDefault()) - nowInstant).inWholeMinutes
         if (!is24Hours && minutesUntilClosing < MINIMUM_DURATION + CORTESY_MINUTES)
-            throw IllegalStateException("El parking cierra pronto, no hay tiempo suficiente ($minutesUntilClosing min restantes)")
+            throw ParkingClosingSoonException()
 
         val inTime = nowInstant.plus(CORTESY_MINUTES.minutes)
         val outTime = inTime.plus(RESERVATION_DURATION.minutes)
 
-        reservationRepository.save(
-            Reservation(
-                reservationId = null,
-                parkingAreaId = parkingAreaId,
-                accountId = accountId,
-                inTime = inTime,
-                outTime = outTime,
-                state = ReservationState.RESERVED,
-                createdAt = nowInstant
+        try {
+            reservationRepository.save(
+                Reservation(
+                    reservationId = null,
+                    parkingAreaId = parkingAreaId,
+                    accountId = accountId,
+                    inTime = inTime,
+                    outTime = outTime,
+                    state = ReservationState.RESERVED,
+                    createdAt = nowInstant
+                )
             )
-        )
+        } catch (e: Exception) {
+            // En caso de que el trigger devuelva una excepción
+            if (e.message?.contains("ParkingHasNoFreeSpotsException") == true) {
+                throw ParkingHasNoFreeSpotsException()
+            }
+            throw e
+        }
     }
 
     private fun parseLocalTime(time: String): LocalTime {

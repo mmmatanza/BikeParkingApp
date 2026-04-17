@@ -1,9 +1,9 @@
 package es.ubu.bikeparkingapp.domain.entity
 
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.DayOfWeek
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 
@@ -47,9 +47,17 @@ data class ParkingArea(
  * @return `true` si el parking está abierto, `false` en caso contrario.
  */
 fun ParkingArea.isOpen(): Boolean {
-    val now = Clock.System.now()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).time
+    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+    // Comprobar si el día de hoy está en la lista de días en los que abre el parking
+    if (now.dayOfWeek !in openDays) {
+        return false
+    }
+
+    // Comprobar el rango horario
+    val currentTime = now.time
     val opening = LocalTime.parse(openingTime)
     val closing = LocalTime.parse(closingTime)
-    return now in opening..closing
+
+    return currentTime in opening..closing
 }

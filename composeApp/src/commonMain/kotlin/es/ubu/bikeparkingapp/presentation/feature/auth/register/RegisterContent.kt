@@ -11,13 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +46,7 @@ import bikeparkingapp.composeapp.generated.resources.role
 import bikeparkingapp.composeapp.generated.resources.tax_id
 import bikeparkingapp.composeapp.generated.resources.user
 import es.ubu.bikeparkingapp.domain.entity.Role
+import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
 import org.jetbrains.compose.resources.stringResource
 
 /**
@@ -66,132 +74,142 @@ fun RegisterContent(
     onRoleChange: (Role) -> Unit,
     onRegisterClick: () -> Unit,
     onBackClick: () -> Unit
-){
+) {
     var roleExpanded by remember { mutableStateOf(false) }
 
-    // Este Box permite centrarlo en la versión web
-    Box(
+    Scaffold(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 480.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(Res.string.register)) },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick, modifier = Modifier.handCursor()) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(Res.string.back)
+                        )
+                    }
+                }
+            )
+        }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            contentAlignment = Alignment.Center
         ) {
-            OutlinedTextField(
-                value = state.email,
-                onValueChange = onEmailChange,
-                label = { Text(stringResource(Res.string.email)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = state.password,
-                onValueChange = onPasswordChange,
-                label = { Text(stringResource(Res.string.password)) },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = state.passwordConfirmation,
-                onValueChange = onPasswordConfirmationChange,
-                label = { Text(stringResource(Res.string.password_confirmation)) },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = state.name,
-                onValueChange = onNameChange,
-                label = { Text(stringResource(Res.string.name)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(
-                value = state.taxId,
-                onValueChange = onTaxIdChange,
-                label = { Text(stringResource(Res.string.tax_id)) },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            ExposedDropdownMenuBox(
-                expanded = roleExpanded,
-                onExpandedChange = { roleExpanded = it },
-                modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 480.dp)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
                 OutlinedTextField(
-                    value = when (state.role) {
-                        Role.ADMIN -> stringResource(Res.string.administrator)
-                        Role.USER -> stringResource(Res.string.user)
-                    },
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text(stringResource(Res.string.role)) },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = roleExpanded) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .menuAnchor()
+                    value = state.email,
+                    onValueChange = onEmailChange,
+                    label = { Text(stringResource(Res.string.email)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
-                ExposedDropdownMenu(
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = state.password,
+                    onValueChange = onPasswordChange,
+                    label = { Text(stringResource(Res.string.password)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = state.passwordConfirmation,
+                    onValueChange = onPasswordConfirmationChange,
+                    label = { Text(stringResource(Res.string.password_confirmation)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = PasswordVisualTransformation(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = state.name,
+                    onValueChange = onNameChange,
+                    label = { Text(stringResource(Res.string.name)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(
+                    value = state.taxId,
+                    onValueChange = onTaxIdChange,
+                    label = { Text(stringResource(Res.string.tax_id)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                ExposedDropdownMenuBox(
                     expanded = roleExpanded,
-                    onDismissRequest = { roleExpanded = false }
+                    onExpandedChange = { roleExpanded = it },
+                    modifier = Modifier.fillMaxWidth().handCursor()
                 ) {
-                    DropdownMenuItem(
-                        text = { Text(stringResource(Res.string.user)) },
-                        onClick = {
-                            onRoleChange(Role.USER)
-                            roleExpanded = false
-                        }
+                    OutlinedTextField(
+                        value = when (state.role) {
+                            Role.ADMIN -> stringResource(Res.string.administrator)
+                            Role.USER -> stringResource(Res.string.user)
+                        },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(Res.string.role)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = roleExpanded) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(
+                                type = ExposedDropdownMenuAnchorType.PrimaryNotEditable,
+                                enabled = true
+                            )
                     )
-                    DropdownMenuItem(
-                        text = { Text(stringResource(Res.string.administrator)) },
-                        onClick = {
-                            onRoleChange(Role.ADMIN)
-                            roleExpanded = false
-                        }
-                    )
+                    ExposedDropdownMenu(
+                        expanded = roleExpanded,
+                        onDismissRequest = { roleExpanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(Res.string.user)) },
+                            onClick = {
+                                onRoleChange(Role.USER)
+                                roleExpanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(Res.string.administrator)) },
+                            onClick = {
+                                onRoleChange(Role.ADMIN)
+                                roleExpanded = false
+                            }
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Button(
+                    onClick = onRegisterClick,
+                    modifier = Modifier.fillMaxWidth().height(50.dp).handCursor()
+                ) {
+                    Text(stringResource(Res.string.register))
+                }
+
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = onRegisterClick,
-                modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
-                Text(stringResource(Res.string.register))
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Button(
-                onClick = onBackClick,
-                modifier = Modifier.fillMaxWidth().height(50.dp)
-            ) {
-                Text(stringResource(Res.string.back))
-            }
-
         }
     }
 }

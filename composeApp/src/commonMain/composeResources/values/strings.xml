@@ -5,6 +5,8 @@
     <string name="my_panel">My Panel</string>
     <string name="reset_advice">We have sent you an email to reset your password.</string>
     <string name="attention">Attention</string>
+    <string name="since">Since</string>
+    <string name="until">Until</string>
 
     <!-- Botones -->
     <string name="login">Login</string>
@@ -16,7 +18,8 @@
     <string name="reset_password">Reset Password</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
-
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <!-- Errores -->
     <string name="error">Error</string>
@@ -32,6 +35,11 @@
     <string name="no_active_session">No active session.</string>
     <string name="password_empty">The password cannot be empty.</string>
     <string name="account_has_active_reservation">Your account has an active reservation</string>
+    <string name="parking_closing_soon">This parking area is closing soon</string>
+    <string name="parking_has_no_free_spots">No free spots available</string>
+    <string name="parking_is_closed">This parking area is closed</string>
+    <string name="reservation_not_found">Reservation not found</string>
+    <string name="invalid_reservation_state">Reservation state can not be changed to this state</string>
 
     <!-- Campos -->
     <string name="email">Email</string>
@@ -83,13 +91,31 @@
     <string name="rule_sample">Example: No animals</string>
     <string name="not_available_parking_areas">Not available parking areas</string>
     <!-- Hacer reserva -->
+    <string name="reservation_id">Reservation ID</string>
+    <string name="reservations">Reservations</string>
     <string name="find_parking">Find parking</string>
     <string name="confirm_reservation">Confirm reservation</string>
     <string name="no_parking_found">No parking areas found near you</string>
     <string name="no_rules">This parking area does not have any specific rules.</string>
     <string name="available_spots_out_of"> available spots out of </string>
     <string name="reservation_advice">Do you want to confirm your reservation?</string>
-    <string name="reservation_created">Reservation created</string>
-
+    <string name="reservation_created">Reservation created. Check the 'My Trips' section. You have 20 minutes to do the check-in.</string>
+    <string name="clear_search">Clear search</string>
+    <string name="no_results_for">No results for </string>
+    <string name="reserved">Reserved</string>
+    <string name="check_in">Check-in</string>
+    <string name="check_out">Check-out</string>
+    <string name="canceled">Canceled</string>
+    <string name="overdue">Overdue</string>
+    <string name="expired">Expired</string>
+    <string name="cancel_reservation">Cancel reservation</string>
+    <string name="cancel_reservation_confirm">Are you sure you want to cancel this reservation for this client?</string>
+    <string name="cancel_reservation_confirm_user">Are you sure you want to cancel this reservation? You will have to make a new reservation</string>
+    <string name="check_in_reservation">Check in reservation</string>
+    <string name="check_in_reservation_confirm_user">Are you sure you want to check in this reservation?</string>
+    <string name="check_out_reservation">Check out reservation</string>
+    <string name="check_out_reservation_confirm_user">Are you sure you want to check out this reservation?</string>
+    <string name="no_active_reservations">No active reservations</string>
+    <string name="my_trips">My trips</string>
 
 </resources>

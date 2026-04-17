@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
+import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.launch
 
 /**
@@ -48,11 +48,10 @@ class PasswordResetViewModel(
             viewModelScope.launch{
                 requestPasswordResetUseCase(
                     email = _state.value.email
-                ).onFailure { error ->
-                    when (error) {
-                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
-                        else -> _state.value = _state.value.copy(error = Exception(error.message))
-                    }
+                ).onFailure {
+                    _state.value = _state.value.copy(
+                        error = ErrorMapper.map(it)
+                    )
                 }.onSuccess {
                     _state.value = _state.value.copy(success = true)
                 }

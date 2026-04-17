@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
+import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.dropWhile
@@ -78,11 +78,10 @@ class MainViewModel(
 
     fun onSignoutClick() {
         viewModelScope.launch {
-            signoutUseCase().onFailure { error ->
-                when (error) {
-                    is NoNetworkException -> _state.value = _state.value.copy(error = error)
-                    else -> _state.value = _state.value.copy(error = Exception(error.message))
-                }
+            signoutUseCase().onFailure {
+                _state.value = _state.value.copy(
+                    error = ErrorMapper.map(it)
+                )
             }
         }
     }

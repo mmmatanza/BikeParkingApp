@@ -35,6 +35,16 @@ import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.reservation.AddReservationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.AddReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CancelReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CancelReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckInReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckInReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckOutReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckOutReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetParkingAreaActiveReservationsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetParkingAreaActiveReservationsUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
@@ -43,12 +53,14 @@ import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.mapselection.MapSelectionViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.myparkingareas.MyParkingAreasViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.nearbyparkingareas.NearbyParkingAreasViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.parkingmanagement.ParkingManagementViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.parkingreservation.ParkingReservationViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parking.upsertparkingarea.UpsertParkingAreaViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.parkingreservation.ParkingReservationViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.mapselection.MapSelectionViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingmanagement.ParkingManagementViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingreservations.ParkingReservationsViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.upsertparkingarea.UpsertParkingAreaViewModel
+import es.ubu.bikeparkingapp.presentation.feature.trips.mytrips.MyTripsViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.auth
@@ -88,7 +100,14 @@ val appModule = module {
     single<ToggleOperativeStateUseCase>{ ToggleOperativeStateUseCaseImpl(get()) }
     single<GetParkingAreaByIdUseCase>{ GetParkingAreaByIdUseCaseImpl(get()) }
     single<GetNearbyParkingAreasUseCase>{ GetNearbyParkingAreasUseCaseImpl(get()) }
+
+    // Reservation
     single<AddReservationUseCase>{ AddReservationUseCaseImpl(get(), get()) }
+    single<GetParkingAreaActiveReservationsUseCase>{ GetParkingAreaActiveReservationsUseCaseImpl(get()) }
+    single<GetUserReservationsUseCase>{ GetUserReservationsUseCaseImpl(get()) }
+    single<CancelReservationUseCase>{ CancelReservationUseCaseImpl(get()) }
+    single<CheckInReservationUseCase>{ CheckInReservationUseCaseImpl(get()) }
+    single<CheckOutReservationUseCase>{ CheckOutReservationUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels
@@ -103,6 +122,8 @@ val viewModelsModule = module {
     viewModelOf(::ParkingManagementViewModel)
     viewModelOf(::NearbyParkingAreasViewModel)
     viewModelOf(::ParkingReservationViewModel)
+    viewModelOf(::ParkingReservationsViewModel)
+    viewModelOf(::MyTripsViewModel)
 }
 
 // Módulo para la creación del cliente Supabase

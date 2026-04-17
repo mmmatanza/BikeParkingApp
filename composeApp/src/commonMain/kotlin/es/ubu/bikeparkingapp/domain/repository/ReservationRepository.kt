@@ -11,10 +11,12 @@ interface ReservationRepository {
     // Búsqueda de reservas
     suspend fun findById(reservationId: String): Result<Reservation>
     suspend fun findByAccountId(accountId: String): Result<List<Reservation>>
-    suspend fun findActiveReservationByAccount(accountId: String): Result<List<Reservation>>
+    suspend fun findByParkingId(parkingAreaId: String): Result<List<Reservation>>
+    suspend fun findActiveReservationByAccountId(accountId: String): Result<List<Reservation>>
+    suspend fun findActiveReservationByParkingId(parkingAreaId: String): Result<List<Reservation>>
     // Escritura de reservas
     suspend fun save(reservation: Reservation): Result<Unit>
     suspend fun updateState(reservationId: String, newState: ReservationState): Result<Unit>
-    suspend fun cancelReservation(reservationId: String): Result<Unit>
-    suspend fun countActiveReservations(parkingAreaId: String): Int
+    suspend fun countParkingActiveReservations(parkingAreaId: String): Int
+    suspend fun countUserActiveReservations(accountId: String): Int
 }

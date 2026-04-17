@@ -25,12 +25,21 @@ data class Reservation(
     val state: ReservationState,
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant
-)
+){
+    val canCancel: Boolean get() = state == ReservationState.RESERVED
+    val canCheckOut: Boolean get() = state == ReservationState.CHECKED_IN
+    val hasActions: Boolean get() = canCancel || canCheckOut
+}
 
 enum class ReservationState {
     RESERVED, CHECKED_IN, CHECKED_OUT, CANCELLED, EXPIRED, OVERDUE;
     companion object {
         fun fromString(value: String) =
             entries.firstOrNull { it.name.equals(value, ignoreCase = true) } ?: RESERVED
+    }
+    fun canTransitionTo(next: ReservationState): Boolean = when (this) {
+        RESERVED -> next in listOf(CHECKED_IN, CANCELLED, EXPIRED)
+        CHECKED_IN -> next in listOf(CHECKED_OUT, OVERDUE)
+        else -> false
     }
 }

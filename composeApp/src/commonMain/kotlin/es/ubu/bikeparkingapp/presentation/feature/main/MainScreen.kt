@@ -1,25 +1,17 @@
 package es.ubu.bikeparkingapp.presentation.feature.main
 
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import bikeparkingapp.composeapp.generated.resources.Res
-import bikeparkingapp.composeapp.generated.resources.accept
-import bikeparkingapp.composeapp.generated.resources.error
-import bikeparkingapp.composeapp.generated.resources.generic_error
-import bikeparkingapp.composeapp.generated.resources.no_internet
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
+import es.ubu.bikeparkingapp.presentation.common.components.dialog.ErrorDialog
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
-import es.ubu.bikeparkingapp.presentation.feature.parking.myparkingareas.MyParkingAreasScreen
-import es.ubu.bikeparkingapp.presentation.feature.parking.nearbyparkingareas.NearbyParkingAreasScreen
-import org.jetbrains.compose.resources.stringResource
+import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasScreen
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasScreen
+import es.ubu.bikeparkingapp.presentation.feature.trips.mytrips.MyTripsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
@@ -42,30 +34,19 @@ class MainScreen : Screen {
 
         // Si cambia el estado de error, se muestra un diálogo con el mensaje de error
         if (state.error != null) {
-            AlertDialog(
-                onDismissRequest = { viewModel.clearError() },
-                confirmButton = {
-                    Button(onClick = { viewModel.clearError() }) {
-                        Text(stringResource(Res.string.accept))
-                    }
-                },
-                title = {
-                    Text(stringResource(Res.string.error))
-                },
-                text = {
-                    when (state.error) {
-                        is NoNetworkException -> Text(stringResource(Res.string.no_internet))
-                        else -> Text(stringResource(Res.string.generic_error))
-                    }
-                }
-            )
+            ErrorDialog(state.error) {
+                viewModel.clearError()
+            }
         }
         MainContent(
             state = state,
             authState = viewModel.authState.collectAsState(AuthState.Loading).value,
-            onMyParkingAreas = {navigator.push(MyParkingAreasScreen())},
-            onLogout = viewModel::onSignoutClick,
-            onNavigateToNearbyParkingAreas = { navigator.push(NearbyParkingAreasScreen()) }
+            actions = MainActions(
+                onMyParkingAreas = {navigator.push(MyParkingAreasScreen())},
+                onLogout = viewModel::onSignoutClick,
+                onNavigateToNearbyParkingAreas = { navigator.push(NearbyParkingAreasScreen()) },
+                onNavigateToMyTrips = { navigator.push(MyTripsScreen()) }
+            )
         )
     }
 }

@@ -6,12 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException.NameEmptyException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException.PasswordMismatchException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException.TaxIdEmptyException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException.WeakPasswordException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
+import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.launch
 
 
@@ -85,11 +85,10 @@ class RegisterViewModel(
                     name = _state.value.name,
                     taxId = _state.value.taxId,
                     role = _state.value.role
-                ).onFailure { error ->
-                    when (error) {
-                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
-                        else -> _state.value = _state.value.copy(error = Exception(error.message))
-                    }
+                ).onFailure {
+                    _state.value = _state.value.copy(
+                        error = ErrorMapper.map(it)
+                    )
                 }.onSuccess {
                     _state.value = _state.value.copy(isSuccess = true)
                 }

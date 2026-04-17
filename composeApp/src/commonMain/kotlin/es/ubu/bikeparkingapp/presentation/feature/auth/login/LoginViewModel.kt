@@ -5,13 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
-import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
-import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
+import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -73,14 +71,11 @@ class LoginViewModel(
                     .onSuccess {
                         _state.value = _state.value.copy(loginSuccess = true)
                     }
-                    .onFailure { error ->
-                    when (error) {
-                        is NoNetworkException -> _state.value = _state.value.copy(error = error)
-                        is NoActiveSessionException -> _state.value = _state.value.copy(error = error)
-                        is InvalidCredentialsException -> _state.value = _state.value.copy(error = error)
-                        else -> _state.value = _state.value.copy(error = Exception(error.message))
+                    .onFailure {
+                        _state.value = _state.value.copy(
+                            error = ErrorMapper.map(it)
+                        )
                     }
-                }
             }
         } catch (exception: Exception) {
             _state.value = _state.value.copy(error = exception)

@@ -5,6 +5,8 @@
     <string name="my_panel">Mi Panel</string>
     <string name="reset_advice">Se ha enviado un correo electrónico de restablecimiento a la dirección indicada.</string>
     <string name="attention">Atención</string>
+    <string name="since">Desde</string>
+    <string name="until">Hasta</string>
 
     <!-- Botones -->
     <string name="login">Iniciar sesión</string>
@@ -16,6 +18,8 @@
     <string name="reset_password">Restablecer contraseña</string>
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancelar</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
 
     <!-- Errores -->
     <string name="error">Error</string>
@@ -31,6 +35,11 @@
     <string name="no_active_session">No hay ninguna sesión activa.</string>
     <string name="password_empty">La contraseña no puede estar vacía.</string>
     <string name="account_has_active_reservation">Tu cuenta tiene una reserva activa</string>
+    <string name="parking_closing_soon">Este parking se cierra pronto</string>
+    <string name="parking_has_no_free_spots">No hay plazas disponibles</string>
+    <string name="parking_is_closed">Este parking está cerrado</string>
+    <string name="reservation_not_found">Reserva no encontrada</string>
+    <string name="invalid_reservation_state">El estado de la reserva no puede cambiar a este estado</string>
 
     <!-- Campos -->
     <string name="email">Correo electrónico</string>
@@ -82,12 +91,31 @@
     <string name="rule_sample">Ej: No animales</string>
     <string name="not_available_parking_areas">Parkings no disponibles</string>
     <!-- Hacer reserva -->
+    <string name="reservation_id">ID de reserva</string>
+    <string name="reservations">Reservas</string>
     <string name="find_parking">Buscar parking</string>
     <string name="confirm_reservation">Confirmar reserva</string>
     <string name="no_parking_found">No se han encontrado parkings cercanos</string>
     <string name="no_rules">No hay normas específicas para este parking.</string>
     <string name="available_spots_out_of"> plazas libres de </string>
     <string name="reservation_advice">¿Quieres confirmar tu reserva?</string>
-    <string name="reservation_created">Se ha creado la reserva</string>
+    <string name="reservation_created">Se ha creado la reserva. Comprueba la sección 'Mis viajes'. Tienes 20 minutos para hacer el check-in.</string>
+    <string name="clear_search">Limpiar búsqueda</string>
+    <string name="no_results_for">No hay resultados para </string>
+    <string name="reserved">Reservada</string>
+    <string name="check_in">Check-in</string>
+    <string name="check_out">Check-out</string>
+    <string name="canceled">Cancelada</string>
+    <string name="overdue">Fuera de plazo</string>
+    <string name="expired">Expirada</string>
+    <string name="cancel_reservation">Cancelar reserva</string>
+    <string name="cancel_reservation_confirm">¿Estás seguro de que quieres cancelar esta reserva para este cliente?</string>
+    <string name="cancel_reservation_confirm_user">¿Estás seguro de que quieres cancelar esta reserva? Tendrás que volver a realizar una reserva nueva</string>
+    <string name="check_in_reservation">Check-in de reserva</string>
+    <string name="check_in_reservation_confirm_user">¿Estás seguro de que quieres hacer check-in en esta reserva?</string>
+    <string name="check_out_reservation">Check-out de reserva</string>
+    <string name="check_out_reservation_confirm_user">¿Estás seguro de que quieres hacer check-out en esta reserva?</string>
+    <string name="no_active_reservations">No hay reservas activas</string>
+    <string name="my_trips">Mis viajes</string>
 
 </resources>
