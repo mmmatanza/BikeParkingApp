@@ -77,6 +77,7 @@ class SupabaseParkingAreaRepository(
                     put("p_latitude", parkingArea.latitude)
                     put("p_longitude", parkingArea.longitude)
                     put("p_capacity", parkingArea.capacity)
+                    put("p_timezone_id", parkingArea.timezoneId)
                     put("p_opening_time", parkingArea.openingTime)
                     put("p_closing_time", parkingArea.closingTime)
                     put("p_open_days", buildJsonArray {
@@ -107,6 +108,7 @@ class SupabaseParkingAreaRepository(
                     put("p_latitude", parkingArea.latitude)
                     put("p_longitude", parkingArea.longitude)
                     put("p_capacity", parkingArea.capacity)
+                    put("p_timezone_id", parkingArea.timezoneId)
                     put("p_opening_time", parkingArea.openingTime)
                     put("p_closing_time", parkingArea.closingTime)
                     put("p_open_days", buildJsonArray {

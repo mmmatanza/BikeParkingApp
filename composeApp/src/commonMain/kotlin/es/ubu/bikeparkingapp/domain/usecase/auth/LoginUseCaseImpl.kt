@@ -5,7 +5,6 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
  * Representa el caso de uso para iniciar sesión.
- *
  * @property authRepository Repositorio de autenticación.
  * @property accountRepository Repositorio de cuentas.
  */

@@ -5,6 +5,11 @@ import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Instant
 
+/**
+ * Formatea un [Instant] en una cadena de texto legible siguiendo el patrón "dd/MM/yyyy HH:mm"
+ * @param instant Instante a formatear
+ * @return Cadena de texto formateada
+ */
 fun formatInstant(instant: Instant): String {
     return try {
         // Convertimos a la zona horaria del sistema del usuario

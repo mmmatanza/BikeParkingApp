@@ -16,6 +16,7 @@ import kotlinx.serialization.Serializable
  * @property currentOccupancy Plazas ocupadas
  * @property isOperative Estado del parking (operativo/fuera de servicio)
  * @property isActive Indica si sigue activo el parking o ha sido dado de baja
+ * @property timezoneId Zona horaria
  * @property openingTime Horario de apertura
  * @property closingTime Horario de cierre
  * @property openDays Días de apertura
@@ -33,6 +34,7 @@ data class ParkingAreaDto(
     @SerialName("current_occupancy") val currentOccupancy: Int,
     @SerialName("is_operative") val isOperative: Boolean,
     @SerialName("is_active") val isActive: Boolean,
+    @SerialName("timezone_id") val timezoneId: String = "Europe/Madrid",
     @SerialName("opening_time") val openingTime: String,
     @SerialName("closing_time") val closingTime: String,
     @SerialName("open_days") val openDays: List<Int>,

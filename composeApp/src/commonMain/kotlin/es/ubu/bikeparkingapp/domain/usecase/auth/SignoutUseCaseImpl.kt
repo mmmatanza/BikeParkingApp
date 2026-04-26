@@ -5,18 +5,18 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
  * Representa el caso de uso para cerrar sesión.
- *
  * @property authRepository Repositorio de autenticación.
+ * @property accountRepository Repositorio de cuentas.
  */
 class SignoutUseCaseImpl(
     private val authRepository: AuthRepository,
     private val accountRepository: AccountRepository
 ): SignoutUseCase {
-    override suspend operator fun invoke(): Result<Unit> {
+    override suspend operator fun invoke(): Result<Unit> = runCatching{
         // Limpiamos los datos locales
         accountRepository.clearAccount()
 
         // Cerramos la sesión
-        return authRepository.signout()
+        authRepository.signout()
     }
 }

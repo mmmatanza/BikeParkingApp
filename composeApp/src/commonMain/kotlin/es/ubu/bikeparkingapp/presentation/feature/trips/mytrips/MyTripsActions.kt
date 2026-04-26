@@ -6,10 +6,12 @@ package es.ubu.bikeparkingapp.presentation.feature.trips.mytrips
  * @property onCancelReservationClick Acción al hacer click en el botón de cancelar una reserva.
  * @property onCheckInClick Acción al hacer click en el botón de check-in.
  * @property onCheckOutClick Acción al hacer click en el botón de check-out.
+ * @property onExtendReservationClick Acción al hacer click en el botón de extender una reserva.
  */
 data class MyTripsActions(
     val onBackClick: () -> Unit = {},
     val onCancelReservationClick: (String) -> Unit = {},
     val onCheckInClick: (String) -> Unit = {},
-    val onCheckOutClick: (String) -> Unit = {}
+    val onCheckOutClick: (String) -> Unit = {},
+    val onExtendReservationClick: (String) -> Unit = {}
 )

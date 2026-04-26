@@ -35,19 +35,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.address
 import bikeparkingapp.composeapp.generated.resources.back
 import bikeparkingapp.composeapp.generated.resources.cancel
 import bikeparkingapp.composeapp.generated.resources.canceled
 import bikeparkingapp.composeapp.generated.resources.check_in
 import bikeparkingapp.composeapp.generated.resources.check_out
 import bikeparkingapp.composeapp.generated.resources.expired
+import bikeparkingapp.composeapp.generated.resources.extend
+import bikeparkingapp.composeapp.generated.resources.extend_reservation
 import bikeparkingapp.composeapp.generated.resources.my_trips
 import bikeparkingapp.composeapp.generated.resources.no_active_reservations
 import bikeparkingapp.composeapp.generated.resources.overdue
 import bikeparkingapp.composeapp.generated.resources.reserved
 import bikeparkingapp.composeapp.generated.resources.since
 import bikeparkingapp.composeapp.generated.resources.until
-import es.ubu.bikeparkingapp.domain.entity.Reservation
+import es.ubu.bikeparkingapp.domain.entity.ReservationDetail
 import es.ubu.bikeparkingapp.domain.entity.ReservationState
 import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
 import es.ubu.bikeparkingapp.presentation.common.util.formatInstant
@@ -107,12 +110,13 @@ fun MyTripsContent(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(state.reservations) { reservation ->
+                items(state.reservations) { reservationDetail ->
                     UserReservationItem(
-                        reservation = reservation,
+                        reservationDetail = reservationDetail,
                         onCancelClick = actions.onCancelReservationClick,
                         onCheckInClick = actions.onCheckInClick,
-                        onCheckOutClick = actions.onCheckOutClick
+                        onCheckOutClick = actions.onCheckOutClick,
+                        onExtendClick = actions.onExtendReservationClick
                     )
                 }
             }
@@ -120,12 +124,21 @@ fun MyTripsContent(
     }
 }
 
+/**
+ * Representa un item de reserva en la pantalla de reservas del usuario
+ * @param reservationDetail Detalles de la reserva.
+ * @param onCancelClick Acción al hacer click en el botón de cancelar
+ * @param onCheckInClick Acción al hacer click en el botón de check-in
+ * @param onCheckOutClick Acción al hacer click en el botón de check-out
+ * @param onExtendClick Acción al hacer click en el botón de extender
+ */
 @Composable
 fun UserReservationItem(
-    reservation: Reservation,
+    reservationDetail: ReservationDetail,
     onCancelClick: (String) -> Unit,
     onCheckInClick: (String) -> Unit,
-    onCheckOutClick: (String) -> Unit
+    onCheckOutClick: (String) -> Unit,
+    onExtendClick: (String) -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -143,36 +156,50 @@ fun UserReservationItem(
                 verticalAlignment = Alignment.Top
             ) {
                 Text(
-                    text = "${reservation.reservationId}",
+                    text = "${reservationDetail.reservation.reservationId}",
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
                     softWrap = true // Permite que el ID salte de línea
                 )
 
-                ReservationStateBadge(reservation.state)
+                ReservationStateBadge(reservationDetail.reservation.state)
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             // Información de tiempo compacta
-            FlowRow( // FlowRow para que si no cabe en una línea, baje de forma fluida
+            FlowRow( // FlowRow por si no cabe en una línea
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Text(
-                    text = "${stringResource(Res.string.since)}: ${formatInstant(reservation.inTime)}",
+                    text = "${stringResource(Res.string.since)}: ${formatInstant(reservationDetail.reservation.inTime)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "${stringResource(Res.string.until)}: ${formatInstant(reservation.outTime)}",
+                    text = "${stringResource(Res.string.until)}: ${formatInstant(reservationDetail.reservation.outTime)}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
-            if (reservation.hasActions) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Información de la localización
+            FlowRow( // FlowRow por si no cabe en una línea
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = stringResource(Res.string.address) + ": ${reservationDetail.parkingAddress}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            if (reservationDetail.reservation.hasActions) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -180,9 +207,9 @@ fun UserReservationItem(
                     horizontalArrangement = Arrangement.End, // Alinea los botones a la derecha
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (reservation.canCancel) {
+                    if (reservationDetail.reservation.canCancel) {
                         TextButton(
-                            onClick = { onCancelClick(reservation.reservationId!!) },
+                            onClick = { onCancelClick(reservationDetail.reservation.reservationId!!) },
                             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
@@ -196,7 +223,7 @@ fun UserReservationItem(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         Button(
-                            onClick = { onCheckInClick(reservation.reservationId!!) },
+                            onClick = { onCheckInClick(reservationDetail.reservation.reservationId!!) },
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
@@ -207,9 +234,23 @@ fun UserReservationItem(
                         }
                     }
 
-                    if (reservation.canCheckOut) {
+                    if(reservationDetail.reservation.canExtend){
                         Button(
-                            onClick = { onCheckOutClick(reservation.reservationId!!) },
+                            onClick = { onExtendClick(reservationDetail.reservation.reservationId!!) },
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                            modifier = Modifier.height(32.dp)
+                        ) {
+                            Text(
+                                text = stringResource(Res.string.extend),
+                                style = MaterialTheme.typography.labelLarge
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
+                    if (reservationDetail.reservation.canCheckOut) {
+                        Button(
+                            onClick = { onCheckOutClick(reservationDetail.reservation.reservationId!!) },
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 0.dp),
                             modifier = Modifier.height(32.dp)
                         ) {
@@ -225,6 +266,10 @@ fun UserReservationItem(
     }
 }
 
+/**
+ * Representa el badge de estado de una reserva
+ * @param state Estado de la reserva.
+ */
 @Composable
 private fun ReservationStateBadge(state: ReservationState) {
     val (textRes, containerColor) = when (state) {

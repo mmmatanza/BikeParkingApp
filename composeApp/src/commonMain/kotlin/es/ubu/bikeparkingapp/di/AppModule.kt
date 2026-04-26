@@ -41,10 +41,16 @@ import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckInReservationUseCas
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckInReservationUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckOutReservationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckOutReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.ExtendReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.ExtendReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetDetailedUserReservationsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetDetailedUserReservationsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetParkingAreaActiveReservationsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetParkingAreaActiveReservationsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.reservation.ReleaseReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.ReleaseReservationUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
@@ -71,9 +77,9 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-// En este archivo se definen los módulos que utilizará Koin (injección de dependencias)
+// En este archivo se definen los módulos que utilizará Koin (inyección de dependencias)
 
-// Módulo principal con los repositorio y casos de uso
+// Módulo principal con los repositorios y casos de uso
 val appModule = module {
 
     // Repositorios
@@ -108,6 +114,14 @@ val appModule = module {
     single<CancelReservationUseCase>{ CancelReservationUseCaseImpl(get()) }
     single<CheckInReservationUseCase>{ CheckInReservationUseCaseImpl(get()) }
     single<CheckOutReservationUseCase>{ CheckOutReservationUseCaseImpl(get()) }
+    single<ReleaseReservationUseCase>{ ReleaseReservationUseCaseImpl(get()) }
+    single<GetDetailedUserReservationsUseCase>{
+        GetDetailedUserReservationsUseCaseImpl(
+            get(),
+            get()
+        )
+    }
+    single<ExtendReservationUseCase>{ ExtendReservationUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels
@@ -130,12 +144,9 @@ val viewModelsModule = module {
 val supabaseModule = module {
     // Devolverá la misma instancia de SupabaseClient cada vez que se la necesite
     single {
-        // La clave se puede incluir aquí, no es un problema de seguridad dado
-        // que se utilizará RLS (seguridad a nivel de fila)
-        // otra opción sería utilizar un archivo de propiedades, pero requiere
-        // BuildKonfig o utilizar configuraciones expect/actual
         createSupabaseClient(
             supabaseUrl = "https://cdnbauyltzxbtxiwipnd.supabase.co",
+            // Es la publishable key
             supabaseKey = "sb_publishable_kdMhoPCU7e9Y6XmGX2Fxuw_iPLVIe5v"
         ) {
             install(Auth)

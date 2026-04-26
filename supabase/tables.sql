@@ -1,3 +1,5 @@
+-- En este archivo se definen las tablas necesarias para la aplicación
+
 -- Para manejar coordenadas
 CREATE EXTENSION IF NOT EXISTS postgis;
 
@@ -11,6 +13,13 @@ CREATE TABLE accounts (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Función para validar si una zona horaria es válida
+CREATE OR REPLACE FUNCTION is_valid_timezone(tz TEXT) RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (SELECT 1 FROM pg_timezone_names WHERE name = tz);
+END;
+$$ LANGUAGE plpgsql STABLE;
+
 -- Tabla de parkings
 CREATE TABLE parkingareas (
     parking_area_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -22,6 +31,7 @@ CREATE TABLE parkingareas (
     current_occupancy INTEGER NOT NULL DEFAULT 0 CHECK (current_occupancy >= 0),
     is_operative BOOLEAN NOT NULL DEFAULT true,
     is_active BOOLEAN NOT NULL DEFAULT true,
+    timezone_id TEXT NOT NULL DEFAULT 'Europe/Madrid',
     opening_time TIME NOT NULL DEFAULT '00:00:00',
     closing_time TIME NOT NULL DEFAULT '23:59:59',
     open_days INTEGER[] NOT NULL DEFAULT '{}',
@@ -31,7 +41,9 @@ CREATE TABLE parkingareas (
     -- No puede cerrar antes de abrir
     CONSTRAINT check_opening_closing CHECK (opening_time < closing_time),
     -- Los días deben ser valores entre 0 (lunes) y 6 (domingo)
-    CONSTRAINT check_open_days_valid CHECK (open_days <@ ARRAY[0,1,2,3,4,5,6])
+    CONSTRAINT check_open_days_valid CHECK (open_days <@ ARRAY[0,1,2,3,4,5,6]),
+    -- La zona horaria debe ser válida
+    CONSTRAINT check_timezone_valid CHECK (is_valid_timezone(timezone_id))
 );
 -- Índice para la ubicación
 CREATE INDEX parking_area_location_idx ON parkingareas USING GIST (parking_area_location);

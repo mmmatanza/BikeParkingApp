@@ -1,0 +1,45 @@
+// Tabla externa de Supabase/Auth para mantener la integridad visual
+Table auth.users {
+  id UUID [primary key]
+}
+
+Table accounts {
+  account_id UUID [primary key]
+  name TEXT [not null]
+  tax_id TEXT [unique, not null]
+  role TEXT [not null, default: 'user']
+  created_at TIMESTAMPTZ [not null, default: `now()`]
+  updated_at TIMESTAMPTZ [not null, default: `now()`]
+}
+
+Table parkingareas {
+  parking_area_id UUID [primary key, default: `gen_random_uuid()`]
+  owner_id UUID [not null]
+  name TEXT [not null]
+  address TEXT [not null]
+  parking_area_location "GEOGRAPHY(Point, 4326)" [not null]
+  capacity INTEGER [not null, note: 'CHECK > 0']
+  current_occupancy INTEGER [not null, default: 0, note: 'CHECK >= 0 and <= capacity']
+  is_operative BOOLEAN [not null, default: true]
+  is_active BOOLEAN [not null, default: true]
+  opening_time TIME [not null, default: '00:00:00']
+  closing_time TIME [not null, default: '23:59:59']
+  open_days "INTEGER[]" [not null, default: '{}']
+  rules "TEXT[]" [default: '{}']
+}
+
+Table reservations {
+  reservation_id UUID [primary key, default: `gen_random_uuid()`]
+  account_id UUID [not null]
+  parking_area_id UUID [not null]
+  in_time TIMESTAMPTZ [not null]
+  out_time TIMESTAMPTZ [note: 'NULL si es flujo en vivo']
+  state TEXT [not null, default: 'RESERVED', note: 'Enum: RESERVED, CHECKED_IN, etc.']
+  created_at TIMESTAMPTZ [not null, default: `now()`]
+}
+
+// Relaciones
+Ref: accounts.account_id > auth.users.id // Relación con Auth
+Ref: parkingareas.owner_id > accounts.account_id // Un usuario es dueño de parkings
+Ref: reservations.account_id > accounts.account_id // Un usuario hace reservas
+Ref: reservations.parking_area_id > parkingareas.parking_area_id // Reservas en un parking

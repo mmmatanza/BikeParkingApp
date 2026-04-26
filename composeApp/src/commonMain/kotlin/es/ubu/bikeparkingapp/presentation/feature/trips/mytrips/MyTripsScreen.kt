@@ -10,12 +10,12 @@ import androidx.compose.ui.Modifier
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.cancel_reservation
 import bikeparkingapp.composeapp.generated.resources.cancel_reservation_confirm_user
-import bikeparkingapp.composeapp.generated.resources.check_in
 import bikeparkingapp.composeapp.generated.resources.check_in_reservation
 import bikeparkingapp.composeapp.generated.resources.check_in_reservation_confirm_user
-import bikeparkingapp.composeapp.generated.resources.check_out
 import bikeparkingapp.composeapp.generated.resources.check_out_reservation
 import bikeparkingapp.composeapp.generated.resources.check_out_reservation_confirm_user
+import bikeparkingapp.composeapp.generated.resources.extend_reservation
+import bikeparkingapp.composeapp.generated.resources.extend_reservation_confirm_user
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -79,6 +79,14 @@ class MyTripsScreen : Screen {
             onDismiss = viewModel::cancelReservationDialogDismiss
         )
 
+        ConfirmationDialog(
+            isVisible = state.extendReservationDialog,
+            title = stringResource(Res.string.extend_reservation),
+            message = stringResource(Res.string.extend_reservation_confirm_user),
+            onConfirm = viewModel::extendReservation,
+            onDismiss = viewModel::extendReservationDialogDismiss
+        )
+
         MyTripsContent(
             state,
             actions = MyTripsActions(
@@ -94,6 +102,9 @@ class MyTripsScreen : Screen {
                 },
                 onCheckOutClick = {
                     viewModel.checkOutReservationDialog(it)
+                },
+                onExtendReservationClick = {
+                    viewModel.extendReservationDialog(it)
                 }
             )
         )

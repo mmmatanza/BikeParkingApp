@@ -5,6 +5,8 @@ import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 
 /**
  * Caso de uso para obtener las reservas de un usuario.
+ * @property reservationRepository Repositorio de reservas.
+ * @return La lista de reservas del usuario.
  */
 class GetUserReservationsUseCaseImpl(
     private val reservationRepository: ReservationRepository

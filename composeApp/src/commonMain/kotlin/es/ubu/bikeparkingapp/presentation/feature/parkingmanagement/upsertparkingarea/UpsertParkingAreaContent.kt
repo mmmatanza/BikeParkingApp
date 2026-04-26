@@ -34,6 +34,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TimePicker
@@ -51,6 +52,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.accept
+import bikeparkingapp.composeapp.generated.resources.add_parking_area
 import bikeparkingapp.composeapp.generated.resources.add_parking_rule
 import bikeparkingapp.composeapp.generated.resources.address
 import bikeparkingapp.composeapp.generated.resources.back
@@ -61,6 +63,7 @@ import bikeparkingapp.composeapp.generated.resources.friday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.location_selected
 import bikeparkingapp.composeapp.generated.resources.monday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.name
+import bikeparkingapp.composeapp.generated.resources.open_24_hours
 import bikeparkingapp.composeapp.generated.resources.open_days
 import bikeparkingapp.composeapp.generated.resources.opening_time
 import bikeparkingapp.composeapp.generated.resources.parking_rules
@@ -72,6 +75,7 @@ import bikeparkingapp.composeapp.generated.resources.select_location
 import bikeparkingapp.composeapp.generated.resources.sunday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.thursday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.tuesday_initial_letter
+import bikeparkingapp.composeapp.generated.resources.update_parking_area
 import bikeparkingapp.composeapp.generated.resources.wednesday_initial_letter
 import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
 import kotlinx.datetime.DayOfWeek
@@ -88,59 +92,15 @@ fun UpsertParkingAreaContent(
     state: UpsertParkingAreaState,
     actions: UpsertParkingAreaActions
 ) {
-
-    // Estados para controlar el diálogo del TimePicker
-    var showOpeningPicker by remember { mutableStateOf(false) }
-    var showClosingPicker by remember { mutableStateOf(false) }
-
-    // Estado del reloj
-    val timePickerState = rememberTimePickerState(
-        initialHour = 8,
-        initialMinute = 0,
-        is24Hour = true
-    )
-
-    // Lógica del Diálogo
-    if (showOpeningPicker || showClosingPicker) {
-        AlertDialog(
-            onDismissRequest = {
-                showOpeningPicker = false
-                showClosingPicker = false
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    val formattedTime = "${
-                        timePickerState.hour.toString().padStart(2, '0')
-                    }:${timePickerState.minute.toString().padStart(2, '0')}"
-                    if (showOpeningPicker) actions.onOpeningTimeChange(formattedTime)
-                    else actions.onClosingTimeChange(formattedTime)
-
-                    showOpeningPicker = false
-                    showClosingPicker = false
-                }) { Text(stringResource(Res.string.accept)) }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showOpeningPicker = false
-                    showClosingPicker = false
-                }) { Text(stringResource(Res.string.cancel)) }
-            },
-            text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    TimePicker(state = timePickerState)
-                }
-            }
-        )
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Text(
+                        text = stringResource(if (state.isEditing) Res.string.update_parking_area else Res.string.add_parking_area)
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = actions.onBackClick, modifier = Modifier.handCursor()) {
                         Icon(
@@ -207,15 +167,19 @@ fun UpsertParkingAreaContent(
 
                 // Horario de apertura
                 OutlinedTextField(
-                    value = state.openingTime,
+                    value = state.openingTime.take(5),
                     onValueChange = { },
                     label = { Text(stringResource(Res.string.opening_time)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .onFocusChanged { if (it.isFocused) showOpeningPicker = true },
+                        .onFocusChanged { if (it.isFocused && !state.isOpen24Hours) actions.toggleOpeningPicker(true) },
                     readOnly = true,
+                    enabled = !state.isOpen24Hours,
                     trailingIcon = {
-                        IconButton(onClick = { showOpeningPicker = true }) {
+                        IconButton(
+                            onClick = { actions.toggleOpeningPicker(true) },
+                            enabled = !state.isOpen24Hours
+                        ) {
                             Icon(Icons.Default.Schedule, contentDescription = null)
                         }
                     },
@@ -226,20 +190,41 @@ fun UpsertParkingAreaContent(
 
                 // Horario de Cierre
                 OutlinedTextField(
-                    value = state.closingTime,
+                    value = state.closingTime.take(5),
                     onValueChange = { },
                     label = { Text(stringResource(Res.string.closing_time)) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .onFocusChanged { if (it.isFocused) showClosingPicker = true },
+                        .onFocusChanged { if (it.isFocused && !state.isOpen24Hours) actions.toggleClosingPicker(true) },
                     readOnly = true,
+                    enabled = !state.isOpen24Hours,
                     trailingIcon = {
-                        IconButton(onClick = { showClosingPicker = true }) {
+                        IconButton(
+                            onClick = { actions.toggleClosingPicker(true) },
+                            enabled = !state.isOpen24Hours
+                        ) {
                             Icon(Icons.Default.Schedule, contentDescription = null)
                         }
                     },
                     singleLine = true
                 )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(Res.string.open_24_hours),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Switch(
+                        checked = state.isOpen24Hours,
+                        onCheckedChange = actions.onOpen24HoursToggle
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

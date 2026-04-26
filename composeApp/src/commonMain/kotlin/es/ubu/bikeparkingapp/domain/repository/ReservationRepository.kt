@@ -2,6 +2,7 @@ package es.ubu.bikeparkingapp.domain.repository
 
 import es.ubu.bikeparkingapp.domain.entity.Reservation
 import es.ubu.bikeparkingapp.domain.entity.ReservationState
+import kotlin.time.Instant
 
 
 /**
@@ -17,6 +18,7 @@ interface ReservationRepository {
     // Escritura de reservas
     suspend fun save(reservation: Reservation): Result<Unit>
     suspend fun updateState(reservationId: String, newState: ReservationState): Result<Unit>
+    suspend fun extend(reservationId: String, newOutTime: Instant): Result<Unit>
     suspend fun countParkingActiveReservations(parkingAreaId: String): Int
     suspend fun countUserActiveReservations(accountId: String): Int
 }

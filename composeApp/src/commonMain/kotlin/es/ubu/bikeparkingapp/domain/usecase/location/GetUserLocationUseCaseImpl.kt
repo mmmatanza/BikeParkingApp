@@ -5,6 +5,8 @@ import es.ubu.bikeparkingapp.domain.repository.LocationRepository
 
 /**
  * Implementación del caso de uso para obtener la ubicación del usuario.
+ * @property locationRepository Repositorio de ubicación.
+ * @return La ubicación del usuario.
  */
 class GetUserLocationUseCaseImpl(
     private val locationRepository: LocationRepository

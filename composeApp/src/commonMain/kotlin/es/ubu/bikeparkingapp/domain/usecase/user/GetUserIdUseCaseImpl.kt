@@ -4,8 +4,8 @@ import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 
 /**
  * Representa el caso de uso para obtener el id de un usuario.
- *
  * @property accountRepository Repositorio de cuentas.
+ * @return El id del usuario.
  */
 class GetUserIdUseCaseImpl(
     private val accountRepository: AccountRepository

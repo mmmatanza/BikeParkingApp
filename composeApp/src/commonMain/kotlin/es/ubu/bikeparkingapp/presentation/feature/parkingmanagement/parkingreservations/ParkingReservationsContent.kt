@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -25,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,6 +42,7 @@ import bikeparkingapp.composeapp.generated.resources.check_out
 import bikeparkingapp.composeapp.generated.resources.expired
 import bikeparkingapp.composeapp.generated.resources.no_active_reservations
 import bikeparkingapp.composeapp.generated.resources.overdue
+import bikeparkingapp.composeapp.generated.resources.release
 import bikeparkingapp.composeapp.generated.resources.reservation_id
 import bikeparkingapp.composeapp.generated.resources.reservations
 import bikeparkingapp.composeapp.generated.resources.reserved
@@ -106,7 +109,8 @@ fun ParkingReservationsContent(
                 items(state.reservations) { reservation ->
                     AdminReservationItem(
                         reservation = reservation,
-                        onCancelClick = actions.onCancelReservationClick
+                        onCancelClick = actions.onCancelReservationClick,
+                        onReleaseClick = actions.onReleaseClick
                     )
                 }
             }
@@ -117,7 +121,8 @@ fun ParkingReservationsContent(
 @Composable
 fun AdminReservationItem(
     reservation: Reservation,
-    onCancelClick: (String) -> Unit
+    onCancelClick: (String) -> Unit,
+    onReleaseClick: (String) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -184,15 +189,30 @@ fun AdminReservationItem(
                 color = MaterialTheme.colorScheme.secondary
             )
             if (reservation.state == ReservationState.RESERVED) {
-                androidx.compose.material3.TextButton(
+                TextButton(
                     onClick = {onCancelClick(reservation.reservationId!!)},
-                    colors = androidx.compose.material3.ButtonDefaults.textButtonColors(
+                    colors = ButtonDefaults.textButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     ),
                     modifier = Modifier.handCursor()
                 ) {
                     Text(
                         text = stringResource(Res.string.cancel),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            }
+            else if((reservation.state == ReservationState.CHECKED_IN)||(reservation.state == ReservationState.OVERDUE)){
+                TextButton(
+                    onClick = {onReleaseClick(reservation.reservationId!!)},
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    modifier = Modifier.handCursor()
+                ) {
+                    Text(
+                        text = stringResource(Res.string.release),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )

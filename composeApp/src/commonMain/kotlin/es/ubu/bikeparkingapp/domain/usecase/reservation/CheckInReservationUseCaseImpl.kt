@@ -7,6 +7,7 @@ import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 
 /**
  * Caso de uso para hacer check-in en una reserva.
+ * @property reservationRepository Repositorio de reservas.
  */
 class CheckInReservationUseCaseImpl(
     private val reservationRepository: ReservationRepository

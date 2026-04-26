@@ -19,6 +19,7 @@ import kotlin.time.Clock
  * @property currentOccupancy Número actual de vehículos ocupados en el parking.
  * @property isOperative Indica si el parking está operativo o no.
  * @property isActive Indica si el parking está activo o no.
+ * @property timezoneId Zona horaria del parking.
  * @property openingTime Horario de apertura del parking.
  * @property closingTime Horario de cierre del parking.
  * @property openDays Días de apertura del parking.
@@ -36,6 +37,7 @@ data class ParkingArea(
     val currentOccupancy: Int,
     val isOperative: Boolean,
     val isActive: Boolean,
+    val timezoneId: String = "Europe/Madrid",
     val openingTime: String,
     val closingTime: String,
     val openDays: Set<DayOfWeek>,
@@ -47,15 +49,17 @@ data class ParkingArea(
  * @return `true` si el parking está abierto, `false` en caso contrario.
  */
 fun ParkingArea.isOpen(): Boolean {
-    val now = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+    // Obtenemos el "ahora" pero proyectado en la zona horaria del parking
+    val parkingTimeZone = TimeZone.of(this.timezoneId)
+    val nowInParking = Clock.System.now().toLocalDateTime(parkingTimeZone)
 
-    // Comprobar si el día de hoy está en la lista de días en los que abre el parking
-    if (now.dayOfWeek !in openDays) {
+    // Comprobamos si el día de hoy es día de apertura
+    if (nowInParking.dayOfWeek !in openDays) {
         return false
     }
 
-    // Comprobar el rango horario
-    val currentTime = now.time
+    // Comprobamos el rango horario usando la hora local del parking
+    val currentTime = nowInParking.time
     val opening = LocalTime.parse(openingTime)
     val closing = LocalTime.parse(closingTime)
 

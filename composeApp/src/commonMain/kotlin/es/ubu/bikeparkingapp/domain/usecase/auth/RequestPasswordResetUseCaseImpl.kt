@@ -4,7 +4,6 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
  * Representa el caso de uso para restablecer la contraseña.
- *
  * @property authRepository Repositorio de autenticación.
  */
 class RequestPasswordResetUseCaseImpl(

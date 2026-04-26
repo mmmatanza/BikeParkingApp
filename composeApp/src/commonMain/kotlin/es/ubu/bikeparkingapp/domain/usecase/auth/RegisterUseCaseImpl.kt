@@ -7,9 +7,9 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 
 /**
  * Representa el caso de uso para registrar un usuario.
- *
  * @property authRepository Repositorio de autenticación.
  * @property accountRepository Repositorio de cuentas.
+ * @return El usuario registrado.
  */
 
 class RegisterUseCaseImpl(

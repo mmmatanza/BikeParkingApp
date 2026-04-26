@@ -18,6 +18,10 @@ import kotlinx.datetime.DayOfWeek
  * @property isSuccess Indica si la agregación ha sido exitosa.
  * @property rules Lista de reglas del parking.
  * @property currentRuleInput Regla actual.
+ * @property showOpeningPicker Indica si se debe mostrar el diálogo para seleccionar la hora de apertura.
+ * @property showClosingPicker Indica si se debe mostrar el diálogo para seleccionar la hora de cierre.
+ * @property isOpen24Hours Indica si el parking está abierto 24 horas.
+ * @property upsertConfirmationDialog Indica si se debe mostrar el diálogo de confirmación de agregación.
  */
 data class UpsertParkingAreaState(
     val parkingAreaId: String? = null,
@@ -35,5 +39,9 @@ data class UpsertParkingAreaState(
     val isAlreadyLoaded: Boolean = false,
     val isSuccess: Boolean = false,
     val rules: List<String> = emptyList(),
-    val currentRuleInput: String = ""
+    val currentRuleInput: String = "",
+    val showOpeningPicker: Boolean = false,
+    val showClosingPicker: Boolean = false,
+    val isOpen24Hours: Boolean = false,
+    val upsertConfirmationDialog : Boolean = false,
 )

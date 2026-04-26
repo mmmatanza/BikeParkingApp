@@ -17,6 +17,9 @@ import kotlinx.datetime.DayOfWeek
  * @property onRemoveRule Función para eliminar una regla.
  * @property validateForm Función para validar el formulario.
  * @property onDayToggle Función para cambiar el estado de un día de apertura.
+ * @property toggleOpeningPicker Función para cambiar el estado del selector de horario de apertura.
+ * @property toggleClosingPicker Función para cambiar el estado del selector de horario de cierre.
+ * @property onOpen24HoursToggle Función para cambiar el estado de si el parking está abierto 24 horas.
  */
 data class UpsertParkingAreaActions(
     val onNameChange: (String) -> Unit = {},
@@ -31,5 +34,8 @@ data class UpsertParkingAreaActions(
     val onAddRule: () -> Unit,
     val onRemoveRule: (Int) -> Unit,
     val validateForm: () -> Boolean,
-    val onDayToggle: (DayOfWeek) -> Unit
+    val onDayToggle: (DayOfWeek) -> Unit,
+    val toggleOpeningPicker: (Boolean) -> Unit,
+    val toggleClosingPicker: (Boolean) -> Unit,
+    val onOpen24HoursToggle: (Boolean) -> Unit
 )

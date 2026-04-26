@@ -7,6 +7,7 @@
     <string name="attention">Atención</string>
     <string name="since">Desde</string>
     <string name="until">Hasta</string>
+    <string name="extend">Extender</string>
 
     <!-- Botones -->
     <string name="login">Iniciar sesión</string>
@@ -20,6 +21,7 @@
     <string name="cancel">Cancelar</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+    <string name="release">Liberar</string>
 
     <!-- Errores -->
     <string name="error">Error</string>
@@ -40,6 +42,8 @@
     <string name="parking_is_closed">Este parking está cerrado</string>
     <string name="reservation_not_found">Reserva no encontrada</string>
     <string name="invalid_reservation_state">El estado de la reserva no puede cambiar a este estado</string>
+    <string name="extension_exceeds_closing">Extensión fuera del horario de cierre no permitida</string>
+    <string name="reservation_in_time_cannot_be_modified">El tiempo límite de check-in no puede ser modificado</string>
 
     <!-- Campos -->
     <string name="email">Correo electrónico</string>
@@ -65,11 +69,14 @@
     <string name="no_parking_areas">Aún no se han añadido parkings</string>
     <string name="opening_time">Horario de apertura</string>
     <string name="closing_time">Horario de cierre</string>
+    <string name="open_24_hours">Abierto 24 horas</string>
     <string name="capacity">Capacidad</string>
     <string name="select_location">Seleccionar ubicación</string>
     <string name="location_selected">Ubicación seleccionada</string>
     <string name="add_parking_area">Añadir parking</string>
+    <string name="update_parking_area">Actualizar parking</string>
     <string name="save_parking_area">Guardar parking</string>
+    <string name="save_parking_area_confirmation">¿Estás seguro de que quieres guardar este parking?</string>
     <string name="clear_coords">Limpiar coordenadas</string>
     <string name="parking_management">Gestión de parking</string>
     <string name="status">Estado</string>
@@ -82,7 +89,7 @@
     <string name="closed">Cerrado</string>
     <string name="schedule">Horario</string>
     <string name="deactivate_parking">Desactivar parking</string>
-    <string name="deactivate_parking_confirm">¿Estás seguro de que quieres desactivar este parking?</string>
+    <string name="deactivate_parking_confirm">¿Estás seguro de que quieres desactivar este parking? El cambio será permanente y no se mostrará más.</string>
     <string name="toggle_state">Cambiar estado</string>
     <string name="toggle_state_confirm">¿Estás seguro de que quieres cambiar el estado de este parking?</string>
     <string name="parking_rules">Reglas del parking</string>
@@ -90,12 +97,13 @@
     <string name="remove_parking_rule">Eliminar regla</string>
     <string name="rule_sample">Ej: No animales</string>
     <string name="not_available_parking_areas">Parkings no disponibles</string>
+
     <!-- Hacer reserva -->
     <string name="reservation_id">ID de reserva</string>
     <string name="reservations">Reservas</string>
     <string name="find_parking">Buscar parking</string>
     <string name="confirm_reservation">Confirmar reserva</string>
-    <string name="no_parking_found">No se han encontrado parkings cercanos</string>
+    <string name="no_parking_found">No se han encontrado parkings cercanos a ti en este momento</string>
     <string name="no_rules">No hay normas específicas para este parking.</string>
     <string name="available_spots_out_of"> plazas libres de </string>
     <string name="reservation_advice">¿Quieres confirmar tu reserva?</string>
@@ -108,6 +116,8 @@
     <string name="canceled">Cancelada</string>
     <string name="overdue">Fuera de plazo</string>
     <string name="expired">Expirada</string>
+    <string name="release_reservation">Liberar reserva</string>
+    <string name="release_reservation_confirm">¿Estás seguro de que quieres liberar esta reserva?</string>
     <string name="cancel_reservation">Cancelar reserva</string>
     <string name="cancel_reservation_confirm">¿Estás seguro de que quieres cancelar esta reserva para este cliente?</string>
     <string name="cancel_reservation_confirm_user">¿Estás seguro de que quieres cancelar esta reserva? Tendrás que volver a realizar una reserva nueva</string>
@@ -115,6 +125,8 @@
     <string name="check_in_reservation_confirm_user">¿Estás seguro de que quieres hacer check-in en esta reserva?</string>
     <string name="check_out_reservation">Check-out de reserva</string>
     <string name="check_out_reservation_confirm_user">¿Estás seguro de que quieres hacer check-out en esta reserva?</string>
+    <string name="extend_reservation">Extender reserva</string>
+    <string name="extend_reservation_confirm_user">¿Estás seguro de que quieres extender esta reserva una hora más?</string>
     <string name="no_active_reservations">No hay reservas activas</string>
     <string name="my_trips">Mis viajes</string>
 

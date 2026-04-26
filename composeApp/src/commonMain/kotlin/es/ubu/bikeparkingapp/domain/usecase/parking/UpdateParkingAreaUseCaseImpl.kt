@@ -3,6 +3,7 @@ package es.ubu.bikeparkingapp.domain.usecase.parking
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.TimeZone
 
 /**
  * Representa el caso de uso para actualizar un parking.
@@ -36,6 +37,7 @@ class UpdateParkingAreaUseCaseImpl(
             currentOccupancy = 0,
             isOperative = true,
             isActive = true,
+            timezoneId = TimeZone.currentSystemDefault().id,
             openingTime = openingTime,
             closingTime = closingTime,
             openDays = openDays,

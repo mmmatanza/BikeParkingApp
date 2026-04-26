@@ -5,7 +5,6 @@ import es.ubu.bikeparkingapp.domain.entity.Role
 
 /**
  * Representa la interfaz del caso de uso para registrar un usuario.
- *
  */
 interface RegisterUseCase {
     suspend operator fun invoke(

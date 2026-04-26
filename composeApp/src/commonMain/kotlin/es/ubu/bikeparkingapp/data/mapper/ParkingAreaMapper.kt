@@ -20,6 +20,7 @@ fun ParkingAreaDto.toDomain(): ParkingArea {
         currentOccupancy = this.currentOccupancy,
         isOperative = this.isOperative,
         isActive = this.isActive,
+        timezoneId = this.timezoneId,
         openingTime = this.openingTime,
         closingTime = this.closingTime,
         openDays = openDays
@@ -44,6 +45,7 @@ fun ParkingArea.toDto(): ParkingAreaDto {
         currentOccupancy = this.currentOccupancy,
         isOperative = this.isOperative,
         isActive = this.isActive,
+        timezoneId = this.timezoneId,
         openingTime = this.openingTime,
         closingTime = this.closingTime,
         openDays = openDays

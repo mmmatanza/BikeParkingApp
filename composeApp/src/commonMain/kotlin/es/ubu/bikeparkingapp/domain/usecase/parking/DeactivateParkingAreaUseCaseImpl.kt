@@ -5,7 +5,6 @@ import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 /**
  * Representa el caso de uso para desactivar un parking.
  * @property parkingAreaRepository Repositorio de parkings
- *
  */
 class DeactivateParkingAreaUseCaseImpl(
     private val parkingAreaRepository: ParkingAreaRepository

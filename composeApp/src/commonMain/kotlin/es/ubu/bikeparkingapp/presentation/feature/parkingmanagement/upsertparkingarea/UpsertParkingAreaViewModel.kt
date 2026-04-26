@@ -150,6 +150,14 @@ class UpsertParkingAreaViewModel(
         }
     }
 
+    fun toggleOpeningPicker(isActive:Boolean){
+        _state.value = _state.value.copy(showOpeningPicker = isActive)
+    }
+
+    fun toggleClosingPicker(isActive:Boolean){
+        _state.value = _state.value.copy(showClosingPicker = isActive)
+    }
+
     fun onLocationChange(latitude: Double, longitude: Double) {
         _state.value = _state.value.copy(
             latitude = latitude,
@@ -168,6 +176,14 @@ class UpsertParkingAreaViewModel(
     fun onDayToggle(day: DayOfWeek) {
         val current = _state.value.openDays
         _state.value = _state.value.copy(openDays = if (day in current) current - day else current + day)
+    }
+
+    fun onOpen24HoursToggle (enabled: Boolean){
+        _state.value = _state.value.copy(
+            isOpen24Hours = enabled,
+            openingTime = if (enabled) "00:00" else _state.value.openingTime,
+            closingTime = if (enabled) "23:59" else _state.value.closingTime,
+        )
     }
 
     fun onCapacityChange(capacity: Int) {
@@ -199,5 +215,13 @@ class UpsertParkingAreaViewModel(
         _state.value = _state.value.copy(
             rules = _state.value.rules.toMutableList().also { it.removeAt(index) }
         )
+    }
+
+    fun showUpsertConfirmationDialog(){
+        _state.value = _state.value.copy(upsertConfirmationDialog = true)
+    }
+
+    fun upsertConfirmationDialogDismiss(){
+        _state.value = _state.value.copy(upsertConfirmationDialog = false)
     }
 }

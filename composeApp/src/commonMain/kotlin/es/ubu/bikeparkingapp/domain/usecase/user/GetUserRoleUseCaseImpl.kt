@@ -6,8 +6,8 @@ import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 
 /**
  * Representa el caso de uso para obtener el rol de un usuario.
- *
  * @property accountRepository Repositorio de cuentas.
+ * @return El rol del usuario.
  */
 class GetUserRoleUseCaseImpl(
     private val accountRepository: AccountRepository

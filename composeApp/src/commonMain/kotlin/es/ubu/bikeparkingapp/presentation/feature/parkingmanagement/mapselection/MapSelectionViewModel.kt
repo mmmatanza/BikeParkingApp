@@ -17,11 +17,13 @@ class MapSelectionViewModel(
     private val _state = mutableStateOf(MapSelectionState())
     val state: State<MapSelectionState> = _state
 
-    init {
-        loadUserLocation()
-    }
-
-    private fun loadUserLocation() {
+    fun loadUserLocation(previousLatitude: Double?, previousLongitude: Double?) {
+        if(previousLatitude != null && previousLongitude != null){
+            _state.value = _state.value.copy(
+                latitude = previousLatitude,
+                longitude = previousLongitude,
+            )
+        }
         viewModelScope.launch {
             getUserLocationUseCase()
                 .onSuccess { location ->

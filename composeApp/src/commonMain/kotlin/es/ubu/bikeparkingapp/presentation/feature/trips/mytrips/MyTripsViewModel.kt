@@ -4,25 +4,35 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import es.ubu.bikeparkingapp.domain.entity.Reservation
+import es.ubu.bikeparkingapp.domain.entity.ReservationDetail
 import es.ubu.bikeparkingapp.domain.entity.ReservationState
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CancelReservationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckInReservationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.CheckOutReservationUseCase
-import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.ExtendReservationUseCase
+import es.ubu.bikeparkingapp.domain.usecase.reservation.GetDetailedUserReservationsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.plus
 
 /**
  * Representa el viewmodel de la pantalla de reservas.
+ * @property userIdUseCase Caso de uso para obtener el ID del usuario.
+ * @property getDetailedUserReservationsUseCase Caso de uso para obtener las reservas del usuario detalladas.
+ * @property cancelReservationUseCase Caso de uso para cancelar una reserva.
+ * @property checkInReservationUseCase Caso de uso para check-in de una reserva.
+ * @property checkOutReservationUseCase Caso de uso para check-out de una reserva.
+ * @property extendReservationUseCase Caso de uso para extender una reserva
  */
 class MyTripsViewModel(
     private val userIdUseCase: GetUserIdUseCase,
-    private val getUserReservationsUseCase: GetUserReservationsUseCase,
+    private val getDetailedUserReservationsUseCase: GetDetailedUserReservationsUseCase,
     private val cancelReservationUseCase: CancelReservationUseCase,
     private val checkInReservationUseCase: CheckInReservationUseCase,
-    private val checkOutReservationUseCase: CheckOutReservationUseCase
+    private val checkOutReservationUseCase: CheckOutReservationUseCase,
+    private val extendReservationUseCase: ExtendReservationUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(MyTripsState())
     val state: State<MyTripsState> = _state
@@ -32,18 +42,18 @@ class MyTripsViewModel(
             _state.value = _state.value.copy(isLoading = true)
             userIdUseCase()
                 .onSuccess { accountId ->
-                    getUserReservationsUseCase(accountId)
-                        .onSuccess { reservations ->
-                            // Ordenamos las reservas
-                            val sortedReservations = reservations.sortedWith(
-                                compareBy<Reservation> {
-                                    // Primero por prioridad de estado
-                                    when (it.state) {
+                    getDetailedUserReservationsUseCase(accountId)
+                        .onSuccess {
+                            detailedReservations ->
+                            // Ordenamos por el estado de reserva y luego por la fecha de entrada
+                            val sortedReservations = detailedReservations.sortedWith(
+                                compareBy<ReservationDetail> {
+                                    when (it.reservation.state) {
                                         ReservationState.CHECKED_IN -> 1
                                         ReservationState.RESERVED -> 2
                                         else -> 3
                                     }
-                                }.thenByDescending { it.inTime } // Y luego por fecha
+                                }.thenByDescending { it.reservation.inTime }
                             )
 
                             _state.value = _state.value.copy(
@@ -84,11 +94,14 @@ class MyTripsViewModel(
             val resId = state.value.reservationId!!
             checkInReservationUseCase(resId)
                 .onSuccess {
-                    val updatedList = state.value.reservations.map { reservation ->
-                        if (reservation.reservationId == resId) {
-                            reservation.copy(state = ReservationState.CHECKED_IN)
+                    val updatedList = state.value.reservations.map { detail ->
+                        if (detail.reservation.reservationId == resId) {
+                            // Copiamos el detalle, y dentro la reserva con el nuevo estado
+                            detail.copy(
+                                reservation = detail.reservation.copy(state = ReservationState.CHECKED_IN)
+                            )
                         } else {
-                            reservation
+                            detail
                         }
                     }
                     _state.value = _state.value.copy(
@@ -119,11 +132,14 @@ class MyTripsViewModel(
             val resId = state.value.reservationId!!
             checkOutReservationUseCase(resId)
                 .onSuccess {
-                    val updatedList = state.value.reservations.map { reservation ->
-                        if (reservation.reservationId == resId) {
-                            reservation.copy(state = ReservationState.CHECKED_OUT)
+                    val updatedList = state.value.reservations.map { detail ->
+                        if (detail.reservation.reservationId == resId) {
+                            // Copiamos el detalle, y dentro la reserva con el nuevo estado
+                            detail.copy(
+                                reservation = detail.reservation.copy(state = ReservationState.CHECKED_OUT)
+                            )
                         } else {
-                            reservation
+                            detail
                         }
                     }
                     _state.value = _state.value.copy(
@@ -154,11 +170,14 @@ class MyTripsViewModel(
             val resId = state.value.reservationId!!
             cancelReservationUseCase(resId)
                 .onSuccess {
-                    val updatedList = state.value.reservations.map { reservation ->
-                        if (reservation.reservationId == resId) {
-                            reservation.copy(state = ReservationState.CANCELLED)
+                    val updatedList = state.value.reservations.map { detail ->
+                        if (detail.reservation.reservationId == resId) {
+                            // Copiamos el detalle, y dentro la reserva con el nuevo estado
+                            detail.copy(
+                                reservation = detail.reservation.copy(state = ReservationState.CANCELLED)
+                            )
                         } else {
-                            reservation
+                            detail
                         }
                     }
                     _state.value = _state.value.copy(
@@ -170,6 +189,48 @@ class MyTripsViewModel(
                 .onFailure {
                     _state.value =
                         _state.value.copy(error = ErrorMapper.map(it), cancelReservationDialog = false, reservationId = null)
+                }
+        }
+    }
+
+    fun extendReservationDialog(reservationId: String) {
+        _state.value =
+            _state.value.copy(extendReservationDialog = true, reservationId = reservationId)
+    }
+
+    fun extendReservationDialogDismiss() {
+        _state.value = _state.value.copy(extendReservationDialog = false, reservationId = null)
+    }
+
+    fun extendReservation() {
+        if (state.value.reservationId == null) return;
+        viewModelScope.launch {
+            val resId = state.value.reservationId!!
+            extendReservationUseCase(
+                resId,
+                state.value.reservations.first { it.reservation.reservationId == resId }.reservation.outTime,
+                60
+            )
+                .onSuccess {
+                    val updatedList = state.value.reservations.map { detail ->
+                        if (detail.reservation.reservationId == resId) {
+                            // Copiamos el detalle, y dentro la reserva con la salida actualizada
+                            detail.copy(
+                                reservation = detail.reservation.copy(outTime = detail.reservation.outTime.plus(60, DateTimeUnit.MINUTE))
+                            )
+                        } else {
+                            detail
+                        }
+                    }
+                    _state.value = _state.value.copy(
+                        reservations = updatedList,
+                        cancelReservationDialog = false,
+                        reservationId = null
+                    )
+                }
+                .onFailure {
+                    _state.value =
+                        _state.value.copy(error = ErrorMapper.map(it), extendReservationDialog = false, reservationId = null)
                 }
         }
     }

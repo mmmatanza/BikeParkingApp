@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.cancel_reservation
 import bikeparkingapp.composeapp.generated.resources.cancel_reservation_confirm
+import bikeparkingapp.composeapp.generated.resources.release_reservation
+import bikeparkingapp.composeapp.generated.resources.release_reservation_confirm
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -56,6 +58,14 @@ class ParkingReservationsScreen(
             onDismiss = viewModel::dismissCancelReservationDialog
         )
 
+        ConfirmationDialog(
+            isVisible = state.showReleaseReservationDialog,
+            title = stringResource(Res.string.release_reservation),
+            message = stringResource(Res.string.release_reservation_confirm),
+            onConfirm = viewModel::releaseReservation,
+            onDismiss = viewModel::dismissReleaseReservationDialog
+        )
+
         ParkingReservationsContent(
             state,
             ParkingReservationsActions(
@@ -65,6 +75,9 @@ class ParkingReservationsScreen(
                 },
                 onCancelReservationClick = {
                     viewModel.showCancelReservationDialog(it)
+                },
+                onReleaseClick = {
+                    viewModel.showReleaseReservationDialog(it)
                 }
             )
         )

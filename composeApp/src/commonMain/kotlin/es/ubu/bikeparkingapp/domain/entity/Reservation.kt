@@ -27,8 +27,9 @@ data class Reservation(
     val createdAt: Instant
 ){
     val canCancel: Boolean get() = state == ReservationState.RESERVED
-    val canCheckOut: Boolean get() = state == ReservationState.CHECKED_IN
-    val hasActions: Boolean get() = canCancel || canCheckOut
+    val canCheckOut: Boolean get() = (state == ReservationState.CHECKED_IN)||(state == ReservationState.OVERDUE)
+    val canExtend: Boolean get() = state == ReservationState.CHECKED_IN
+    val hasActions: Boolean get() = canCancel || canCheckOut || canExtend
 }
 
 enum class ReservationState {
@@ -40,6 +41,7 @@ enum class ReservationState {
     fun canTransitionTo(next: ReservationState): Boolean = when (this) {
         RESERVED -> next in listOf(CHECKED_IN, CANCELLED, EXPIRED)
         CHECKED_IN -> next in listOf(CHECKED_OUT, OVERDUE)
+        OVERDUE -> next == CHECKED_OUT
         else -> false
     }
 }

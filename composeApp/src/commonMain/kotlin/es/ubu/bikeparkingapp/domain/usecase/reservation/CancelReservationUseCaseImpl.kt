@@ -7,6 +7,7 @@ import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 
 /**
  * Implementación del caso de uso para cancelar una reserva.
+ * @property reservationRepository Repositorio de reservas.
  */
 class CancelReservationUseCaseImpl(
     private val reservationRepository: ReservationRepository
