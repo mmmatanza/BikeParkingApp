@@ -10,8 +10,6 @@ class ToggleOperativeStateUseCaseImpl(
     val parkingAreaRepository: ParkingAreaRepository
 ) : ToggleOperativeStateUseCase {
     override suspend fun invoke(parkingAreaId: String, isOperative: Boolean): Result<Unit> {
-        return runCatching {
-            parkingAreaRepository.toggleOperativeState(parkingAreaId, isOperative)
-        }
+        return parkingAreaRepository.toggleOperativeState(parkingAreaId, isOperative)
     }
 }

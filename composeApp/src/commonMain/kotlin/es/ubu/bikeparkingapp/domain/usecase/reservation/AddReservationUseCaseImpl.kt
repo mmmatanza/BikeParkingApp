@@ -49,7 +49,7 @@ class AddReservationUseCaseImpl(
         // Validamos si está abierto (usando la hora del parking)
         val start = LocalTime.parse(parkingArea.openingTime)
         val end = LocalTime.parse(parkingArea.closingTime)
-        val is24Hours = start == LocalTime(0, 0) && end == LocalTime(23, 59, 59)
+        val is24Hours = start == LocalTime(0, 0) && end == LocalTime(23, 59)
 
         if (!parkingArea.openDays.contains(nowInParking.dayOfWeek) ||
             (!is24Hours && nowInParking.time !in start..end)) {
