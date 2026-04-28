@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.helper
+package es.ubu.bikeparkingapp.helper.repositories
 
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
@@ -24,4 +24,8 @@ class FakeAccountRepository : AccountRepository {
     }
 
     override suspend fun getCachedAccount(): Account? = cachedAccount
+
+    override suspend fun clearAccount() {
+        cachedAccount = null;
+    }
 }

@@ -1,7 +1,7 @@
 package es.ubu.bikeparkingapp.domain.usecase.auth
 
 import es.ubu.bikeparkingapp.domain.model.AuthState
-import es.ubu.bikeparkingapp.helper.FakeAuthRepository
+import es.ubu.bikeparkingapp.helper.repositories.FakeAuthRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest

@@ -1,11 +1,11 @@
-package es.ubu.bikeparkingapp.presentation.feature.login
+package es.ubu.bikeparkingapp.presentation.feature.auth.login
 
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
-import es.ubu.bikeparkingapp.helper.FakeGetAuthStateUseCase
-import es.ubu.bikeparkingapp.helper.FakeLoginUseCase
+import es.ubu.bikeparkingapp.helper.usecases.auth.FakeGetAuthStateUseCase
+import es.ubu.bikeparkingapp.helper.usecases.auth.FakeLoginUseCase
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

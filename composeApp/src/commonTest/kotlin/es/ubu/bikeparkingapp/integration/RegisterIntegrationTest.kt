@@ -3,8 +3,8 @@ package es.ubu.bikeparkingapp.integration
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCaseImpl
-import es.ubu.bikeparkingapp.helper.FakeAccountRepository
-import es.ubu.bikeparkingapp.helper.FakeAuthRepository
+import es.ubu.bikeparkingapp.helper.repositories.FakeAccountRepository
+import es.ubu.bikeparkingapp.helper.repositories.FakeAuthRepository
 import es.ubu.bikeparkingapp.helper.TestData.testAccount
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.Dispatchers

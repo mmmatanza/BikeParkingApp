@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.helper
+package es.ubu.bikeparkingapp.helper.repositories
 
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository

@@ -1,11 +1,11 @@
-package es.ubu.bikeparkingapp.presentation.feature.register
+package es.ubu.bikeparkingapp.presentation.feature.auth.register
 
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException
-import es.ubu.bikeparkingapp.helper.FakeRegisterUseCase
 import es.ubu.bikeparkingapp.helper.TestData.testAccount
+import es.ubu.bikeparkingapp.helper.usecases.auth.FakeRegisterUseCase
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

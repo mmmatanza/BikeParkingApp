@@ -2,8 +2,8 @@ package es.ubu.bikeparkingapp.domain.usecase.auth
 
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
-import es.ubu.bikeparkingapp.helper.FakeAccountRepository
-import es.ubu.bikeparkingapp.helper.FakeAuthRepository
+import es.ubu.bikeparkingapp.helper.repositories.FakeAccountRepository
+import es.ubu.bikeparkingapp.helper.repositories.FakeAuthRepository
 import es.ubu.bikeparkingapp.helper.TestData
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
