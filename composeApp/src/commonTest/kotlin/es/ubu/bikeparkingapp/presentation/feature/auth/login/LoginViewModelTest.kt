@@ -6,7 +6,6 @@ import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.PasswordEmptyException
 import es.ubu.bikeparkingapp.helper.usecases.auth.FakeGetAuthStateUseCase
 import es.ubu.bikeparkingapp.helper.usecases.auth.FakeLoginUseCase
-import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -104,7 +103,7 @@ class LoginViewModelTest {
 
     @Test
     fun `onLoginClick exitoso no establece error`() = runTest(testDispatcher) {
-        fakeLoginUseCase.result = Result.success(Unit)
+        fakeLoginUseCase.response = Result.success(Unit)
         viewModel.onEmailChange("user@example.com")
         viewModel.onPasswordChange("password123")
 
@@ -116,7 +115,7 @@ class LoginViewModelTest {
 
     @Test
     fun `onLoginClick con NoNetworkException establece el error`() = runTest(testDispatcher) {
-        fakeLoginUseCase.result = Result.failure(NoNetworkException())
+        fakeLoginUseCase.response = Result.failure(NoNetworkException())
         viewModel.onEmailChange("user@example.com")
         viewModel.onPasswordChange("password123")
 
@@ -128,7 +127,7 @@ class LoginViewModelTest {
 
     @Test
     fun `onLoginClick con InvalidCredentialsException establece el error`() = runTest(testDispatcher) {
-        fakeLoginUseCase.result = Result.failure(InvalidCredentialsException())
+        fakeLoginUseCase.response = Result.failure(InvalidCredentialsException())
         viewModel.onEmailChange("user@example.com")
         viewModel.onPasswordChange("password123")
 
@@ -140,7 +139,7 @@ class LoginViewModelTest {
 
     @Test
     fun `onLoginClick con excepcion desconocida setea Exception generica`() = runTest(testDispatcher) {
-        fakeLoginUseCase.result = Result.failure(RuntimeException("Error inesperado"))
+        fakeLoginUseCase.response = Result.failure(RuntimeException("Error inesperado"))
         viewModel.onEmailChange("user@example.com")
         viewModel.onPasswordChange("password123")
 

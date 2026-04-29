@@ -6,12 +6,12 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
 import es.ubu.bikeparkingapp.helper.TestData
 
 class FakeRegisterUseCase : RegisterUseCase {
-    var result: Result<Account> = Result.success(TestData.testAccount)
+    var response: Result<Account> = Result.success(TestData.testAccount)
     override suspend fun invoke(
         email: String,
         password: String,
         name: String,
         taxId: String,
         role: Role
-    ): Result<Account> = result
+    ): Result<Account> = response
 }

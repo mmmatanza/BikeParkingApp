@@ -8,14 +8,14 @@ class FakeGetParkingAreaByIdUseCase: GetParkingAreaByIdUseCase {
     var shouldReturnError = false
     var errorToReturn: Throwable = Exception("Fake error")
 
-    var parkingAreaToReturn: ParkingArea? = null
+    var response: ParkingArea? = null
 
 
     override suspend fun invoke(parkingAreaId: String): Result<ParkingArea> {
-        return if (shouldReturnError || parkingAreaToReturn == null) {
+        return if (shouldReturnError || response == null) {
             Result.failure(errorToReturn)
         } else {
-            parkingAreaToReturn?.let {
+            response?.let {
                 Result.success(it)
             } ?: Result.failure(errorToReturn)
         }

@@ -56,7 +56,8 @@ class MyParkingAreasViewModel(
                 }
                 .onFailure {
                     _state.value = _state.value.copy(
-                        error = ErrorMapper.map(it)
+                        error = ErrorMapper.map(it),
+                        isLoading = false
                     )
                 }
         }

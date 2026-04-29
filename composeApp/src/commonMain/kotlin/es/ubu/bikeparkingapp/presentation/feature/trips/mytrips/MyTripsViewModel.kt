@@ -224,7 +224,7 @@ class MyTripsViewModel(
                     }
                     _state.value = _state.value.copy(
                         reservations = updatedList,
-                        cancelReservationDialog = false,
+                        extendReservationDialog = false,
                         reservationId = null
                     )
                 }

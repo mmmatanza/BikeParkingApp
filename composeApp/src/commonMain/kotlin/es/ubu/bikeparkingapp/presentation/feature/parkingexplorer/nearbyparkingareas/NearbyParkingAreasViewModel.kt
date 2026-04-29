@@ -9,9 +9,6 @@ import es.ubu.bikeparkingapp.domain.usecase.location.GetUserLocationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetNearbyParkingAreasUseCase
 import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.launch
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.todayIn
-import kotlin.time.Clock
 
 /**
  * Representa el viewModel para la pantalla de áreas de parking cercanas.
@@ -56,7 +53,6 @@ class NearbyParkingAreasViewModel(
         viewModelScope.launch {
             getNearbyParkingAreasUseCase(latitude, longitude, 5000.00)
                 .onSuccess { parkingAreas ->
-                    val today = Clock.System.todayIn(TimeZone.currentSystemDefault()).dayOfWeek
                     // Separamos los parkings disponibles de los no disponibles
                     val (unavailable, available) = parkingAreas.partition { parking ->
                         parking.currentOccupancy >= parking.capacity || !parking.isOperative || !parking.isOpen()

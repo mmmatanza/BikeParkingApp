@@ -8,7 +8,7 @@ class FakeGetNearbyParkingAreasUseCase : GetNearbyParkingAreasUseCase {
     var shouldReturnError = false
     var errorToReturn: Throwable = Exception("Fake error")
 
-    var parkingAreasToReturn = mutableListOf<ParkingArea>()
+    var response = mutableListOf<ParkingArea>()
 
     private var lastCapturedParams: Triple<Double, Double, Double>? = null
 
@@ -21,7 +21,7 @@ class FakeGetNearbyParkingAreasUseCase : GetNearbyParkingAreasUseCase {
             Result.failure(errorToReturn)
         } else {
             lastCapturedParams = Triple(latitude, longitude, distance)
-            Result.success(parkingAreasToReturn)
+            Result.success(response)
         }
     }
 

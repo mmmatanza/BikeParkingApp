@@ -3,6 +3,7 @@ package es.ubu.bikeparkingapp.helper
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 import es.ubu.bikeparkingapp.domain.entity.Reservation
+import es.ubu.bikeparkingapp.domain.entity.ReservationDetail
 import es.ubu.bikeparkingapp.domain.entity.ReservationState
 import es.ubu.bikeparkingapp.domain.entity.Role
 import kotlinx.datetime.DayOfWeek
@@ -53,7 +54,15 @@ object TestData {
         openDays = setOf(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
             DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY),
         rules = listOf("Rule 1", "Rule 2"),
-        timezoneId = "Europe/Madrid"
+        timezoneId = "UTC"
+    )
+
+    val testReservationDetail = ReservationDetail(
+        reservation = testReservation,
+        parkingName = testParking.name,
+        parkingAddress = testParking.address,
+        parkingLatitude = testParking.latitude,
+        parkingLongitude = testParking.longitude
     )
     
 }

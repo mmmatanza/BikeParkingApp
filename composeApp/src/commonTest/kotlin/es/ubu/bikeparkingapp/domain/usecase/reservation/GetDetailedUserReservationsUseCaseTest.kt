@@ -1,6 +1,5 @@
 package es.ubu.bikeparkingapp.domain.usecase.reservation
 
-import es.ubu.bikeparkingapp.domain.entity.Reservation
 import es.ubu.bikeparkingapp.helper.TestData
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.helper.usecases.reservation.FakeGetUserReservationsUseCase
@@ -37,7 +36,7 @@ class GetDetailedUserReservationsUseCaseTest {
 
         // Configuramos las respuestas de los fake
         fakeGetUserReservationsUseCase.response = listOf(reserva1, reserva2)
-        fakeGetParkingAreaByIdUseCase.parkingAreaToReturn = TestData.testParking.copy(
+        fakeGetParkingAreaByIdUseCase.response = TestData.testParking.copy(
             parkingAreaId = "park1",
             name = "Parking Central"
         )
@@ -59,7 +58,7 @@ class GetDetailedUserReservationsUseCaseTest {
         fakeGetUserReservationsUseCase.response = listOf(
             TestData.testReservation
         )
-        fakeGetParkingAreaByIdUseCase.parkingAreaToReturn = null
+        fakeGetParkingAreaByIdUseCase.response = null
 
         // Ejecución del caso de uso
         val result = useCase("user123")

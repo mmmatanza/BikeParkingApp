@@ -3,7 +3,6 @@ package es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset
 import es.ubu.bikeparkingapp.domain.exception.EmailInvalidException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.helper.usecases.auth.FakeRequestPasswordResetUseCase
-import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -55,7 +54,7 @@ class PasswordResetViewModelTest {
 
     @Test
     fun `clearSuccess limpia el flag success del estado`() = runTest(testDispatcher) {
-        fakeRequestPasswordResetUseCase.result = Result.success(Unit)
+        fakeRequestPasswordResetUseCase.response = Result.success(Unit)
         viewModel.onEmailChange("user@example.com")
         viewModel.onPasswordResetClick()
         testDispatcher.scheduler.advanceUntilIdle()
@@ -81,7 +80,7 @@ class PasswordResetViewModelTest {
 
     @Test
     fun `onPasswordResetClick exitoso establece success a true`() = runTest(testDispatcher) {
-        fakeRequestPasswordResetUseCase.result = Result.success(Unit)
+        fakeRequestPasswordResetUseCase.response = Result.success(Unit)
         viewModel.onEmailChange("user@example.com")
 
         viewModel.onPasswordResetClick()
@@ -93,7 +92,7 @@ class PasswordResetViewModelTest {
 
     @Test
     fun `onPasswordResetClick con NoNetworkException establece el error`() = runTest(testDispatcher) {
-        fakeRequestPasswordResetUseCase.result = Result.failure(NoNetworkException())
+        fakeRequestPasswordResetUseCase.response = Result.failure(NoNetworkException())
         viewModel.onEmailChange("user@example.com")
 
         viewModel.onPasswordResetClick()
@@ -105,7 +104,7 @@ class PasswordResetViewModelTest {
 
     @Test
     fun `onPasswordResetClick con excepcion desconocida establece Exception generica`() = runTest(testDispatcher) {
-        fakeRequestPasswordResetUseCase.result = Result.failure(RuntimeException("Error inesperado"))
+        fakeRequestPasswordResetUseCase.response = Result.failure(RuntimeException("Error inesperado"))
         viewModel.onEmailChange("user@example.com")
 
         viewModel.onPasswordResetClick()

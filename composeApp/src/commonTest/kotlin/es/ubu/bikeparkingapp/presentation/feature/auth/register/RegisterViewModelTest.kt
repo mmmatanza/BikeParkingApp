@@ -6,7 +6,6 @@ import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.RegisterException
 import es.ubu.bikeparkingapp.helper.TestData.testAccount
 import es.ubu.bikeparkingapp.helper.usecases.auth.FakeRegisterUseCase
-import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -190,7 +189,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `onRegisterClick exitoso establece isSuccess a true`() = runTest(testDispatcher) {
-        fakeRegisterUseCase.result = Result.success(testAccount)
+        fakeRegisterUseCase.response = Result.success(testAccount)
         setValidState()
 
         viewModel.onRegisterClick()
@@ -202,7 +201,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `onRegisterClick con NoNetworkException establece el error`() = runTest(testDispatcher) {
-        fakeRegisterUseCase.result = Result.failure(NoNetworkException())
+        fakeRegisterUseCase.response = Result.failure(NoNetworkException())
         setValidState()
 
         viewModel.onRegisterClick()
@@ -214,7 +213,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `onRegisterClick con excepcion desconocida establece Exception generica`() = runTest(testDispatcher) {
-        fakeRegisterUseCase.result = Result.failure(RuntimeException("Fallo inesperado"))
+        fakeRegisterUseCase.response = Result.failure(RuntimeException("Fallo inesperado"))
         setValidState()
 
         viewModel.onRegisterClick()
