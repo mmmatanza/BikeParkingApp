@@ -1,0 +1,26 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+
+' Definición de actores independientes
+actor "Usuario" as user
+actor "Administrador" as admin
+
+rectangle {
+    usecase "CU-1 Registrarse" as CU1
+    usecase "CU-2 Autenticarse" as CU2
+    usecase "CU-3 Recuperar contraseña" as CU3
+    usecase "CU-4 Cerrar sesión" as CU4
+}
+
+admin --> CU1
+admin --> CU2
+admin --> CU3
+admin --> CU4
+
+user --> CU1
+user --> CU2
+user --> CU3
+user --> CU4
+
+@enduml

@@ -26,6 +26,9 @@ class SupabaseReservationRepository(
                     }
                 }
                 .decodeSingle<ReservationDto>().toDomain()
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -38,6 +41,9 @@ class SupabaseReservationRepository(
                     }
                 }
                 .decodeList<ReservationDto>().map { it.toDomain() }
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -49,6 +55,9 @@ class SupabaseReservationRepository(
                         eq("account_id", accountId)
                     }
                 }.decodeList<ReservationDto>().map { it.toDomain() }
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -67,6 +76,9 @@ class SupabaseReservationRepository(
                         )
                     }
                 }.decodeList<ReservationDto>().map { it.toDomain() }
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -85,6 +97,9 @@ class SupabaseReservationRepository(
                         )
                     }
                 }.decodeList<ReservationDto>().map { it.toDomain() }
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -93,7 +108,7 @@ class SupabaseReservationRepository(
             client.from("reservations")
                 .insert(reservation.toDto())
             Unit
-        }.onFailure { throwable ->
+        }.recoverCatching { throwable ->
             // Mapeamos la excepción de SQL a domain
             throw ErrorMapper.map(throwable)
         }
@@ -109,7 +124,7 @@ class SupabaseReservationRepository(
                     filter { eq("reservation_id", reservationId) }
                 }
             Unit
-        }.onFailure { throwable ->
+        }.recoverCatching { throwable ->
             // Mapeamos la excepción de SQL a domain
             throw ErrorMapper.map(throwable)
         }
@@ -126,7 +141,7 @@ class SupabaseReservationRepository(
             }
         // Si llegamos aquí sin excepciones, forzamos el retorno de Unit
         Unit
-    }.onFailure { throwable ->
+    }.recoverCatching { throwable ->
         // Mapeamos la excepción de SQL a domain
         throw ErrorMapper.map(throwable)
     }
@@ -149,21 +164,26 @@ class SupabaseReservationRepository(
             .size
     }
 
-    override suspend fun countUserActiveReservations(accountId: String): Int {
-        return client.from("reservations")
-            .select {
-                filter {
-                    eq("account_id", accountId)
-                    isIn(
-                        "state", listOf(
-                            ReservationState.RESERVED.toString(),
-                            ReservationState.CHECKED_IN.toString(),
-                            ReservationState.OVERDUE.toString()
+    override suspend fun countUserActiveReservations(accountId: String): Result<Int> {
+        return runCatching {
+            client.from("reservations")
+                .select {
+                    filter {
+                        eq("account_id", accountId)
+                        isIn(
+                            "state", listOf(
+                                ReservationState.RESERVED.toString(),
+                                ReservationState.CHECKED_IN.toString(),
+                                ReservationState.OVERDUE.toString()
+                            )
                         )
-                    )
+                    }
                 }
-            }
-            .decodeList<ReservationDto>()
-            .size
+                .decodeList<ReservationDto>()
+                .size
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
+        }
     }
 }

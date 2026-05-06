@@ -1,6 +1,8 @@
 package es.ubu.bikeparkingapp.data.mapper
 
 import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
+import es.ubu.bikeparkingapp.domain.exception.CannotDeactivateParkingWithActiveReservationsException
+import es.ubu.bikeparkingapp.domain.exception.CapacityCannotBeLowerThanOccupancyException
 import es.ubu.bikeparkingapp.domain.exception.ParkingClosingSoonException
 import es.ubu.bikeparkingapp.domain.exception.ParkingHasNoFreeSpotsException
 import es.ubu.bikeparkingapp.domain.exception.ParkingIsClosedException
@@ -47,6 +49,12 @@ object ErrorMapper {
 
             errorMessage.contains("P0009") || errorMessage.contains("AccountHasActiveReservationException") ->
                 AccountHasActiveReservationException()
+
+            errorMessage.contains("P0010") || errorMessage.contains("CannotDeactivateParkingWithActiveReservationsException") ->
+                CannotDeactivateParkingWithActiveReservationsException()
+
+            errorMessage.contains("P0011") || errorMessage.contains("CapacityCannotBeLowerThanOccupancyException") ->
+                CapacityCannotBeLowerThanOccupancyException()
 
             else -> throwable
         }

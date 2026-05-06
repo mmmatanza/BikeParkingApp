@@ -1,0 +1,244 @@
+@startuml Presentación
+skinparam style strictuml
+skinparam linetype ortho
+hide empty members
+
+skinparam class {
+    BackgroundColor<<State>> #FFF2CC
+    BorderColor<<State>> #D6B656
+}
+
+package "feature.main" {
+    class MainScreen <<Composable>>
+    class MainContent <<Composable>>
+    class MainViewModel {
+        - _state: MutableState<MainState>
+        + state: State<MainState>
+        + authState: Flow<AuthState>
+        + onSignoutClick()
+        + clearError()
+    }
+    class MainState <<State>> {
+        + userRole: Role?
+        + error: Throwable?
+    }
+    MainScreen --> MainViewModel
+    MainScreen --> MainContent
+    MainContent ..> MainViewModel : observe/trigger
+    MainViewModel o-- MainState
+}
+
+package "feature.auth" {
+    class LoginScreen <<Composable>>
+    class LoginContent <<Composable>>
+    class LoginViewModel {
+        - _state: MutableState<LoginState>
+        + state: State<LoginState>
+        + authState: Flow<AuthState>
+        + onEmailChange(String)
+        + onPasswordChange(String)
+        + onLoginClick()
+    }
+    class LoginState <<State>> {
+        + email: String
+        + pass: String
+        + isLoading: Boolean
+        + error: String?
+    }
+    LoginScreen --> LoginViewModel
+    LoginScreen --> LoginContent
+    LoginContent ..> LoginViewModel : observe/trigger
+    LoginViewModel o-- LoginState
+
+    class RegisterScreen <<Composable>>
+    class RegisterContent <<Composable>>
+    class RegisterViewModel {
+        - _state: MutableState<RegisterState>
+        + state: State<RegisterState>
+        + onEmailChange(String)
+        + onPasswordChange(String)
+        + onNameChange(String)
+        + onTaxIdChange(String)
+        + onRegisterClick()
+    }
+    class RegisterState <<State>> {
+        + email: String
+        + pass: String
+        + name: String
+        + taxId: String
+        + isLoading: Boolean
+        + error: String?
+    }
+    RegisterScreen --> RegisterViewModel
+    RegisterScreen --> RegisterContent
+    RegisterContent ..> RegisterViewModel : observe/trigger
+    RegisterViewModel o-- RegisterState
+
+    class PasswordResetScreen <<Composable>>
+    class PasswordResetContent <<Composable>>
+    class PasswordResetViewModel {
+        - _state: MutableState<PasswordResetState>
+        + state: State<PasswordResetState>
+        + onEmailChange(String)
+        + onResetClick()
+    }
+    class PasswordResetState <<State>> {
+        + email: String
+        + isLoading: Boolean
+        + error: String?
+        + success: Boolean
+    }
+    PasswordResetScreen --> PasswordResetViewModel
+    PasswordResetScreen --> PasswordResetContent
+    PasswordResetContent ..> PasswordResetViewModel : observe/trigger
+    PasswordResetViewModel o-- PasswordResetState
+}
+
+package "feature.trips" {
+    class MyTripsScreen <<Composable>>
+    class MyTripsContent <<Composable>>
+    class MyTripsViewModel {
+        - _state: MutableState<MyTripsState>
+        + state: State<MyTripsState>
+        + loadReservations()
+        + cancelReservation(String)
+        + checkInReservation(String)
+        + checkOutReservation(String)
+        + extendReservation(String, Instant, Int)
+    }
+    class MyTripsState <<State>> {
+        + reservations: List<ReservationDetail>
+        + isLoading: Boolean
+        + error: String?
+    }
+    MyTripsScreen --> MyTripsViewModel
+    MyTripsScreen --> MyTripsContent
+    MyTripsContent ..> MyTripsViewModel : observe/trigger
+    MyTripsViewModel o-- MyTripsState
+}
+
+package "feature.parkingexplorer" {
+    class NearbyParkingAreasScreen <<Composable>>
+    class NearbyParkingAreasContent <<Composable>>
+    class NearbyParkingAreasViewModel {
+        - _state: MutableState<NearbyParkingAreasState>
+        + state: State<NearbyParkingAreasState>
+        + loadNearbyParkingAreas()
+    }
+    class NearbyParkingAreasState <<State>> {
+        + areas: List<ParkingArea>
+        + isLoading: Boolean
+        + error: String?
+    }
+    NearbyParkingAreasScreen --> NearbyParkingAreasViewModel
+    NearbyParkingAreasScreen --> NearbyParkingAreasContent
+    NearbyParkingAreasContent ..> NearbyParkingAreasViewModel : observe/trigger
+    NearbyParkingAreasViewModel o-- NearbyParkingAreasState
+
+    class ParkingReservationScreen <<Composable>>
+    class ParkingReservationContent <<Composable>>
+    class ParkingReservationViewModel {
+        - _state: MutableState<ParkingReservationState>
+        + state: State<ParkingReservationState>
+        + loadParkingArea(String)
+        + makeReservation()
+    }
+    class ParkingReservationState <<State>> {
+        + area: ParkingArea?
+        + isLoading: Boolean
+        + error: String?
+    }
+    ParkingReservationScreen --> ParkingReservationViewModel
+    ParkingReservationScreen --> ParkingReservationContent
+    ParkingReservationContent ..> ParkingReservationViewModel : observe/trigger
+    ParkingReservationViewModel o-- ParkingReservationState
+}
+
+package "feature.parkingmanagement" {
+    class MyParkingAreasScreen <<Composable>>
+    class MyParkingAreasContent <<Composable>>
+    class MyParkingAreasViewModel {
+        - _state: MutableState<MyParkingAreasState>
+        + state: State<MyParkingAreasState>
+        + loadMyParkingAreas()
+    }
+    class MyParkingAreasState <<State>> {
+        + areas: List<ParkingArea>
+        + isLoading: Boolean
+        + error: String?
+    }
+    MyParkingAreasScreen --> MyParkingAreasViewModel
+    MyParkingAreasScreen --> MyParkingAreasContent
+    MyParkingAreasContent ..> MyParkingAreasViewModel : observe/trigger
+    MyParkingAreasViewModel o-- MyParkingAreasState
+
+    class UpsertParkingAreaScreen <<Composable>>
+    class UpsertParkingAreaContent <<Composable>>
+    class UpsertParkingAreaViewModel {
+        - _state: MutableState<UpsertParkingAreaState>
+        + state: State<UpsertParkingAreaState>
+        + onSaveClick()
+    }
+    class UpsertParkingAreaState <<State>> {
+        + name: String
+        + address: String
+        + isLoading: Boolean
+    }
+    UpsertParkingAreaScreen --> UpsertParkingAreaViewModel
+    UpsertParkingAreaScreen --> UpsertParkingAreaContent
+    UpsertParkingAreaContent ..> UpsertParkingAreaViewModel : observe/trigger
+    UpsertParkingAreaViewModel o-- UpsertParkingAreaState
+
+    class ParkingManagementScreen <<Composable>>
+    class ParkingManagementContent <<Composable>>
+    class ParkingManagementViewModel {
+        - _state: MutableState<ParkingManagementState>
+        + state: State<ParkingManagementState>
+        + toggleOperativeState()
+        + deactivateParkingArea()
+    }
+    class ParkingManagementState <<State>> {
+        + area: ParkingArea?
+        + isLoading: Boolean
+    }
+    ParkingManagementScreen --> ParkingManagementViewModel
+    ParkingManagementScreen --> ParkingManagementContent
+    ParkingManagementContent ..> ParkingManagementViewModel : observe/trigger
+    ParkingManagementViewModel o-- ParkingManagementState
+
+    class ParkingReservationsScreen <<Composable>>
+    class ParkingReservationsContent <<Composable>>
+    class ParkingReservationsViewModel {
+        - _state: MutableState<ParkingReservationsState>
+        + state: State<ParkingReservationsState>
+        + loadReservations(String)
+        + cancelReservation(String)
+        + releaseReservation(String)
+    }
+    class ParkingReservationsState <<State>> {
+        + reservations: List<Reservation>
+        + isLoading: Boolean
+    }
+    ParkingReservationsScreen --> ParkingReservationsViewModel
+    ParkingReservationsScreen --> ParkingReservationsContent
+    ParkingReservationsContent ..> ParkingReservationsViewModel : observe/trigger
+    ParkingReservationsViewModel o-- ParkingReservationsState
+
+    class MapSelectionScreen <<Composable>>
+    class MapSelectionContent <<Composable>>
+    class MapSelectionViewModel {
+        - _state: MutableState<MapSelectionState>
+        + state: State<MapSelectionState>
+        + loadUserLocation(Double?, Double?)
+    }
+    class MapSelectionState <<State>> {
+        + latitude: Double
+        + longitude: Double
+        + isLoading: Boolean
+    }
+    MapSelectionScreen --> MapSelectionViewModel
+    MapSelectionScreen --> MapSelectionContent
+    MapSelectionContent ..> MapSelectionViewModel : observe/trigger
+    MapSelectionViewModel o-- MapSelectionState
+}
+@enduml

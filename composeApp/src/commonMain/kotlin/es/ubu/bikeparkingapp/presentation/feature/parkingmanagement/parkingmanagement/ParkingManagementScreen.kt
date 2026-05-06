@@ -15,6 +15,7 @@ import bikeparkingapp.composeapp.generated.resources.toggle_state_confirm
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import es.ubu.bikeparkingapp.domain.entity.isOpen
 import es.ubu.bikeparkingapp.presentation.common.components.dialog.ConfirmationDialog
 import es.ubu.bikeparkingapp.presentation.common.components.dialog.ErrorDialog
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingreservations.ParkingReservationsScreen
@@ -36,7 +37,7 @@ class ParkingManagementScreen(
         val state = viewModel.state.value
 
         LaunchedEffect(parkingAreaId) {
-            parkingAreaId.let { viewModel.loadParkingArea(it) }
+            viewModel.loadParkingArea(parkingAreaId)
         }
 
         if (state.isLoading) {
@@ -72,6 +73,14 @@ class ParkingManagementScreen(
 
         // Si se desactiva el parking, se vuelve a la pantalla anterior
         if(state.successDeactivation) navigator.pop()
+
+        println("name: ${state.parking?.name}")
+        println("openingTime: ${state.parking?.openingTime}")
+        println("closingTime: ${state.parking?.closingTime}")
+        println("timezoneId: ${state.parking?.timezoneId}")
+        println("openDays: ${state.parking?.openDays}")
+        println("isOperative: ${state.parking?.isOperative}")
+        println("isOpen: ${state.parking?.isOpen()}")
 
         ParkingManagementContent(
             state,

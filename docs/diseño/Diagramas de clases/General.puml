@@ -1,0 +1,64 @@
+plantuml
+@startuml general
+skinparam style strictuml
+skinparam linetype ortho
+hide empty members
+
+package "Capa de Presentación" #FEFECE {
+    package "Feature: Auth" {
+        class LoginViewModel
+        class RegisterViewModel
+    }
+    package "Feature: Parking" {
+        class NearbyParkingAreasViewModel
+        class MyParkingAreasViewModel
+    }
+    package "Feature: Reservas" {
+        class MyTripsViewModel
+    }
+}
+
+package "Capa de Dominio" #GhostWhite {
+    package "Casos de Uso" #Ivory {
+        class "AuthUseCases" << (B,orchid) >>
+        class "ParkingUseCases" << (B,orchid) >>
+        class "ReservationUseCases" << (B,orchid) >>
+    }
+
+    package "Entidades" #E2EFDA {
+        class Account
+        class ParkingArea
+        class Reservation
+    }
+
+    package "Interfaces Repositorios" #Cornsilk {
+        interface AuthRepository
+        interface AccountRepository
+        interface ParkingAreaRepository
+        interface ReservationRepository
+    }
+}
+
+package "Capa de Datos" #D9EAD3 {
+    package "Implementaciones" {
+        class SupabaseAuthRepository
+        class SupabaseParkingAreaRepository
+        class SupabaseReservationRepository
+    }
+
+    package "Fuentes de Datos" {
+        class SupabaseClient <<External>>
+        class AccountLocalDataSource <<Local>>
+    }
+}
+
+' Relaciones de dependencia
+"Capa de Presentación" .down.> "Casos de Uso"
+"Casos de Uso" .down.> "Interfaces Repositorios"
+"Casos de Uso" .right.> "Entidades"
+
+"Implementaciones" .up.|> "Interfaces Repositorios"
+"Implementaciones" .down.> "Fuentes de Datos"
+"Implementaciones" .left.> "Entidades"
+
+@enduml

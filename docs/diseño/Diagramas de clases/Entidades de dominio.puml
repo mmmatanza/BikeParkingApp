@@ -1,0 +1,76 @@
+@startuml domain_entities
+skinparam style strictuml
+skinparam linetype ortho
+hide empty members
+
+class Account {
+    + accountId: String
+    + name: String
+    + taxId: String
+    + role: Role
+    + createdAt: Instant
+    + updatedAt: Instant
+}
+
+enum Role <<enumeration>> {
+    USER
+    ADMIN
+    --
+    {static} + fromString(value: String)
+}
+
+class ParkingArea {
+    + parkingAreaId: String?
+    + ownerId: String
+    + name: String
+    + latitude: Double
+    + longitude: Double
+    + capacity: Int
+    + currentOccupancy: Int
+    + isOperative: Boolean
+    + isActive: Boolean
+    + timezoneId: String
+    + openingTime: String
+    + closingTime: String
+    + openDays: Set<DayOfWeek>
+    + rules: List<String>
+}
+class Reservation {
+    + reservationId: String?
+    + accountId: String
+    + parkingAreaId: String
+    + inTime: Instant
+    + outTime: Instant
+    + state: ReservationState
+    + createdAt: Instant
+    --
+    + canCancel(): Boolean
+    + canCheckOut(): Boolean
+    + canExtend(): Boolean
+    + hasActions(): Boolean
+}
+
+enum ReservationState <<enumeration>> {
+    RESERVED
+    CHECKED_IN
+    CHECKED_OUT
+    CANCELLED
+    EXPIRED
+    OVERDUE
+    --
+    {static} + fromString(value: String): ReservationState
+    + canTransitionTo(next: ReservationState): Boolean
+}
+
+class ReservationDetail {
+    + reservation: Reservation
+    + parkingName: String
+    + parkingAddress: String
+    + parkingLatitude: Double
+    + parkingLongitude: Double
+}
+
+Account "1" --> "1" Role
+Reservation "1" --> "1" ReservationState
+ReservationDetail "1" o-- "1" Reservation
+@enduml

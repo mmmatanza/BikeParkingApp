@@ -7,6 +7,8 @@ create extension if not exists pg_cron;
 create or replace function check_overdue_reservations()
 returns void
 language plpgsql
+SECURITY DEFINER -- Para poder saltarse las políticas RLS
+SET search_path = public -- Por motivos de seguridad
 as $$
 begin
   update reservations
@@ -29,6 +31,8 @@ select cron.schedule(
 create or replace function check_expired_reservations()
 returns void
 language plpgsql
+SECURITY DEFINER
+SET search_path = public
 as $$
 begin
   update reservations

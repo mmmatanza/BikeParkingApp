@@ -7,12 +7,56 @@ BEGIN
     NEW.updated_at = NOW();
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER;
 
 CREATE TRIGGER trigger_update_updated_at
 BEFORE UPDATE ON accounts
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
+
+-- Función para validar cambios en el parking (desactivación y capacidad)
+CREATE OR REPLACE FUNCTION validate_parking_area_update()
+RETURNS TRIGGER AS $$
+DECLARE
+    v_active_reservations_count INT;
+BEGIN
+    -- Validar que la capacidad no caiga por debajo de la ocupación actual
+    IF (NEW.capacity < NEW.current_occupancy) THEN
+        RAISE EXCEPTION 'CapacityCannotBeLowerThanOccupancyException'
+        USING ERRCODE = 'P0011';
+    END IF;
+
+    -- Detectamos si se está intentando desactivar el parking
+    IF (OLD.is_active = true AND NEW.is_active = false) THEN
+
+        -- Contamos reservas para ese parking
+        SELECT COUNT(*)
+        INTO v_active_reservations_count
+        FROM reservations
+        WHERE parking_area_id = NEW.parking_area_id
+          AND state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
+
+        -- Si existen reservas, lanzamos la excepción
+        IF (v_active_reservations_count > 0) THEN
+            RAISE EXCEPTION 'CannotDeactivateParkingWithActiveReservationsException'
+            USING ERRCODE = 'P0010';
+        END IF;
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public ;
+
+-- Trigger para validar cambios en un parking
+DROP TRIGGER IF EXISTS tr_check_active_reservations_on_deactivate ON parkingareas;
+DROP TRIGGER IF EXISTS tr_validate_parking_update ON parkingareas;
+CREATE TRIGGER tr_validate_parking_update
+BEFORE UPDATE ON parkingareas
+FOR EACH ROW
+EXECUTE FUNCTION validate_parking_area_update();
 
 
 -- Trigger para actualizar la ocupación de un parking y validar reservas
@@ -152,7 +196,9 @@ BEGIN
 
     RETURN NEW;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public ;
 
 -- Antes de la inserción
 DROP TRIGGER IF EXISTS tr_update_occupancy_on_reservation ON reservations;

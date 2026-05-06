@@ -22,6 +22,7 @@ Table parkingareas {
   current_occupancy INTEGER [not null, default: 0, note: 'CHECK >= 0 and <= capacity']
   is_operative BOOLEAN [not null, default: true]
   is_active BOOLEAN [not null, default: true]
+  timezone_id TEXT [not null, default: 'Europe/Madrid']
   opening_time TIME [not null, default: '00:00:00']
   closing_time TIME [not null, default: '23:59:59']
   open_days "INTEGER[]" [not null, default: '{}']
@@ -38,7 +39,7 @@ Table reservations {
   created_at TIMESTAMPTZ [not null, default: `now()`]
 }
 
-// Relaciones
+// Relaciones (Flechas)
 Ref: accounts.account_id > auth.users.id // Relación con Auth
 Ref: parkingareas.owner_id > accounts.account_id // Un usuario es dueño de parkings
 Ref: reservations.account_id > accounts.account_id // Un usuario hace reservas

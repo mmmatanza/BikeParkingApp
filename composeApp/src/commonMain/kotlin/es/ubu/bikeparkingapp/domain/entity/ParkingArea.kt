@@ -60,6 +60,7 @@ fun ParkingArea.isOpen(): Boolean {
 
     // Comprobamos el rango horario usando la hora local del parking
     val currentTime = nowInParking.time
+
     val opening = LocalTime.parse(openingTime)
     val closing = LocalTime.parse(closingTime)
 

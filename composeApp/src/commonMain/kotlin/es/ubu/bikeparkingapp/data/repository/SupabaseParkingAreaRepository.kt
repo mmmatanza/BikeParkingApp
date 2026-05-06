@@ -1,9 +1,9 @@
 package es.ubu.bikeparkingapp.data.repository
 
 import es.ubu.bikeparkingapp.data.dto.ParkingAreaDto
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -28,8 +28,9 @@ class SupabaseParkingAreaRepository(
                 function = "get_parking_area_by_id",
                 parameters = buildJsonObject { put("p_parking_area_id", parkingId) }
             ).decodeSingle<ParkingAreaDto>().toDomain()
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -41,8 +42,9 @@ class SupabaseParkingAreaRepository(
             )
                 .decodeList<ParkingAreaDto>()
                 .map { it.toDomain() }
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -61,8 +63,9 @@ class SupabaseParkingAreaRepository(
                 }
             ).decodeList<ParkingAreaDto>()
                 .map { it.toDomain() }
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -92,8 +95,9 @@ class SupabaseParkingAreaRepository(
                 }
             )
             Unit
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -123,8 +127,9 @@ class SupabaseParkingAreaRepository(
                 }
             )
             Unit
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -135,8 +140,9 @@ class SupabaseParkingAreaRepository(
                     filter { eq("parking_area_id", parkingId) }
                 }
             Unit
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
@@ -150,22 +156,10 @@ class SupabaseParkingAreaRepository(
                     filter { eq("parking_area_id", parkingId) }
                 }
             Unit
-        }.recoverCatching { cause ->
-            handleException(cause)
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
         }
     }
 
-    /**
-     * Centraliza el manejo de excepciones
-     */
-    private fun handleException(cause: Throwable): Nothing {
-        val message = cause.message ?: ""
-        when {
-            message.contains("Unable to resolve host") ||
-                    message.contains("Failed to connect") ->
-                throw NoNetworkException()
-
-            else -> throw Exception(cause)
-        }
-    }
 }

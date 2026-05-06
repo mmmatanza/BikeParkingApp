@@ -44,6 +44,9 @@
     <string name="invalid_reservation_state">El estado de la reserva no puede cambiar a este estado</string>
     <string name="extension_exceeds_closing">Extensión fuera del horario de cierre no permitida</string>
     <string name="reservation_in_time_cannot_be_modified">El tiempo límite de check-in no puede ser modificado</string>
+    <string name="cannot_deactivate_parking_with_active_reservations">No se puede desactivar un parking con reservas activas</string>
+    <string name="capacity_cannot_be_lower_than_occupancy">La capacidad no puede ser inferior a la ocupación actual</string>
+
 
     <!-- Campos -->
     <string name="email">Correo electrónico</string>

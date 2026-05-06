@@ -1,0 +1,95 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "domain.repository" {
+    interface AuthRepository {
+        + getAuthStateFlow(): Flow<AuthState>
+        + getCurrentUserId(): Result<String>
+        + login(email: String, pass: String): Result<String>
+        + signout(): Result<Unit>
+        + register(email: String, password: String): Result<String>
+        + requestPasswordReset(email: String): Result<Unit>
+    }
+
+    interface AccountRepository {
+        + getAccount(userId: String): Result<Account>
+        + createAccount(userId: String, name: String, taxId: String, role: Role): Result<Account>
+        + saveLocally(account: Account)
+        + getCachedAccount(): Account?
+        + clearAccount()
+    }
+
+    interface LocationRepository {
+        + getUserLocation(): UserLocation
+    }
+
+    interface ParkingAreaRepository {
+        + getParkingAreaById(parkingId: String): Result<ParkingArea>
+        + getParkingAreasByOwner(ownerId: String): Result<List<ParkingArea>>
+        + getNearbyParkingAreas(lat: Double, lon: Double, dist: Double): Result<List<ParkingArea>>
+        + addParkingArea(parkingArea: ParkingArea): Result<Unit>
+        + updateParkingArea(parkingArea: ParkingArea): Result<Unit>
+        + deactivateParkingArea(parkingId: String): Result<Unit>
+        + toggleOperativeState(parkingId: String, isOperative: Boolean): Result<Unit>
+    }
+
+    interface ReservationRepository {
+        + findById(reservationId: String): Result<Reservation>
+        + findByAccountId(accountId: String): Result<List<Reservation>>
+        + findByParkingId(parkingAreaId: String): Result<List<Reservation>>
+        + findActiveReservationByAccountId(accountId: String): Result<List<Reservation>>
+        + findActiveReservationByParkingId(parkingAreaId: String): Result<List<Reservation>>
+        + save(reservation: Reservation): Result<Unit>
+        + updateState(reservationId: String, newState: ReservationState): Result<Unit>
+        + extend(reservationId: String, newOutTime: Instant): Result<Unit>
+        + countParkingActiveReservations(parkingAreaId: String): Int
+        + countUserActiveReservations(accountId: String): Int
+    }
+}
+
+package "data.repository" {
+    class SupabaseAuthRepository {
+        - client: SupabaseClient
+    }
+
+    class SupabaseAccountRepository {
+        - client: SupabaseClient
+        - localDataSource: AccountLocalDataSource
+    }
+
+    class CompassLocationRepository {
+        - geolocator: Geolocator
+    }
+
+    class SupabaseParkingAreaRepository {
+        - client: SupabaseClient
+    }
+
+    class SupabaseReservationRepository {
+        - client: SupabaseClient
+    }
+
+    ' Implementaciones
+    SupabaseAuthRepository .up.|> AuthRepository
+    SupabaseAccountRepository .up.|> AccountRepository
+    CompassLocationRepository .up.|> LocationRepository
+    SupabaseParkingAreaRepository .up.|> ParkingAreaRepository
+    SupabaseReservationRepository .up.|> ReservationRepository
+}
+
+package "data.local"{
+    class AccountLocalDataSource <<LocalData>>
+}
+
+' Dependencias externas representadas simplificadamente
+class SupabaseClient <<External>>
+class Geolocator <<External>>
+
+SupabaseAuthRepository --> SupabaseClient
+SupabaseAccountRepository --> SupabaseClient
+SupabaseAccountRepository --> AccountLocalDataSource
+SupabaseParkingAreaRepository --> SupabaseClient
+SupabaseReservationRepository --> SupabaseClient
+CompassLocationRepository --> Geolocator
+
+@enduml

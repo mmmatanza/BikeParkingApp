@@ -12,7 +12,7 @@ import es.ubu.bikeparkingapp.domain.entity.ParkingArea
  * @property successDeactivation Indica si se ha realizado la acción de desactivar el parking.
  */
 data class ParkingManagementState(
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val showDeactivateDialog: Boolean = false,
     val showToggleDialog: Boolean = false,
     val parking: ParkingArea? = null,

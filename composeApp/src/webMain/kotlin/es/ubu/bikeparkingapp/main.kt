@@ -6,6 +6,7 @@ import es.ubu.bikeparkingapp.di.initKoin
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    js("require('@js-joda/timezone')")
     initKoin()
     ComposeViewport {
         App()

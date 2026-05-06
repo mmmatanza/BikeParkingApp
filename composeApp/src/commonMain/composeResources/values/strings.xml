@@ -44,6 +44,8 @@
     <string name="invalid_reservation_state">Reservation state can not be changed to this state</string>
     <string name="extension_exceeds_closing">Extension beyond closing time is not allowed</string>
     <string name="reservation_in_time_cannot_be_modified">Reservation in time cannot be modified</string>
+    <string name="cannot_deactivate_parking_with_active_reservations">Cannot deactivate parking with active reservations</string>
+    <string name="capacity_cannot_be_lower_than_occupancy">The capacity cannot be lower than the current occupancy</string>
 
 
     <!-- Campos -->

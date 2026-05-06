@@ -1,0 +1,229 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package "auth"{
+    ' Interfaces
+    interface "GetAuthStateUseCase" <<UseCase>> {
+        + invoke(): Flow<AuthState>
+    }
+    interface "LoginUseCase" <<UseCase>> {
+        + invoke(email: String, pass: String): Result<Unit>
+    }
+    interface "RegisterUseCase" <<UseCase>> {
+        + invoke(email: String, password: String, name: String, taxId: String, role: Role): Result<Account>
+    }
+    interface "RequestPasswordResetUseCase" <<UseCase>> {
+        + invoke(email: String): Result<Unit>
+    }
+    interface "SignoutUseCase" <<UseCase>> {
+        + invoke(): Result<Unit>
+    }
+
+    ' Implementaciones
+    class GetAuthStateUseCaseImpl {
+        - authRepository: AuthRepository
+        + invoke(): Flow<AuthState>
+    }
+    class LoginUseCaseImpl {
+        - authRepository: AuthRepository
+        - accountRepository: AccountRepository
+        + invoke(email: String, pass: String): Result<Unit>
+    }
+    class RegisterUseCaseImpl {
+        - authRepository: AuthRepository
+        - accountRepository: AccountRepository
+        + invoke(email: String, password: String, name: String, taxId: String, role: Role): Result<Account>
+    }
+    class RequestPasswordResetUseCaseImpl {
+        - authRepository: AuthRepository
+        + invoke(email: String): Result<Unit>
+    }
+    class SignoutUseCaseImpl {
+        - authRepository: AuthRepository
+        - accountRepository: AccountRepository
+        + invoke(): Result<Unit>
+    }
+
+    ' Relaciones
+    GetAuthStateUseCaseImpl .up.|> GetAuthStateUseCase
+    LoginUseCaseImpl .up.|> LoginUseCase
+    RegisterUseCaseImpl .up.|> RegisterUseCase
+    RequestPasswordResetUseCaseImpl .up.|> RequestPasswordResetUseCase
+    SignoutUseCaseImpl .up.|> SignoutUseCase
+}
+
+package "location"{
+    interface "GetUserLocationUseCase" <<UseCase>> {
+        + invoke(): Result<UserLocation>
+    }
+    class GetUserLocationUseCaseImpl {
+        - locationRepository: LocationRepository
+        + invoke(): Result<UserLocation>
+    }
+    GetUserLocationUseCaseImpl .up.|> GetUserLocationUseCase
+}
+
+package "parking"{
+    interface "AddParkingAreaUseCase" <<UseCase>> {
+        + invoke(ownerId: String, name: String, address: String, ...): Result<Unit>
+    }
+    interface "DeactivateParkingAreaUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String): Result<Unit>
+    }
+    interface "GetNearbyParkingAreasUseCase" <<UseCase>> {
+        + invoke(latitude: Double, longitude: Double, distance: Double): Result<List<ParkingArea>>
+    }
+    interface "GetParkingAreaByIdUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String): Result<ParkingArea>
+    }
+    interface "GetParkingAreasUseCase" <<UseCase>> {
+        + invoke(ownerId: String): Result<List<ParkingArea>>
+    }
+    interface "ToggleOperativeStateUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String, isOperative: Boolean): Result<Unit>
+    }
+    interface "UpdateParkingAreaUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String, ownerId: String, ...): Result<Unit>
+    }
+
+    class AddParkingAreaUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(...)
+    }
+    class DeactivateParkingAreaUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(parkingAreaId: String): Result<Unit>
+    }
+    class GetNearbyParkingAreasUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(latitude: Double, longitude: Double, distance: Double): Result<List<ParkingArea>>
+    }
+    class GetParkingAreaByIdUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(parkingAreaId: String): Result<ParkingArea>
+    }
+    class GetParkingAreasUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(ownerId: String): Result<List<ParkingArea>>
+    }
+    class ToggleOperativeStateUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(parkingAreaId: String, isOperative: Boolean): Result<Unit>
+    }
+    class UpdateParkingAreaUseCaseImpl {
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(...)
+    }
+
+    AddParkingAreaUseCaseImpl .up.|> AddParkingAreaUseCase
+    DeactivateParkingAreaUseCaseImpl .up.|> DeactivateParkingAreaUseCase
+    GetNearbyParkingAreasUseCaseImpl .up.|> GetNearbyParkingAreasUseCase
+    GetParkingAreaByIdUseCaseImpl .up.|> GetParkingAreaByIdUseCase
+    GetParkingAreasUseCaseImpl .up.|> GetParkingAreasUseCase
+    ToggleOperativeStateUseCaseImpl .up.|> ToggleOperativeStateUseCase
+    UpdateParkingAreaUseCaseImpl .up.|> UpdateParkingAreaUseCase
+}
+
+package "reservation"{
+    interface "AddReservationUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String, accountId: String): Result<Unit>
+    }
+    interface "CancelReservationUseCase" <<UseCase>> {
+        + invoke(reservationId: String): Result<Unit>
+    }
+    interface "CheckInReservationUseCase" <<UseCase>> {
+        + invoke(reservationId: String): Result<Unit>
+    }
+    interface "CheckOutReservationUseCase" <<UseCase>> {
+        + invoke(reservationId: String): Result<Unit>
+    }
+    interface "ExtendReservationUseCase" <<UseCase>> {
+        + invoke(reservationId: String, currentOutTime: Instant, minutes: Int): Result<Unit>
+    }
+    interface "GetDetailedUserReservationsUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<List<ReservationDetail>>
+    }
+    interface "GetParkingAreaActiveReservationsUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String): Result<List<Reservation>>
+    }
+    interface "GetUserReservationsUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<List<Reservation>>
+    }
+    interface "ReleaseReservationUseCase" <<UseCase>> {
+        + invoke(reservationId: String): Result<Unit>
+    }
+
+    class AddReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        - parkingAreaRepository: ParkingAreaRepository
+        + invoke(parkingAreaId: String, accountId: String): Result<Unit>
+    }
+    class CancelReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(reservationId: String): Result<Unit>
+    }
+    class CheckInReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(reservationId: String): Result<Unit>
+    }
+    class CheckOutReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(reservationId: String): Result<Unit>
+    }
+    class ExtendReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(reservationId: String, currentOutTime: Instant, minutes: Int): Result<Unit>
+    }
+    class GetDetailedUserReservationsUseCaseImpl {
+        - getUserReservationsUseCase: GetUserReservationsUseCase
+        - getParkingAreaByIdUseCase: GetParkingAreaByIdUseCase
+        + invoke(accountId: String): Result<List<ReservationDetail>>
+    }
+    class GetParkingAreaActiveReservationsUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(parkingAreaId: String): Result<List<Reservation>>
+    }
+    class GetUserReservationsUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(accountId: String): Result<List<Reservation>>
+    }
+    class ReleaseReservationUseCaseImpl {
+        - reservationRepository: ReservationRepository
+        + invoke(reservationId: String): Result<Unit>
+    }
+
+    AddReservationUseCaseImpl .up.|> AddReservationUseCase
+    CancelReservationUseCaseImpl .up.|> CancelReservationUseCase
+    CheckInReservationUseCaseImpl .up.|> CheckInReservationUseCase
+    CheckOutReservationUseCaseImpl .up.|> CheckOutReservationUseCase
+    ExtendReservationUseCaseImpl .up.|> ExtendReservationUseCase
+    GetDetailedUserReservationsUseCaseImpl .up.|> GetDetailedUserReservationsUseCase
+    GetParkingAreaActiveReservationsUseCaseImpl .up.|> GetParkingAreaActiveReservationsUseCase
+    GetUserReservationsUseCaseImpl .up.|> GetUserReservationsUseCase
+    ReleaseReservationUseCaseImpl .up.|> ReleaseReservationUseCase
+
+    ' Dependencias entre casos de uso
+    GetDetailedUserReservationsUseCaseImpl --> GetUserReservationsUseCase
+    GetDetailedUserReservationsUseCaseImpl --> GetParkingAreaByIdUseCase
+}
+
+package "user"{
+    interface "GetUserIdUseCase" <<UseCase>> {
+        + invoke(): Result<String>
+    }
+    interface "GetUserRoleUseCase" <<UseCase>> {
+        + invoke(): Result<Role>
+    }
+    class GetUserIdUseCaseImpl {
+        - accountRepository: AccountRepository
+        + invoke(): Result<String>
+    }
+    class GetUserRoleUseCaseImpl {
+        - accountRepository: AccountRepository
+        + invoke(): Result<Role>
+    }
+    GetUserIdUseCaseImpl .up.|> GetUserIdUseCase
+    GetUserRoleUseCaseImpl .up.|> GetUserRoleUseCase
+}
+
+@enduml

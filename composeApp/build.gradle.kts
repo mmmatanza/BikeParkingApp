@@ -40,7 +40,6 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
-            implementation(libs.ktor.client.mock)
         }
 
         androidMain.dependencies {
@@ -64,6 +63,10 @@ kotlin {
                 implementation(libs.ktor.client.js)
                 // Ubicación
                 implementation(libs.compass.geolocation.browser)
+                // Zonas horarias
+                implementation(libs.kotlinx.datetime)
+                implementation(npm("@js-joda/core", "5.6.3"))
+                implementation(npm("@js-joda/timezone", "2.3.0"))
             }
         }
         commonMain.dependencies {
