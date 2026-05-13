@@ -14,7 +14,7 @@ package "Capa de Presentación" #FEFECE {
         class MyParkingAreasViewModel
     }
     package "Feature: Reservas" {
-        class MyTripsViewModel
+        class MyTripsViewModeldcxsazxaazxazz
     }
 }
 

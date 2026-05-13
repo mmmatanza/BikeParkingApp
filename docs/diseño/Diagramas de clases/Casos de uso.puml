@@ -64,6 +64,12 @@ package "location"{
 }
 
 package "parking"{
+    interface "GetParkingDiscoveryUseCase" <<UseCase>> {
+        + invoke(accountId: String, lat: Double, lon: Double, dist: Double): Result<ParkingDiscovery>
+    }
+    interface "GetOccupancyPredictionUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String): Result<Int>
+    }
     interface "AddParkingAreaUseCase" <<UseCase>> {
         + invoke(ownerId: String, name: String, address: String, ...): Result<Unit>
     }
@@ -84,6 +90,16 @@ package "parking"{
     }
     interface "UpdateParkingAreaUseCase" <<UseCase>> {
         + invoke(parkingAreaId: String, ownerId: String, ...): Result<Unit>
+    }
+
+    class GetParkingDiscoveryUseCaseImpl {
+        - parkingRepository: ParkingAreaRepository
+        - reservationRepository: ReservationRepository
+        + invoke(...)
+    }
+    class GetOccupancyPredictionUseCaseImpl {
+        - occupancyRepository: OccupancyRepository
+        + invoke(parkingAreaId: String): Result<Int>
     }
 
     class AddParkingAreaUseCaseImpl {
@@ -122,6 +138,8 @@ package "parking"{
     GetParkingAreasUseCaseImpl .up.|> GetParkingAreasUseCase
     ToggleOperativeStateUseCaseImpl .up.|> ToggleOperativeStateUseCase
     UpdateParkingAreaUseCaseImpl .up.|> UpdateParkingAreaUseCase
+    GetOccupancyPredictionUseCaseImpl .up.|> GetOccupancyPredictionUseCase
+    GetParkingDiscoveryUseCaseImpl .up.|> GetParkingDiscoveryUseCase
 }
 
 package "reservation"{
@@ -205,6 +223,33 @@ package "reservation"{
     ' Dependencias entre casos de uso
     GetDetailedUserReservationsUseCaseImpl --> GetUserReservationsUseCase
     GetDetailedUserReservationsUseCaseImpl --> GetParkingAreaByIdUseCase
+}
+
+package "alert"{
+    interface "GetAlertsUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<List<Alert>>
+    }
+    class GetAlertsUseCaseImpl {
+        - alertRepository: AlertRepository
+        + invoke(accountId: String): Result<List<Alert>>
+    }
+    interface "MarkAlertAsReadUseCase" <<UseCase>> {
+        + invoke(alertId:String): Result<Unit>
+    }
+    class MarkAlertAsReadUseCaseImpl {
+        - alertRepository: AlertRepository
+        + invoke(alertId: String): Result<Unit>
+    }
+    interface "MarkAllAlertsAsReadUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<Unit>
+    }
+    class MarkAllAlertsAsReadUseCaseImpl {
+        - alertRepository: AlertRepository
+        + invoke(accountId: String): Result<Unit>
+    }
+    GetAlertsUseCaseImpl .up.|> GetAlertsUseCase
+    MarkAlertAsReadUseCaseImpl .up.|> MarkAlertAsReadUseCase
+    MarkAllAlertsAsReadUseCaseImpl .up.|> MarkAllAlertsAsReadUseCase
 }
 
 package "user"{

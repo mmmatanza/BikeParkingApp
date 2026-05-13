@@ -2,6 +2,17 @@
 'https://plantuml.com/class-diagram
 
 package "domain.repository" {
+
+    interface OccupancyRepository{
+        + getPredictedOccupancy(parkingAreaId): Result<Int>
+    }
+
+    interface AlertRepository {
+        + getAlertsByAccountId(accountId: String): Result<List<Alert>>
+        + markAsRead(alertId: String): Result<Unit>
+        + markAllAsRead(accountId: String): Result<Unit>
+    }
+
     interface AuthRepository {
         + getAuthStateFlow(): Flow<AuthState>
         + getCurrentUserId(): Result<String>
@@ -24,13 +35,13 @@ package "domain.repository" {
     }
 
     interface ParkingAreaRepository {
-        + getParkingAreaById(parkingId: String): Result<ParkingArea>
+        + getParkingAreaById(parkingAreaId: String): Result<ParkingArea>
         + getParkingAreasByOwner(ownerId: String): Result<List<ParkingArea>>
         + getNearbyParkingAreas(lat: Double, lon: Double, dist: Double): Result<List<ParkingArea>>
         + addParkingArea(parkingArea: ParkingArea): Result<Unit>
         + updateParkingArea(parkingArea: ParkingArea): Result<Unit>
-        + deactivateParkingArea(parkingId: String): Result<Unit>
-        + toggleOperativeState(parkingId: String, isOperative: Boolean): Result<Unit>
+        + deactivateParkingArea(parkingAreaId: String): Result<Unit>
+        + toggleOperativeState(parkingAreaId: String, isOperative: Boolean): Result<Unit>
     }
 
     interface ReservationRepository {
@@ -44,6 +55,7 @@ package "domain.repository" {
         + extend(reservationId: String, newOutTime: Instant): Result<Unit>
         + countParkingActiveReservations(parkingAreaId: String): Int
         + countUserActiveReservations(accountId: String): Int
+        + countCompletedReservationsByUserInParking(accountId: String, parkingAreaId: String): Result<Int>
     }
 }
 
@@ -69,12 +81,22 @@ package "data.repository" {
         - client: SupabaseClient
     }
 
+    class AnalyticsOccupancyRepository{
+        - httpClient: HttpClient
+    }
+
+    class SupabaseAlertRepository {
+        - client: SupabaseClient
+    }
+
     ' Implementaciones
     SupabaseAuthRepository .up.|> AuthRepository
     SupabaseAccountRepository .up.|> AccountRepository
     CompassLocationRepository .up.|> LocationRepository
     SupabaseParkingAreaRepository .up.|> ParkingAreaRepository
     SupabaseReservationRepository .up.|> ReservationRepository
+    AnalyticsOccupancyRepository .|> OccupancyRepository
+    SupabaseAlertRepository .up.|> AlertRepository
 }
 
 package "data.local"{

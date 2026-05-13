@@ -126,6 +126,7 @@ package "feature.parkingexplorer" {
         + loadNearbyParkingAreas()
     }
     class NearbyParkingAreasState <<State>> {
+        + recommendedArea: ParkingArea?
         + areas: List<ParkingArea>
         + isLoading: Boolean
         + error: String?
@@ -240,5 +241,25 @@ package "feature.parkingmanagement" {
     MapSelectionScreen --> MapSelectionContent
     MapSelectionContent ..> MapSelectionViewModel : observe/trigger
     MapSelectionViewModel o-- MapSelectionState
+}
+package "feature.alerts"{
+    class AlertsScreen <<Composable>>
+    class AlertsContent <<Composable>>
+    class AlertsViewModel {
+        - _state : MutableState<AlertsState>
+        - state: State<AlertsState>
+        + loadAlerts()
+        + markAsRead(String)
+        + markAllAsRead()
+    }
+    class AlertsState <<State>> {
+        + alerts: List<Alert>
+        + isLoading: Boolean
+        + error: String?
+    }
+    AlertsScreen --> AlertsViewModel
+    AlertsScreen --> AlertsContent
+    AlertsContent ..> AlertsViewModel : observe/trigger
+    AlertsViewModel o-- AlertsState
 }
 @enduml

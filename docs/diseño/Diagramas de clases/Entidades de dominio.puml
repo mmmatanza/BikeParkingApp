@@ -70,6 +70,20 @@ class ReservationDetail {
     + parkingLongitude: Double
 }
 
+class Alert {
+    + alertId: String
+    + type: String
+    + message: String
+    + score: Double
+    + createdAt: Instant
+    + isRead: Boolean
+}
+
+class ParkingDiscovery{
+    recommended: ParkingArea?
+    allNearby: List<ParkingArea>
+}
+
 Account "1" --> "1" Role
 Reservation "1" --> "1" ReservationState
 ReservationDetail "1" o-- "1" Reservation
