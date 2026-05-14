@@ -177,6 +177,15 @@ BEGIN
             END IF;
         END IF;
 
+        -- Registrar overstay si se hace checkout desde OVERDUE
+        IF (OLD.state = 'OVERDUE' AND NEW.state = 'CHECKED_OUT') THEN
+            INSERT INTO overstays (reservation_id, extra_minutes)
+            VALUES (
+                NEW.reservation_id,
+                GREATEST(0, EXTRACT(EPOCH FROM (NOW() - NEW.out_time)) / 60)::INTEGER
+            );
+        END IF;
+
         -- Actualizar la ocupación
         IF (OLD.state NOT IN ('CHECKED_OUT', 'CANCELLED', 'EXPIRED') AND
             NEW.state IN ('CHECKED_OUT', 'CANCELLED', 'EXPIRED')) THEN

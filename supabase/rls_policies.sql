@@ -153,3 +153,34 @@ OR
 );
 
 ---------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Tabla de alertas
+---------------------------------------------------------------------------------------------------
+
+-- SELECT para alertas.
+
+create policy "SELECT reservations"
+on "public"."alerts"
+as PERMISSIVE
+for SELECT
+to public
+using (
+account_id = auth.uid()
+);
+
+-- UPDATE para reservas.
+create policy "UPDATE reservations"
+on "public"."alerts"
+as PERMISSIVE
+for UPDATE
+to public
+using (
+account_id = auth.uid()
+) with check (
+account_id = auth.uid()
+);
+
+---------------------------------------------------------------------------------------------------

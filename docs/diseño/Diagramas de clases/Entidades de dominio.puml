@@ -73,7 +73,7 @@ class ReservationDetail {
 class Alert {
     + alertId: String
     + type: String
-    + message: String
+    + referenceId: String
     + score: Double
     + createdAt: Instant
     + isRead: Boolean

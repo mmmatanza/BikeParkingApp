@@ -21,4 +21,5 @@ interface ReservationRepository {
     suspend fun extend(reservationId: String, newOutTime: Instant): Result<Unit>
     suspend fun countParkingActiveReservations(parkingAreaId: String): Int
     suspend fun countUserActiveReservations(accountId: String): Result<Int>
+    suspend fun countCompletedReservationsByUserInParking(accountId: String, parkingAreaId: String): Result<Int>
 }

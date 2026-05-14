@@ -186,4 +186,25 @@ class SupabaseReservationRepository(
             throw ErrorMapper.map(throwable)
         }
     }
+
+    override suspend fun countCompletedReservationsByUserInParking(
+        accountId: String,
+        parkingAreaId: String
+    ): Result<Int> {
+        return runCatching {
+            client.from("reservations")
+                .select {
+                    filter {
+                        eq("account_id", accountId)
+                        eq("parking_area_id", parkingAreaId)
+                        eq("state", ReservationState.CHECKED_OUT.name)
+                    }
+                }
+                .decodeList<ReservationDto>()
+                .size
+        }.recoverCatching { throwable ->
+            // Mapeamos la excepción de SQL a domain
+            throw ErrorMapper.map(throwable)
+        }
+    }
 }

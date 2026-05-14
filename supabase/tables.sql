@@ -71,4 +71,29 @@ CREATE INDEX idx_reservations_account ON reservations(account_id);
 
 -- Índice para acelerar el cálculo de ocupación por parking
 CREATE INDEX idx_reservations_parking_active ON reservations(parking_area_id)
-WHERE state IN ('RESERVED', 'CHECKED_IN');
+WHERE state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
+
+-- Tabla para registrar excesos de tiempo
+CREATE TABLE overstays (
+    overstay_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    reservation_id UUID NOT NULL REFERENCES reservations(reservation_id) ON DELETE CASCADE,
+    extra_minutes INTEGER NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Tabla de alertas
+CREATE TABLE alerts (
+    alert_id        UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+    account_id      UUID        NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+
+    parking_area_id UUID        REFERENCES parkingareas(parking_area_id) ON DELETE SET NULL,
+    reservation_id  UUID        REFERENCES reservations(reservation_id) ON DELETE SET NULL,
+
+    alert_type      TEXT        NOT NULL,
+    alert_value FLOAT8,
+    is_read         BOOLEAN     NOT NULL DEFAULT false,
+    created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Índice para buscar alertas no leídas de un usuario
+CREATE INDEX idx_alerts_account_unread ON alerts(account_id) WHERE is_read = false;

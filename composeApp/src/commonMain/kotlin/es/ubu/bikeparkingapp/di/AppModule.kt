@@ -1,12 +1,16 @@
 package es.ubu.bikeparkingapp.di
 
 import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
+import es.ubu.bikeparkingapp.data.repository.AnalyticsOccupancyRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAccountRepository
+import es.ubu.bikeparkingapp.data.repository.SupabaseAlertRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAuthRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseParkingAreaRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseReservationRepository
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
+import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
+import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
@@ -29,6 +33,8 @@ import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreaByIdUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreasUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreasUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingDiscoveryUseCase
+import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingDiscoveryUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.ToggleOperativeStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.ToggleOperativeStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCase
@@ -73,6 +79,10 @@ import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.postgrest
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -87,6 +97,20 @@ val appModule = module {
     single<AccountRepository> { SupabaseAccountRepository(get(),get()) }
     single<ParkingAreaRepository> { SupabaseParkingAreaRepository(get()) }
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
+    single<AlertRepository> { SupabaseAlertRepository(get()) }
+    single<OccupancyRepository> { AnalyticsOccupancyRepository(get()) }
+
+    // HttpClient para analíticas
+    single {
+        HttpClient {
+            install(ContentNegotiation) {
+                json(Json {
+                    ignoreUnknownKeys = true
+                    coerceInputValues = true
+                })
+            }
+        }
+    }
 
 
     // Casos de Uso
@@ -106,6 +130,7 @@ val appModule = module {
     single<ToggleOperativeStateUseCase>{ ToggleOperativeStateUseCaseImpl(get()) }
     single<GetParkingAreaByIdUseCase>{ GetParkingAreaByIdUseCaseImpl(get()) }
     single<GetNearbyParkingAreasUseCase>{ GetNearbyParkingAreasUseCaseImpl(get()) }
+    single<GetParkingDiscoveryUseCase>{ GetParkingDiscoveryUseCaseImpl(get(), get(), get()) }
 
     // Reservation
     single<AddReservationUseCase>{ AddReservationUseCaseImpl(get(), get()) }
