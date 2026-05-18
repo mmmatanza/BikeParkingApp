@@ -120,6 +120,33 @@ actual fun NearbyParkingAreasContent(
                     strokeColor = const(Color.Black)
                 )
 
+                // Source para el parking recomendado
+                val recommendedSource = rememberGeoJsonSource(
+                    data = if (state.recommendedArea != null) {
+                        GeoJsonData.JsonString(createParkingJson(listOf(state.recommendedArea)))
+                    } else {
+                        GeoJsonData.JsonString("""{"type":"FeatureCollection","features":[]}""")
+                    }
+                )
+
+                // Círculo violeta para el parking recomendado
+                CircleLayer(
+                    id = "parking-recommended-layer",
+                    source = recommendedSource,
+                    radius = const(8.dp),
+                    color = const(Color(0xFF8B00FF)), // Violeta
+                    strokeWidth = const(3.dp),
+                    strokeColor = const(Color.Black),
+                    onClick = { features ->
+                        val parkingId =
+                            features[0].properties?.get("parkingId")?.toString()?.replace("\"", "")
+                        if (parkingId != null) {
+                            onParkingAreaClick(parkingId)
+                        }
+                        ClickResult.Consume
+                    }
+                )
+
                 // Source para los parking disponibles
                 val availableSource = rememberGeoJsonSource(
                     data = if (state.parkingAreas.isNotEmpty()) {
@@ -164,7 +191,15 @@ actual fun NearbyParkingAreasContent(
                     radius = const(8.dp),
                     color = const(Color.Red),
                     strokeWidth = const(3.dp),
-                    strokeColor = const(Color.Black)
+                    strokeColor = const(Color.Black),
+                    onClick = { features ->
+                        val parkingId =
+                            features[0].properties?.get("parkingId")?.toString()?.replace("\"", "")
+                        if (parkingId != null) {
+                            onParkingAreaClick(parkingId)
+                        }
+                        ClickResult.Consume
+                    }
                 )
             }
         }

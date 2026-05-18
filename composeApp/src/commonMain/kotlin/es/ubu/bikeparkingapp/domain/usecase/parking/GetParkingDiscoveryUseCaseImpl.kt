@@ -25,30 +25,41 @@ class GetParkingDiscoveryUseCaseImpl(
         longitude: Double,
         distance: Double
     ): Result<ParkingDiscovery> = runCatching {
-        val userId = authRepository.getCurrentUserId().getOrThrow()
+        // Obtenemos el ID del usuario
+        val userId = authRepository.getCurrentUserId().getOrNull() ?: ""
+        
+        // Obtenemos todos los parkings en el radio indicado
         val nearbyAreas = parkingAreaRepository.getNearbyParkingAreas(latitude, longitude, distance).getOrThrow()
 
         if (nearbyAreas.isEmpty()) {
             return@runCatching ParkingDiscovery(recommended = null, allNearby = emptyList())
         }
 
-        // Filtramos solo los que están abiertos
-        val openAreas = nearbyAreas.filter { it.isOpen() }
+        // Filtramos solo los que están abiertos y disponibles
+        val availableAreas = nearbyAreas.filter { 
+            it.isOpen() && it.isOperative && it.currentOccupancy < it.capacity 
+        }
 
-        if (openAreas.isEmpty()) {
+        // Si no hay ninguno disponible, no hay recomendación posible
+        if (availableAreas.isEmpty()) {
             return@runCatching ParkingDiscovery(recommended = null, allNearby = nearbyAreas)
         }
 
-        // Valorar el mejor parking
-        val recommended = openAreas.maxByOrNull { area ->
+        // Valorar el mejor parking entre los disponibles
+        val recommended = availableAreas.maxByOrNull { area ->
             val dist = calculateDistance(latitude, longitude, area.latitude, area.longitude)
-            val visits = reservationRepository.countCompletedReservationsByUserInParking(
-                userId,
-                area.parkingAreaId ?: ""
-            ).getOrDefault(0)
+            
+            // Si el usuario está logueado, sumamos puntos por fidelidad (500m por visita completada)
+            val visits = if (userId.isNotEmpty()) {
+                reservationRepository.countCompletedReservationsByUserInParking(
+                    userId,
+                    area.parkingAreaId ?: ""
+                ).getOrDefault(0)
+            } else {
+                0
+            }
 
-            // Fórmula de puntuación
-            // Cada visita suma 500 puntos, y se penaliza con la distancia
+            // Fórmula de puntuación: penalizamos distancia y premiamos visitas
             (visits * 500.0) - dist
         }
 

@@ -13,6 +13,11 @@ CREATE TABLE accounts (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Permisos
+GRANT SELECT, UPDATE, INSERT ON public.accounts TO authenticated;
+
+
+
 -- Función para validar si una zona horaria es válida
 CREATE OR REPLACE FUNCTION is_valid_timezone(tz TEXT) RETURNS BOOLEAN AS $$
 BEGIN
@@ -48,6 +53,10 @@ CREATE TABLE parkingareas (
 -- Índice para la ubicación
 CREATE INDEX parking_area_location_idx ON parkingareas USING GIST (parking_area_location);
 
+-- Permisos
+GRANT SELECT, UPDATE, INSERT ON public.parkingareas TO authenticated;
+
+
 
 -- Tabla de reservas
 CREATE TABLE reservations (
@@ -57,7 +66,7 @@ CREATE TABLE reservations (
     parking_area_id UUID NOT NULL REFERENCES parkingareas(parking_area_id) ON DELETE CASCADE,
     -- Tiempos
     in_time TIMESTAMPTZ NOT NULL,
-    out_time TIMESTAMPTZ, -- Puede ser NULL si es flujo en vivo hasta el check-out
+    out_time TIMESTAMPTZ,
     -- Estado con restricción para asegurar que solo entren valores válidos del Enum
     state TEXT NOT NULL DEFAULT 'RESERVED'
         CHECK (state IN ('RESERVED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED', 'EXPIRED', 'OVERDUE')),
@@ -72,6 +81,11 @@ CREATE INDEX idx_reservations_account ON reservations(account_id);
 -- Índice para acelerar el cálculo de ocupación por parking
 CREATE INDEX idx_reservations_parking_active ON reservations(parking_area_id)
 WHERE state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
+
+-- Permisos
+GRANT SELECT, UPDATE, INSERT ON public.reservations TO authenticated;
+
+
 
 -- Tabla para registrar excesos de tiempo
 CREATE TABLE overstays (
@@ -91,9 +105,13 @@ CREATE TABLE alerts (
 
     alert_type      TEXT        NOT NULL,
     alert_value FLOAT8,
+    custom_message TEXT DEFAULT '',
     is_read         BOOLEAN     NOT NULL DEFAULT false,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 -- Índice para buscar alertas no leídas de un usuario
 CREATE INDEX idx_alerts_account_unread ON alerts(account_id) WHERE is_read = false;
+
+-- Permisos
+GRANT SELECT, INSERT, UPDATE ON public.alerts TO authenticated;

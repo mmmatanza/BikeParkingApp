@@ -7,6 +7,7 @@ import es.ubu.bikeparkingapp.domain.entity.Alert
 import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Order
 
 /**
  * Implementación del repositorio de alertas en Supabase.
@@ -20,7 +21,7 @@ class SupabaseAlertRepository(
                 filter {
                     eq("account_id", accountId)
                 }
-                order("created_at", order = io.github.jan.supabase.postgrest.query.Order.DESCENDING)
+                order("created_at", order = Order.DESCENDING)
             }
             .decodeList<AlertDto>()
             .map { it.toDomain() }

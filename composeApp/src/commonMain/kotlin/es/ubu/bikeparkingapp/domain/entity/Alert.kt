@@ -14,6 +14,7 @@ data class Alert(
     val reservationId: String?,
     val type: AlertType,
     val value: Double?,
+    val customMessage: String?,
     val isRead: Boolean,
     val createdAt: Instant
 )

@@ -31,6 +31,7 @@ import bikeparkingapp.composeapp.generated.resources.back
 import bikeparkingapp.composeapp.generated.resources.find_parking
 import bikeparkingapp.composeapp.generated.resources.no_parking_found
 import bikeparkingapp.composeapp.generated.resources.not_available_parking_areas
+import bikeparkingapp.composeapp.generated.resources.recommended_for_you
 import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
 import org.jetbrains.compose.resources.stringResource
 
@@ -68,7 +69,7 @@ actual fun NearbyParkingAreasContent(
                 .padding(paddingValues)
         ) {
             when {
-                state.parkingAreas.isEmpty() && state.notAvailableParkingAreas.isEmpty() -> {
+                state.parkingAreas.isEmpty() && state.notAvailableParkingAreas.isEmpty() && state.recommendedArea == null -> {
                     Text(
                         text = stringResource(Res.string.no_parking_found),
                         modifier = Modifier.align(Alignment.Center)
@@ -80,6 +81,24 @@ actual fun NearbyParkingAreasContent(
                         contentPadding = PaddingValues(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        // Sección de Parking Recomendado
+                        state.recommendedArea?.let { area ->
+                            item {
+                                Text(
+                                    stringResource(Res.string.recommended_for_you),
+                                    style = MaterialTheme.typography.labelLarge,
+                                    modifier = Modifier.padding(vertical = 8.dp)
+                                )
+                            }
+                            item {
+                                ParkingOptionItem(
+                                    name = area.name,
+                                    isRecommended = true,
+                                    onClick = { onParkingAreaClick(area.parkingAreaId!!) }
+                                )
+                            }
+                        }
+
                         // Sección de Parkings Disponibles
                         items(state.parkingAreas) { area ->
                             ParkingOptionItem(
@@ -116,6 +135,7 @@ actual fun NearbyParkingAreasContent(
 fun ParkingOptionItem(
     name: String,
     enabled: Boolean = true,
+    isRecommended: Boolean = false,
     onClick: () -> Unit
 ) {
     Card(
@@ -123,10 +143,11 @@ fun ParkingOptionItem(
         enabled = enabled,
         modifier = Modifier.fillMaxWidth().handCursor(),
         colors = CardDefaults.cardColors(
-            containerColor = if (enabled)
-                MaterialTheme.colorScheme.surfaceVariant
-            else
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            containerColor = when {
+                isRecommended -> Color(0xFF8B00FF).copy(alpha = 0.1f)
+                enabled -> MaterialTheme.colorScheme.surfaceVariant
+                else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            }
         )
     ) {
         Row(
@@ -139,12 +160,17 @@ fun ParkingOptionItem(
             Text(
                 text = name,
                 style = MaterialTheme.typography.bodyLarge,
-                color = if (enabled) Color.Unspecified else Color.Gray
+                color = when {
+                    isRecommended -> Color(0xFF8B00FF)
+                    enabled -> Color.Unspecified
+                    else -> Color.Gray
+                }
             )
             if (enabled) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    contentDescription = null
+                    contentDescription = null,
+                    tint = if (isRecommended) Color(0xFF8B00FF) else MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

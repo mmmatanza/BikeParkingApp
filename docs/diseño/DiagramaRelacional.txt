@@ -39,8 +39,32 @@ Table reservations {
   created_at TIMESTAMPTZ [not null, default: `now()`]
 }
 
+Table overstays {
+  overstay_id UUID [primary key, default: `gen_random_uuid()`]
+  reservation_id UUID [not null]
+  extra_minutes INTEGER [not null]
+  created_at TIMESTAMPTZ [not null, default: `now()`]
+}
+
+Table alerts {
+  alert_id UUID [primary key, default: `gen_random_uuid()`]
+  account_id UUID [not null]
+
+  parking_area_id UUID
+  reservation_id UUID
+
+  alert_type TEXT
+  alert_value FLOAT8
+  custom_message TEXT [default: ""]
+  is_read BOOLEAN [not null, default: false]
+  created_at TIMESTAMPTZ [not null]
+}
+
+
 // Relaciones (Flechas)
 Ref: accounts.account_id > auth.users.id // Relación con Auth
 Ref: parkingareas.owner_id > accounts.account_id // Un usuario es dueño de parkings
 Ref: reservations.account_id > accounts.account_id // Un usuario hace reservas
 Ref: reservations.parking_area_id > parkingareas.parking_area_id // Reservas en un parking
+Ref: overstays.reservation_id > reservations.reservation_id // Retrasos
+Ref: alerts.account_id > accounts.account_id // Alertas

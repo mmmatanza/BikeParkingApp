@@ -100,6 +100,7 @@
     <string name="remove_parking_rule">Eliminar regla</string>
     <string name="rule_sample">Ej: No animales</string>
     <string name="not_available_parking_areas">Parkings no disponibles</string>
+    <string name="recommended_for_you">Recomendado para tí</string>
 
     <!-- Hacer reserva -->
     <string name="reservation_id">ID de reserva</string>

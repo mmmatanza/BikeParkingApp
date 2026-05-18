@@ -14,6 +14,7 @@ data class AlertDto(
     @SerialName("reservation_id") val reservationId: String? = null,
     @SerialName("alert_type") val alertType: String,
     @SerialName("alert_value") val alertValue: Double? = null,
+    @SerialName("custom_message") val customMessage: String? = null,
     @SerialName("is_read") val isRead: Boolean,
     @SerialName("created_at") val createdAt: String
 )

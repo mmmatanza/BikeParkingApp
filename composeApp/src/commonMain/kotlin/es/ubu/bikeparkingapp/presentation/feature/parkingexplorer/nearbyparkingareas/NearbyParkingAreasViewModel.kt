@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import es.ubu.bikeparkingapp.domain.entity.isOpen
 import es.ubu.bikeparkingapp.domain.usecase.location.GetUserLocationUseCase
-import es.ubu.bikeparkingapp.domain.usecase.parking.GetNearbyParkingAreasUseCase
+import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingDiscoveryUseCase
 import es.ubu.bikeparkingapp.presentation.common.util.ErrorMapper
 import kotlinx.coroutines.launch
 
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
  * Representa el viewModel para la pantalla de áreas de parking cercanas.
  */
 class NearbyParkingAreasViewModel(
-    private val getNearbyParkingAreasUseCase: GetNearbyParkingAreasUseCase,
+    private val getParkingDiscoveryUseCase: GetParkingDiscoveryUseCase,
     private val getUserLocationUseCase: GetUserLocationUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(NearbyParkingAreasState())
@@ -51,13 +51,14 @@ class NearbyParkingAreasViewModel(
 
     private fun loadNearbyParkingAreas(latitude: Double, longitude: Double) {
         viewModelScope.launch {
-            getNearbyParkingAreasUseCase(latitude, longitude, 5000.00)
-                .onSuccess { parkingAreas ->
-                    // Separamos los parkings disponibles de los no disponibles
-                    val (unavailable, available) = parkingAreas.partition { parking ->
+            getParkingDiscoveryUseCase(latitude, longitude, 5000.00)
+                .onSuccess { discovery ->
+                    // Separamos los parkings disponibles de los no disponibles de la lista allNearby
+                    val (unavailable, available) = discovery.allNearby.partition { parking ->
                         parking.currentOccupancy >= parking.capacity || !parking.isOperative || !parking.isOpen()
                     }
                     _state.value = _state.value.copy(
+                        recommendedArea = discovery.recommended,
                         parkingAreas = available,
                         notAvailableParkingAreas = unavailable,
                         isLoading = false
