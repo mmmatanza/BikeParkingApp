@@ -13,6 +13,12 @@ import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
+import es.ubu.bikeparkingapp.domain.usecase.alert.GetAlertsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.alert.GetAlertsUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAlertAsReadUseCase
+import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAlertAsReadUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAllAlertsAsReadUseCase
+import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAllAlertsAsReadUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
@@ -61,6 +67,7 @@ import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCaseImpl
+import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
@@ -147,6 +154,11 @@ val appModule = module {
         )
     }
     single<ExtendReservationUseCase>{ ExtendReservationUseCaseImpl(get()) }
+
+    // Alert
+    single<GetAlertsUseCase> { GetAlertsUseCaseImpl(get(), get()) }
+    single<MarkAlertAsReadUseCase> { MarkAlertAsReadUseCaseImpl(get()) }
+    single<MarkAllAlertsAsReadUseCase> { MarkAllAlertsAsReadUseCaseImpl(get(), get()) }
 }
 
 // Módulo para los ViewModels
@@ -163,6 +175,7 @@ val viewModelsModule = module {
     viewModelOf(::ParkingReservationViewModel)
     viewModelOf(::ParkingReservationsViewModel)
     viewModelOf(::MyTripsViewModel)
+    viewModelOf(::AlertsViewModel)
 }
 
 // Módulo para la creación del cliente Supabase

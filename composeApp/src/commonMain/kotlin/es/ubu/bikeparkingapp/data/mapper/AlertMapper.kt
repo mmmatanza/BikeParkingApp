@@ -12,9 +12,11 @@ fun AlertDto.toDomain(): Alert = Alert(
     alertId = alertId,
     accountId = accountId,
     parkingAreaId = parkingAreaId,
+    parkingName = parkingArea?.name,
     reservationId = reservationId,
     type = AlertType.fromString(alertType),
     value = alertValue,
+    customMessage = customMessage,
     isRead = isRead,
     createdAt = Instant.parse(createdAt)
 )

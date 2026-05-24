@@ -16,5 +16,14 @@ data class AlertDto(
     @SerialName("alert_value") val alertValue: Double? = null,
     @SerialName("custom_message") val customMessage: String? = null,
     @SerialName("is_read") val isRead: Boolean,
-    @SerialName("created_at") val createdAt: String
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("parkingareas") val parkingArea: ParkingNameDto? = null
+)
+
+/**
+ * DTO auxiliar para obtener el nombre del parking mediante un join.
+ */
+@Serializable
+data class ParkingNameDto(
+    val name: String
 )

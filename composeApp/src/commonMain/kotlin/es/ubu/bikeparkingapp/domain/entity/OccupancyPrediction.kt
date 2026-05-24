@@ -1,6 +1,6 @@
 package es.ubu.bikeparkingapp.domain.entity
 
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 
 /**

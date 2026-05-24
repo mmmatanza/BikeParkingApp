@@ -7,6 +7,7 @@ import es.ubu.bikeparkingapp.domain.entity.Alert
 import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 
 /**
@@ -17,7 +18,7 @@ class SupabaseAlertRepository(
 ) : AlertRepository {
     override suspend fun getAlertsByAccountId(accountId: String): Result<List<Alert>> = runCatching {
         client.from("alerts")
-            .select {
+            .select(columns = Columns.raw("*, parkingareas(name)")) {
                 filter {
                     eq("account_id", accountId)
                 }

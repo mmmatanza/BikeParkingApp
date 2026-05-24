@@ -133,5 +133,33 @@
     <string name="extend_reservation_confirm_user">¿Estás seguro de que quieres extender esta reserva una hora más?</string>
     <string name="no_active_reservations">No hay reservas activas</string>
     <string name="my_trips">Mis viajes</string>
+    <string name="alerts">Alertas</string>
+    <string name="no_alerts">No hay alertas disponibles</string>
+    <string name="mark_as_read">Marcar como leída</string>
+    <string name="mark_all_as_read">Marcar todas como leídas</string>
+    <string name="alert_occupancy_limit">Límite de ocupación alcanzado en el parking: %s</string>
+    <string name="alert_suspicious_reservation">Actividad sospechosa en la reserva: %s</string>
+    <string name="alert_parking_notification">Notificación de parking: %s</string>
+
+    <string name="alert_occupancy_limit_title">Límite de Ocupación</string>
+    <string name="alert_suspicious_reservation_title">Actividad Sospechosa</string>
+    <string name="alert_parking_notification_title">Notificación de Parking</string>
+
+    <string name="alert_recurrent_expired_title">Expiraciones Recurrentes</string>
+    <string name="alert_recurrent_expired_msg">El usuario tiene múltiples reservas expiradas. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_recurrent_cancellations_title">Cancelaciones Recurrentes</string>
+    <string name="alert_recurrent_cancellations_msg">El usuario tiene múltiples reservas canceladas. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_recurrent_overstay_title">Exceso de Tiempo Recurrente</string>
+    <string name="alert_recurrent_overstay_msg">El usuario suele quedarse más tiempo del reservado. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_suspicious_new_account_title">Nueva Cuenta Sospechosa</string>
+    <string name="alert_suspicious_new_account_msg">Una cuenta nueva muestra actividad inusual. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_unusual_booking_frequency_title">Frecuencia de Reserva Inusual</string>
+    <string name="alert_unusual_booking_frequency_msg">Se ha detectado una alta frecuencia de reservas para este usuario. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_unusual_booking_hour_title">Hora de Reserva Inusual</string>
+    <string name="alert_unusual_booking_hour_msg">Reservas en horas poco comunes para este usuario o zona. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_unusual_booking_weekday_title">Día de Reserva Inusual</string>
+    <string name="alert_unusual_booking_weekday_msg">Reservas en días inusuales para el patrón del usuario. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_abnormal_booking_pattern_title">Patrón de Reserva Anormal</string>
+    <string name="alert_abnormal_booking_pattern_msg">Se ha detectado un comportamiento de reserva anormal general. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
 
 </resources>

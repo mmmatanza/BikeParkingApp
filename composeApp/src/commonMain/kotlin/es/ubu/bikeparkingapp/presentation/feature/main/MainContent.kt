@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.CardTravel
 import androidx.compose.material.icons.filled.LocalParking
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
+import bikeparkingapp.composeapp.generated.resources.alerts
 import bikeparkingapp.composeapp.generated.resources.find_parking
 import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
@@ -96,6 +98,14 @@ fun MainContent(
                             icon = Icons.Default.LocalParking,
                             color = MaterialTheme.colorScheme.errorContainer,
                             onClick = actions.onMyParkingAreas
+                        )
+                    }
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.alerts),
+                            icon = Icons.Default.Notifications,
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            onClick = actions.onNavigateToAlerts
                         )
                     }
                 }

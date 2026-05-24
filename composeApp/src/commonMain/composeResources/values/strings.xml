@@ -133,5 +133,33 @@
     <string name="extend_reservation_confirm_user">Extend this reservation by one hour?</string>
     <string name="no_active_reservations">No active reservations</string>
     <string name="my_trips">My trips</string>
+    <string name="alerts">Alerts</string>
+    <string name="no_alerts">No alerts found</string>
+    <string name="mark_as_read">Mark as read</string>
+    <string name="mark_all_as_read">Mark all as read</string>
+    <string name="alert_occupancy_limit">Occupancy limit reached in parking area: %s</string>
+    <string name="alert_suspicious_reservation">Suspicious activity in reservation: %s</string>
+    <string name="alert_parking_notification">Parking notification: %s</string>
+
+    <string name="alert_occupancy_limit_title">Occupancy Limit</string>
+    <string name="alert_suspicious_reservation_title">Suspicious Activity</string>
+    <string name="alert_parking_notification_title">Parking Notification</string>
+
+    <string name="alert_recurrent_expired_title">Recurrent Expirations</string>
+    <string name="alert_recurrent_expired_msg">The user has multiple expired reservations. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_recurrent_cancellations_title">Recurrent Cancellations</string>
+    <string name="alert_recurrent_cancellations_msg">The user has multiple cancelled reservations. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_recurrent_overstay_title">Recurrent Overstay</string>
+    <string name="alert_recurrent_overstay_msg">The user frequently stays past the checkout time. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_suspicious_new_account_title">Suspicious New Account</string>
+    <string name="alert_suspicious_new_account_msg">A new account is showing unusual activity. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_unusual_booking_frequency_title">Unusual Booking Frequency</string>
+    <string name="alert_unusual_booking_frequency_msg">High frequency of bookings detected for this user. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_unusual_booking_hour_title">Unusual Booking Hour</string>
+    <string name="alert_unusual_booking_hour_msg">Bookings at unusual hours for this user or area. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_unusual_booking_weekday_title">Unusual Booking Day</string>
+    <string name="alert_unusual_booking_weekday_msg">Bookings on unusual days for this user pattern. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_abnormal_booking_pattern_title">Abnormal Booking Pattern</string>
+    <string name="alert_abnormal_booking_pattern_msg">General abnormal booking behavior detected. Area: %1$s, Res: %2$s, Date: %3$s</string>
 
 </resources>
