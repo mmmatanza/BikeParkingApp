@@ -40,6 +40,7 @@ import bikeparkingapp.composeapp.generated.resources.edit_details
 import bikeparkingapp.composeapp.generated.resources.error
 import bikeparkingapp.composeapp.generated.resources.in_service
 import bikeparkingapp.composeapp.generated.resources.out_of_service
+import bikeparkingapp.composeapp.generated.resources.predicted_occupancy
 import bikeparkingapp.composeapp.generated.resources.schedule
 import bikeparkingapp.composeapp.generated.resources.status
 import bikeparkingapp.composeapp.generated.resources.view_occupancy
@@ -168,6 +169,28 @@ fun ParkingManagementContent(
                         text = "${parking?.openingTime?.take(5)} - ${parking?.closingTime?.take(5)}",
                         style = MaterialTheme.typography.bodyLarge
                     )
+                }
+
+                // Predicción
+                state.predictedOccupancy?.let { prediction ->
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.predicted_occupancy),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        val capacity = parking?.capacity ?: 1
+                        val available = capacity - prediction
+                        Text(
+                            text = "$available / $capacity",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(48.dp))

@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import es.ubu.bikeparkingapp.domain.usecase.occupancy.GetPredictedOccupancyUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.DeactivateParkingAreaUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.GetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.ToggleOperativeStateUseCase
@@ -15,11 +16,13 @@ import kotlinx.coroutines.launch
  * @property getParkingAreaByIdUseCase Caso de uso para obtener un parking.
  * @property deactivateParkingAreaUseCase Caso de uso para desactivar un parking.
  * @property toggleOperativeStateUseCase Caso de uso para cambiar el estado operativo de un parking.
+ * @property getPredictedOccupancyUseCase Caso de uso para obtener la ocupación predicha.
  */
 class ParkingManagementViewModel(
     private val getParkingAreaByIdUseCase: GetParkingAreaByIdUseCase,
     private val deactivateParkingAreaUseCase: DeactivateParkingAreaUseCase,
-    private val toggleOperativeStateUseCase: ToggleOperativeStateUseCase
+    private val toggleOperativeStateUseCase: ToggleOperativeStateUseCase,
+    private val getPredictedOccupancyUseCase: GetPredictedOccupancyUseCase
 ) : ViewModel() {
     private val _state = mutableStateOf(ParkingManagementState())
     val state: State<ParkingManagementState> = _state
@@ -63,12 +66,22 @@ class ParkingManagementViewModel(
                         parking = parking,
                         isLoading = false
                     )
+                    loadPrediction(parkingAreaId)
                 }
                 .onFailure {
                     _state.value = _state.value.copy(
                         error = ErrorMapper.map(it),
                         isLoading = false
                     )
+                }
+        }
+    }
+
+    private fun loadPrediction(parkingAreaId: String) {
+        viewModelScope.launch {
+            getPredictedOccupancyUseCase(parkingAreaId)
+                .onSuccess { prediction ->
+                    _state.value = _state.value.copy(predictedOccupancy = prediction)
                 }
         }
     }

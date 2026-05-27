@@ -91,7 +91,7 @@ actual fun MapSelectionContent(
 
         Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
             MaplibreMap(
-                onMapClick = { position, offset ->
+                onMapClick = { position, _ ->
                     onCoordinatesChange(position.latitude, position.longitude)
                     onLocationSelected()
                     ClickResult.Consume

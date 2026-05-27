@@ -29,6 +29,8 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.occupancy.GetPredictedOccupancyUseCase
+import es.ubu.bikeparkingapp.domain.usecase.occupancy.GetPredictedOccupancyUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.AddParkingAreaUseCase
 import es.ubu.bikeparkingapp.domain.usecase.parking.AddParkingAreaUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.DeactivateParkingAreaUseCase
@@ -105,7 +107,7 @@ val appModule = module {
     single<ParkingAreaRepository> { SupabaseParkingAreaRepository(get()) }
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
     single<AlertRepository> { SupabaseAlertRepository(get()) }
-    single<OccupancyRepository> { AnalyticsOccupancyRepository(get()) }
+    single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get()) }
 
     // HttpClient para analíticas
     single {
@@ -159,6 +161,9 @@ val appModule = module {
     single<GetAlertsUseCase> { GetAlertsUseCaseImpl(get(), get()) }
     single<MarkAlertAsReadUseCase> { MarkAlertAsReadUseCaseImpl(get()) }
     single<MarkAllAlertsAsReadUseCase> { MarkAllAlertsAsReadUseCaseImpl(get(), get()) }
+
+    // Occupancy
+    single<GetPredictedOccupancyUseCase> { GetPredictedOccupancyUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels

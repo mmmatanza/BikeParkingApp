@@ -89,6 +89,7 @@
     <string name="edit_details">Editar detalles</string>
     <string name="deactivate">Desactivar</string>
     <string name="available_spots">Plazas disponibles</string>
+    <string name="predicted_occupancy">Predicción (+1h)</string>
     <string name="closed">Cerrado</string>
     <string name="schedule">Horario</string>
     <string name="deactivate_parking">Desactivar parking</string>

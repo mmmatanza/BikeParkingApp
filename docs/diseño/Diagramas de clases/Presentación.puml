@@ -247,15 +247,16 @@ package "feature.alerts"{
     class AlertsContent <<Composable>>
     class AlertsViewModel {
         - _state : MutableState<AlertsState>
-        - state: State<AlertsState>
+        + state: State<AlertsState>
         + loadAlerts()
-        + markAsRead(String)
+        + markAsRead(alertId: String)
         + markAllAsRead()
+        - sortAlerts(alerts: List<Alert>): List<Alert>
     }
     class AlertsState <<State>> {
         + alerts: List<Alert>
         + isLoading: Boolean
-        + error: String?
+        + error: Exception?
     }
     AlertsScreen --> AlertsViewModel
     AlertsScreen --> AlertsContent

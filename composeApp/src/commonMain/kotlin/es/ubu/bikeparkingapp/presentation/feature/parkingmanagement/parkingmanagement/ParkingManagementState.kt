@@ -8,6 +8,7 @@ import es.ubu.bikeparkingapp.domain.entity.ParkingArea
  * @property showDeactivateDialog Indica si se debe mostrar el diálogo de desactivar el parking.
  * @property showToggleDialog Indica si se debe mostrar el diálogo de cambiar el estado operativo del parking.
  * @property parking Información del parking.
+ * @property predictedOccupancy Ocupación predicha.
  * @property error Error que se ha producido.
  * @property successDeactivation Indica si se ha realizado la acción de desactivar el parking.
  */
@@ -16,6 +17,7 @@ data class ParkingManagementState(
     val showDeactivateDialog: Boolean = false,
     val showToggleDialog: Boolean = false,
     val parking: ParkingArea? = null,
+    val predictedOccupancy: Int? = null,
     val error: Exception? = null,
     val successDeactivation: Boolean = false
 )

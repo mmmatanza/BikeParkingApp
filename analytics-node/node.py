@@ -1,19 +1,33 @@
 import os
 import uvicorn
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Query, HTTPException, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import pandas as pd
 import joblib 
 import shap
 import numpy as np
+import requests
+import json
 
 load_dotenv()
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Obtenemos los parámetros del fichero .env
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+TOMTOM_KEY = os.getenv("TOMTOM_API_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 MODEL_PATH = "models/random_forest_anomalies.pkl"
@@ -50,6 +64,10 @@ FEATURE_TO_ALERT_TYPE = {
 
 # Obtiene el Dataframe de reservas, excesos de tiempo y la fecha de creación de la cuenta que reserva
 def get_user_history(account_id: str):
+    """
+    Obtiene el historial reciente de reservas y excesos de tiempo de un usuario.
+    """
+
     acc_query = supabase.table("accounts") \
         .select("created_at") \
         .eq("account_id", account_id) \
@@ -83,6 +101,10 @@ def get_user_history(account_id: str):
 
 # Obtiene el identificador del dueño del parking para crear la posible alerta
 def get_parking_owner_id(parking_area_id: str) -> str:
+    """
+    Obtiene el identificador del propietario de un área de parking.
+    """
+
     query = supabase.table("parkingareas") \
         .select("owner_id") \
         .eq("parking_area_id", parking_area_id) \
@@ -95,6 +117,11 @@ def get_parking_owner_id(parking_area_id: str) -> str:
 
 # Elabora el vector de características
 def build_feature_vector(new_reservation, df_reservations, df_overstays, account_created_at):
+    """
+    Construye el vector de características utilizado por el modelo de detección
+    de anomalías.
+    """
+
     features = {}
 
     if account_created_at:
@@ -139,6 +166,10 @@ def build_feature_vector(new_reservation, df_reservations, df_overstays, account
 
 # Obtiene el tipo de alerta
 def get_alert_type(df_input: pd.DataFrame) -> tuple[str, float]:
+    """
+    Determina el tipo de alerta asociado a una anomalía detectada.
+    """
+
     shap_values = shap_explainer.shap_values(df_input)
     anomaly_shap = shap_values[1][0]  # array de contribuciones para esta muestra
     
@@ -154,6 +185,10 @@ def get_alert_type(df_input: pd.DataFrame) -> tuple[str, float]:
 
 @app.post("/new-reservation")
 async def handle_new_reservation(request: Request):
+    """
+    Procesa una nueva reserva y evalúa si representa un comportamiento anómalo.
+    """
+
     try:
         payload = await request.json()
         new_reservation = payload.get("record", {})
@@ -173,8 +208,7 @@ async def handle_new_reservation(request: Request):
         # Elaboramos la entrada para el modelo 
         features = build_feature_vector(new_reservation, df_reservations, df_overstays, account_created_at)
         print(f"Feature vector: {features}")
-        
-        # Convertimos la entrada a DataFrame y efectuamos la predicción
+
         df_input = pd.DataFrame([features])
         prediction = rf_model.predict(df_input)
         is_anomaly = bool(prediction[0])
@@ -206,6 +240,159 @@ async def handle_new_reservation(request: Request):
     except Exception as e:
         print(f"Error processing anomaly analysis: {e}")
         return {"status": "error", "message": str(e)}
+
+
+def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
+    """
+    Obtiene la latitud, longitud, capacidad y ocupación actual de un parking desde Supabase.
+    """
+    query = supabase.table("parkingareas") \
+        .select("capacity, current_occupancy, parking_area_location") \
+        .eq("parking_area_id", parking_id) \
+        .single() \
+        .execute()
+    
+    data = query.data
+    if not data:
+        raise ValueError(f"Parking no encontrado: {parking_id}")
+        
+    capacity = data.get("capacity")
+    occupancy = data.get("current_occupancy", 0)
+    location = data.get("parking_area_location")
+    
+    if not location:
+        raise ValueError(f"El parking {parking_id} no tiene datos de localización.")
+
+    # Por si se devuelve como un diccionario directo o como un string JSON
+    if isinstance(location, str):
+        try:
+            location = json.loads(location)
+        except json.JSONDecodeError:
+            # Si sigue viniendo el Hexadecimal EWKB crudo
+            # aplicamos otra lógica: decodificar los bytes flotantes manualmente.
+            try:
+                import struct
+                # El estándar EWKB de PostGIS guarda Longitud y Latitud en los últimos 16 bytes
+                binary_data = bytes.fromhex(location)
+                # Extraemos los dos double del final del paquete EWKB
+                longitude, latitude = struct.unpack('<dd', binary_data[-16:])
+                return latitude, longitude, capacity, occupancy
+            except Exception as binary_err:
+                raise ValueError(f"Error al decodificar el binario geográfico EWKB: {binary_err}")
+
+    if isinstance(location, dict) and "coordinates" in location:
+        coordinates = location.get("coordinates", [])
+        if len(coordinates) == 2:
+            longitude = coordinates[0]
+            latitude = coordinates[1]
+            return latitude, longitude, capacity, occupancy
+
+    raise ValueError(f"No se pudo parsear el formato de localización: {location}")
+
+
+def get_congestion_index(lat: float, lon: float) -> float:
+    """
+    Consulta la API de TomTom y calcula un índice de congestión del tráfico.
+    """
+
+    # Usamos un zoom de 18 para afinar al máximo en la calle del parking
+    url = f"https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/18/json"
+    
+    params = {
+        "key": TOMTOM_KEY,
+        "point": f"{lat},{lon}",
+        "unit": "KMPH"
+    }
+    
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        data = response.json()
+        
+        # freeFlowSpeed es la velocidad máxima de la vía sin congestión
+        flow_data = data.get("flowSegmentData", {})
+        current_speed = flow_data.get("currentSpeed", 0)
+        free_flow_speed = flow_data.get("freeFlowSpeed", 0)
+        
+        if free_flow_speed == 0:
+            return 0.0
+            
+        # Calculamos el índice de congestión
+        congestion_index = 1.0 - (current_speed / free_flow_speed)
+        
+        # Aseguramos que el valor esté entre 0 y 1
+        return max(0.0, min(1.0, congestion_index))
+        
+    except Exception as e:
+        print(f"Error al consultar TomTom: {e}")
+        # Fallback: si la API falla, devolvemos 0 para no romper el modelo
+        return 0.0
+
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """
+    Verifica el JWT de Supabase y devuelve el ID del usuario.
+    """
+    token = credentials.credentials
+    try:
+        # Validamos el token con Supabase.
+        user = supabase.auth.get_user(token)
+        if user:
+            return user.user.id
+    except Exception as e:
+        print(f"Error de autenticación: {e}")
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    raise HTTPException(status_code=401, detail="Authentication required")
+
+@app.get("/predict")
+async def handle_prediction(
+    parking_id: str = Query(..., description="ID del parking enviado por la app"),
+    user_id: str = Depends(get_current_user)
+):
+    """
+    Endpoint analítico para el Administrador.
+    Verifica que el usuario sea el dueño del parking antes de procesar.
+    """
+    try:
+        # Verificar propiedad del parking
+        owner_id = get_parking_owner_id(parking_id)
+        if owner_id != user_id:
+            raise HTTPException(status_code=403, detail="You do not have permission to access this parking's data")
+
+        print(f"\n--- Iniciando pipeline analítico para Parking: {parking_id} ---")
+        
+        # Obtener coordenadas, capacidad y ocupación desde las tablas de Supabase
+        latitude, longitude, capacity, ocupacion_actual = get_parking_details(parking_id)
+        print(f"Datos recuperados -> Lat: {latitude}, Lon: {longitude}, Capacidad: {capacity}, Ocupación: {ocupacion_actual}")
+        
+        # Obtener datos de tráfico en tiempo real usando las coordenadas extraídas
+        traffic_index = get_congestion_index(latitude, longitude)
+        print(f"Índice de congestión externa de TomTom: {traffic_index}")
+        
+        # Calcular ratio
+        ratio_ocupacion_actual = ocupacion_actual / capacity if capacity > 0 else 0.0
+        print(f"Ratio de ocupación actual: {round(ratio_ocupacion_actual, 2)}")
+
+        # Predicción simulada
+        prediction_offset = 1 if traffic_index > 0.5 else 0
+        predicted_val = min(capacity, ocupacion_actual + prediction_offset)
+
+        return {
+            "parkingAreaId": parking_id,
+            "dateTime": pd.Timestamp.now(tz='UTC').isoformat().replace('+00:00', 'Z'),
+            "predictedOccupancy": predicted_val,
+            "confidenceScore": 0.85
+        }
+        
+    except ValueError as ve:
+        print(f"Error de validación: {ve}")
+        return {"status": "error", "message": str(ve)}
+    except Exception as e:
+        print(f"Error crítico en el pipeline de predicción: {e}")
+        return {"status": "error", "message": str(e)}
+
+    
 
 if __name__ == "__main__":
     uvicorn.run("node:app", host="0.0.0.0", port=8000, reload=True)
