@@ -83,6 +83,13 @@ class Alert {
     + createdAt: Instant
 }
 
+class OccupancyPrediction {
+    + parkingAreaId: String
+    + dateTime: Instant
+    + predictedOccupancy: Int
+    + confidenceScore: Double
+}
+
 enum AlertType <<enumeration>> {
     OCCUPANCY_LIMIT
     SUSPICIOUS_RESERVATION

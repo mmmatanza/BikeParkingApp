@@ -30,13 +30,19 @@ SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 TOMTOM_KEY = os.getenv("TOMTOM_API_KEY")
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-MODEL_PATH = "models/random_forest_anomalies.pkl"
-rf_model = joblib.load(MODEL_PATH)
-
-# Se inicializa el explainer una sola vez al arrancar
+# Carga del modelo rf de anomalias
+MODEL_ANOMALIES_PATH = "models/random_forest_anomalies.pkl"
+rf_model = joblib.load(MODEL_ANOMALIES_PATH)
 shap_explainer = shap.TreeExplainer(rf_model)
 
-# Features
+# Carga del modelo LightGBM para ocupación
+MODEL_OCCUPANCY_PATH = "models/lightgbm_occupancy.pkl"
+if os.path.exists(MODEL_OCCUPANCY_PATH):
+    lgb_model = joblib.load(MODEL_OCCUPANCY_PATH)
+else:
+    lgb_model = None
+
+# Features para la detección de anomalías
 FEATURE_COLS = [
     'account_age_days',
     'reservation_count',
@@ -49,6 +55,15 @@ FEATURE_COLS = [
     'booking_weekday',
 ]
 
+# Features para la predicción de ocupación
+FEATURE_OCCUPANCY_COLS = [
+    'current_occupancy_ratio',
+    'traffic_congestion_index',
+    'booking_hour',
+    'booking_weekday',
+    'capacity'
+]
+
 # Definimos un mapeo entre las features y el tipo de alerta
 FEATURE_TO_ALERT_TYPE = {
     'expired_ratio':                    'RECURRENT_EXPIRED',
@@ -59,7 +74,7 @@ FEATURE_TO_ALERT_TYPE = {
     'avg_hours_between_reservations':   'UNUSUAL_BOOKING_FREQUENCY',
     'booking_hour':                     'UNUSUAL_BOOKING_HOUR',
     'booking_weekday':                  'UNUSUAL_BOOKING_WEEKDAY',
-    'reservation_count':                'ABNORMAL_BOOKING_PATTERN',  # como fallback
+    'reservation_count':                'ABNORMAL_BOOKING_PATTERN',
 }
 
 # Obtiene el Dataframe de reservas, excesos de tiempo y la fecha de creación de la cuenta que reserva
@@ -205,15 +220,15 @@ async def handle_new_reservation(request: Request):
         # Obtenemos la información del usuario
         df_reservations, df_overstays, account_created_at = get_user_history(account_id)
         
-        # Elaboramos la entrada para el modelo 
+        # Elaboramos la entrada para el modelo
         features = build_feature_vector(new_reservation, df_reservations, df_overstays, account_created_at)
         print(f"Feature vector: {features}")
 
         df_input = pd.DataFrame([features])
         prediction = rf_model.predict(df_input)
         is_anomaly = bool(prediction[0])
-        
-        
+
+
         if is_anomaly:
             owner_id = get_parking_owner_id(parking_area_id)
             alert_type, anomaly_score = get_alert_type(df_input)
@@ -254,14 +269,14 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
     
     data = query.data
     if not data:
-        raise ValueError(f"Parking no encontrado: {parking_id}")
+        raise ValueError(f"Parking not found: {parking_id}")
         
     capacity = data.get("capacity")
     occupancy = data.get("current_occupancy", 0)
     location = data.get("parking_area_location")
     
     if not location:
-        raise ValueError(f"El parking {parking_id} no tiene datos de localización.")
+        raise ValueError(f"Parking {parking_id} has no location data.")
 
     # Por si se devuelve como un diccionario directo o como un string JSON
     if isinstance(location, str):
@@ -278,7 +293,7 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
                 longitude, latitude = struct.unpack('<dd', binary_data[-16:])
                 return latitude, longitude, capacity, occupancy
             except Exception as binary_err:
-                raise ValueError(f"Error al decodificar el binario geográfico EWKB: {binary_err}")
+                raise ValueError(f"Error decoding geographic EWKB binary: {binary_err}")
 
     if isinstance(location, dict) and "coordinates" in location:
         coordinates = location.get("coordinates", [])
@@ -287,8 +302,7 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
             latitude = coordinates[1]
             return latitude, longitude, capacity, occupancy
 
-    raise ValueError(f"No se pudo parsear el formato de localización: {location}")
-
+    raise ValueError(f"Could not parse location format: {location}")
 
 def get_congestion_index(lat: float, lon: float) -> float:
     """
@@ -319,12 +333,12 @@ def get_congestion_index(lat: float, lon: float) -> float:
             
         # Calculamos el índice de congestión
         congestion_index = 1.0 - (current_speed / free_flow_speed)
-        
+
         # Aseguramos que el valor esté entre 0 y 1
         return max(0.0, min(1.0, congestion_index))
         
     except Exception as e:
-        print(f"Error al consultar TomTom: {e}")
+        print(f"Error querying TomTom: {e}")
         # Fallback: si la API falla, devolvemos 0 para no romper el modelo
         return 0.0
 
@@ -341,7 +355,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
         if user:
             return user.user.id
     except Exception as e:
-        print(f"Error de autenticación: {e}")
+        print(f"Authentication error: {e}")
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     raise HTTPException(status_code=401, detail="Authentication required")
 
@@ -352,47 +366,84 @@ async def handle_prediction(
 ):
     """
     Endpoint analítico para el Administrador.
-    Verifica que el usuario sea el dueño del parking antes de procesar.
+    Extrae características, ejecuta el modelo LightGBM y devuelve la ocupación estimada.
     """
     try:
-        # Verificar propiedad del parking
+        # Verificar que el usuario autenticado es dueño del parking
         owner_id = get_parking_owner_id(parking_id)
         if owner_id != user_id:
-            raise HTTPException(status_code=403, detail="You do not have permission to access this parking's data")
+            raise HTTPException(status_code=403, detail="You do not have permission to access this data")
 
-        print(f"\n--- Iniciando pipeline analítico para Parking: {parking_id} ---")
+        print(f"\nRunning inference for parking: {parking_id}")
         
-        # Obtener coordenadas, capacidad y ocupación desde las tablas de Supabase
-        latitude, longitude, capacity, ocupacion_actual = get_parking_details(parking_id)
-        print(f"Datos recuperados -> Lat: {latitude}, Lon: {longitude}, Capacidad: {capacity}, Ocupación: {ocupacion_actual}")
-        
-        # Obtener datos de tráfico en tiempo real usando las coordenadas extraídas
+        # Obtención de variables de Supabase y TomTom
+        latitude, longitude, capacity, occupancy = get_parking_details(parking_id)
         traffic_index = get_congestion_index(latitude, longitude)
-        print(f"Índice de congestión externa de TomTom: {traffic_index}")
-        
-        # Calcular ratio
-        ratio_ocupacion_actual = ocupacion_actual / capacity if capacity > 0 else 0.0
-        print(f"Ratio de ocupación actual: {round(ratio_ocupacion_actual, 2)}")
+        current_ratio = occupancy / capacity if capacity > 0 else 0.0
 
-        # Predicción simulada
-        prediction_offset = 1 if traffic_index > 0.5 else 0
-        predicted_val = min(capacity, ocupacion_actual + prediction_offset)
+        # Extraer características de tiempo basadas en la zona horaria del servidor
+        current_time = pd.Timestamp.now(tz='UTC')
+        booking_hour = current_time.hour
+        booking_weekday = current_time.dayofweek
+
+        # Construcción del vector estructurado para el modelo
+        features_dict = {
+            'current_occupancy_ratio': current_ratio,
+            'traffic_congestion_index': traffic_index,
+            'booking_hour': booking_hour,
+            'booking_weekday': booking_weekday,
+            'capacity': capacity
+        }
+        
+        # Convertimos a DataFrame asegurando exactamente el mismo orden de columnas
+        df_input = pd.DataFrame([features_dict], columns=FEATURE_OCCUPANCY_COLS)
+        print(f"Input matrix built:\n{df_input.to_string(index=False)}")
+
+        # Predicción real y fallback operativo
+        if lgb_model is not None:
+            prediction_ratio = float(lgb_model.predict(df_input)[0])
+            predicted_val = int(round(prediction_ratio * capacity))
+            
+            # Confianza basada en la disponibilidad de datos
+            base_confidence = 0.95
+
+            # Si la API de TomTom falló o devolvió 0
+            if traffic_index == 0.0:
+                base_confidence -= 0.15
+                
+            # Si el ratio actual es extremo (parking completamente vacío o lleno, donde la varianza sube)
+            if current_ratio > 0.95 or current_ratio < 0.05:
+                base_confidence -= 0.10
+
+            confidence_score = max(0.50, base_confidence)
+
+            print(f"Model inference completed. Estimated ratio: {prediction_ratio:.4f}")
+        else:
+            # Fallback inteligente
+            prediction_offset = 1 if traffic_index > 0.5 else 0
+            predicted_val = min(capacity, occupancy + prediction_offset)
+            confidence_score = 0.50
+            print("Running fallback. Missing .pkl file")
+
+        predicted_val = max(0, min(capacity, predicted_val))
 
         return {
             "parkingAreaId": parking_id,
-            "dateTime": pd.Timestamp.now(tz='UTC').isoformat().replace('+00:00', 'Z'),
+            "dateTime": current_time.isoformat().replace('+00:00', 'Z'),
             "predictedOccupancy": predicted_val,
-            "confidenceScore": 0.85
+            "confidenceScore": confidence_score
         }
         
+    except HTTPException as http_ex:
+        raise http_ex
     except ValueError as ve:
-        print(f"Error de validación: {ve}")
-        return {"status": "error", "message": str(ve)}
+        print(f"Validation error: {ve}")
+        raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        print(f"Error crítico en el pipeline de predicción: {e}")
-        return {"status": "error", "message": str(e)}
+        print(f"Critical error in prediction pipeline: {e}")
+        raise HTTPException(status_code=500, detail="Internal Analytical Server Error")
 
-    
+
 
 if __name__ == "__main__":
     uvicorn.run("node:app", host="0.0.0.0", port=8000, reload=True)

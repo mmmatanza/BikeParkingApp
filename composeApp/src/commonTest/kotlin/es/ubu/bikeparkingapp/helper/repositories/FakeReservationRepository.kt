@@ -79,8 +79,23 @@ class FakeReservationRepository : ReservationRepository {
         return reservations.count { it.parkingAreaId == parkingAreaId && it.state in activeStates }
     }
 
-    override suspend fun countUserActiveReservations(accountId: String): Int {
-        return reservations.count { it.accountId == accountId && it.state in activeStates }
+    override suspend fun countUserActiveReservations(accountId: String): Result<Int> {
+        return handleFakeResponse {
+            reservations.count { it.accountId == accountId && it.state in activeStates }
+        }
+    }
+
+    override suspend fun countCompletedReservationsByUserInParking(
+        accountId: String,
+        parkingAreaId: String
+    ): Result<Int> {
+        return handleFakeResponse {
+            reservations.count {
+                it.accountId == accountId &&
+                        it.parkingAreaId == parkingAreaId &&
+                        it.state == ReservationState.CHECKED_OUT
+            }
+        }
     }
 
     private inline fun <T> handleFakeResponse(block: () -> T): Result<T> {

@@ -1,6 +1,7 @@
 package es.ubu.bikeparkingapp.presentation.feature.parkingmanagement
 
 import es.ubu.bikeparkingapp.helper.TestData
+import es.ubu.bikeparkingapp.helper.usecases.occupancy.FakeGetPredictedOccupancyUseCase
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeDeactivateParkingAreaUseCase
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeToggleOperativeStateUseCase
@@ -28,6 +29,7 @@ class ParkingManagementViewModelTest {
     private lateinit var getParkingAreaByIdUseCase: FakeGetParkingAreaByIdUseCase
     private lateinit var deactivateParkingAreaUseCase: FakeDeactivateParkingAreaUseCase
     private lateinit var toggleOperativeStateUseCase: FakeToggleOperativeStateUseCase
+    private lateinit var getPredictedOccupancyUseCase: FakeGetPredictedOccupancyUseCase
 
     @BeforeTest
     fun setUp() {
@@ -35,11 +37,13 @@ class ParkingManagementViewModelTest {
         getParkingAreaByIdUseCase = FakeGetParkingAreaByIdUseCase()
         deactivateParkingAreaUseCase = FakeDeactivateParkingAreaUseCase()
         toggleOperativeStateUseCase = FakeToggleOperativeStateUseCase()
+        getPredictedOccupancyUseCase = FakeGetPredictedOccupancyUseCase()
 
         viewModel = ParkingManagementViewModel(
             getParkingAreaByIdUseCase,
             deactivateParkingAreaUseCase,
-            toggleOperativeStateUseCase
+            toggleOperativeStateUseCase,
+            getPredictedOccupancyUseCase
         )
     }
 

@@ -83,6 +83,7 @@ package "data.repository" {
 
     class AnalyticsOccupancyRepository{
         - httpClient: HttpClient
+        - supabaseClient: SupabaseClient
     }
 
     class SupabaseAlertRepository {
@@ -113,5 +114,6 @@ SupabaseAccountRepository --> AccountLocalDataSource
 SupabaseParkingAreaRepository --> SupabaseClient
 SupabaseReservationRepository --> SupabaseClient
 CompassLocationRepository --> Geolocator
+AnalyticsOccupancyRepository --> SupabaseClient
 
 @enduml

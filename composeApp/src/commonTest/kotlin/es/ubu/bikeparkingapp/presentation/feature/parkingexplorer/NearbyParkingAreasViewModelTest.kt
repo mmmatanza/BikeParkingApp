@@ -1,9 +1,10 @@
 package es.ubu.bikeparkingapp.presentation.feature.parkingexplorer
 
+import es.ubu.bikeparkingapp.domain.entity.ParkingDiscovery
 import es.ubu.bikeparkingapp.domain.model.UserLocation
 import es.ubu.bikeparkingapp.helper.TestData
 import es.ubu.bikeparkingapp.helper.usecases.location.FakeGetUserLocationUseCase
-import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetNearbyParkingAreasUseCase
+import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetParkingDiscoveryUseCase
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,18 +24,18 @@ class NearbyParkingAreasViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var viewModel: NearbyParkingAreasViewModel
-    private lateinit var getNearbyParkingAreasUseCase: FakeGetNearbyParkingAreasUseCase
+    private lateinit var getParkingDiscoveryUseCase: FakeGetParkingDiscoveryUseCase
     private lateinit var getUserLocationUseCase: FakeGetUserLocationUseCase
 
     @BeforeTest
     fun setUp() {
         // Obligatorio para viewModelScope
         Dispatchers.setMain(testDispatcher)
-        getNearbyParkingAreasUseCase = FakeGetNearbyParkingAreasUseCase()
+        getParkingDiscoveryUseCase = FakeGetParkingDiscoveryUseCase()
         getUserLocationUseCase = FakeGetUserLocationUseCase()
 
         viewModel = NearbyParkingAreasViewModel(
-            getNearbyParkingAreasUseCase,
+            getParkingDiscoveryUseCase,
             getUserLocationUseCase
         )
     }
@@ -68,7 +69,10 @@ class NearbyParkingAreasViewModelTest {
                 currentOccupancy = 10
             )
 
-            getNearbyParkingAreasUseCase.response = mutableListOf(pLibre, pLleno)
+            getParkingDiscoveryUseCase.response = ParkingDiscovery(
+                recommended = null,
+                allNearby = listOf(pLibre, pLleno)
+            )
 
             // Ejecución
             viewModel.loadUserLocation()

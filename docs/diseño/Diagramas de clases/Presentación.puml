@@ -109,7 +109,12 @@ package "feature.trips" {
     class MyTripsState <<State>> {
         + reservations: List<ReservationDetail>
         + isLoading: Boolean
-        + error: String?
+        + error: Exception?
+        + checkInReservationDialog: Boolean
+        + checkOutReservationDialog: Boolean
+        + cancelReservationDialog: Boolean
+        + extendReservationDialog: Boolean
+        + reservationId: String?
     }
     MyTripsScreen --> MyTripsViewModel
     MyTripsScreen --> MyTripsContent
@@ -127,9 +132,13 @@ package "feature.parkingexplorer" {
     }
     class NearbyParkingAreasState <<State>> {
         + recommendedArea: ParkingArea?
-        + areas: List<ParkingArea>
+        + parkingAreas: List<ParkingArea>
+        + notAvailableParkingAreas: List<ParkingArea>
+        + userLatitude: Double
+        + userLongitude: Double
         + isLoading: Boolean
-        + error: String?
+        + isLoadingLocation: Boolean
+        + error: Exception?
     }
     NearbyParkingAreasScreen --> NearbyParkingAreasViewModel
     NearbyParkingAreasScreen --> NearbyParkingAreasContent
@@ -200,7 +209,12 @@ package "feature.parkingmanagement" {
     }
     class ParkingManagementState <<State>> {
         + area: ParkingArea?
+        + predictedOccupancy: Int?
         + isLoading: Boolean
+        + showDeactivateDialog: Boolean
+        + showToggleDialog: Boolean
+        + successDeactivation: Boolean
+        + error: Exception?
     }
     ParkingManagementScreen --> ParkingManagementViewModel
     ParkingManagementScreen --> ParkingManagementContent
@@ -219,6 +233,10 @@ package "feature.parkingmanagement" {
     class ParkingReservationsState <<State>> {
         + reservations: List<Reservation>
         + isLoading: Boolean
+        + error: Exception?
+        + showCancelReservationDialog: Boolean
+        + showReleaseReservationDialog: Boolean
+        + reservationId: String?
     }
     ParkingReservationsScreen --> ParkingReservationsViewModel
     ParkingReservationsScreen --> ParkingReservationsContent
