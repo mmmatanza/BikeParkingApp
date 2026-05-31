@@ -8,6 +8,7 @@ class FakeParkingAreaRepository : ParkingAreaRepository {
 
     private val parkingAreas = mutableListOf<ParkingArea>()
     var shouldReturnNetworkError = false
+    private var lastNearbyParams: Triple<Double, Double, Double>? = null
 
     override suspend fun getParkingAreaById(parkingId: String): Result<ParkingArea> {
         return handleFakeResponse {
@@ -28,9 +29,12 @@ class FakeParkingAreaRepository : ParkingAreaRepository {
         distance: Double
     ): Result<List<ParkingArea>> {
         return handleFakeResponse {
+            lastNearbyParams = Triple(latitude, longitude, distance)
             parkingAreas.filter { it.isActive && it.isOperative }
         }
     }
+
+    fun getLastNearbyParams() = lastNearbyParams
 
     override suspend fun addParkingArea(parkingArea: ParkingArea): Result<Unit> {
         return handleFakeResponse {

@@ -1,6 +1,8 @@
 package es.ubu.bikeparkingapp.helper
 
 import es.ubu.bikeparkingapp.domain.entity.Account
+import es.ubu.bikeparkingapp.domain.entity.Alert
+import es.ubu.bikeparkingapp.domain.entity.AlertType
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 import es.ubu.bikeparkingapp.domain.entity.Reservation
 import es.ubu.bikeparkingapp.domain.entity.ReservationDetail
@@ -63,6 +65,19 @@ object TestData {
         parkingAddress = testParking.address,
         parkingLatitude = testParking.latitude,
         parkingLongitude = testParking.longitude
+    )
+
+    val testAlert = Alert(
+        alertId = "alert1",
+        accountId = "user-123",
+        parkingAreaId = "park1",
+        parkingName = "Parking Test",
+        reservationId = "res1",
+        type = AlertType.OCCUPANCY_LIMIT,
+        value = 90.0,
+        customMessage = "High occupancy detected",
+        isRead = false,
+        createdAt = Instant.parse("2024-01-01T12:00:00Z")
     )
     
 }
