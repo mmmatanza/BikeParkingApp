@@ -1,0 +1,65 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor Administrador as admin
+actor Usuario as user
+
+rectangle {
+    ' Casos de uso del administrador
+    usecase "CU-5 Visualizar recintos" as CU5
+    usecase "CU-5.1 Agregar nuevo recinto" as CU5_1
+    usecase "CU-5.1.1 Seleccionar ubicación" as CU5_1_1
+    usecase "CU-5.2 Visualizar recinto" as CU5_2
+    usecase "CU-5.3 Cambiar estado operativo" as CU5_3
+    usecase "CU-5.4 Desactivar recinto" as CU5_4
+    usecase "CU-5.5 Gestionar reservas" as CU5_5
+    usecase "CU-5.5.1 Cancelar reserva" as CU5_5_1
+    usecase "CU-5.5.2 Completar reserva" as CU5_5_2
+    usecase "CU-5.6 Actualizar recinto" as CU5_6
+
+    ' Casos de uso del usuario
+    usecase "CU-6 Búsqueda y reserva de plaza" as CU6
+    usecase "CU-7 Gestión de viajes" as CU7
+
+    ' Casos de uso nuevos para la tercera iteración
+    usecase "CU-8 Consultar predicción de ocupación" as CU8
+    usecase "CU-9 Recibir recomendación inteligente" as CU9
+    ' Modificado para la cuarta iteración
+    usecase "CU-10 Gestionar panel de alertas del sistema" as CU10
+
+    ' Casos de uso nuevos para la cuarta iteración
+    usecase "CU-11 Consultar dashboard ecológico" as CU11
+    usecase "CU-12 Consultar dashboard ecológico del recinto" as CU12
+    usecase "CU-13 Canjear puntos y aplicar tema" as CU13
+    usecase "CU-14 Emitir alertas del recinto" as CU14
+    usecase "CU-15 Consultar alertas" as CU15
+}
+
+admin --> CU5
+admin --> CU10
+CU5 <.. CU5_1 : <<extend>>
+CU5 <.. CU5_2 : <<extend>>
+
+CU5_1 ..> CU5_1_1 : <<include>>
+
+CU5_2 <.. CU5_3 : <<extend>>
+CU5_2 <.. CU5_4 : <<extend>>
+CU5_2 <.. CU5_5 : <<extend>>
+CU5_2 <.. CU5_6 : <<extend>>
+CU5_2 <.. CU12 : <<extend>>
+CU5_2 <.. CU14 : <<extend>>
+CU5_2 ..> CU8 : <<include>>
+
+CU5_5 <.. CU5_5_1 : <<extend>>
+CU5_5 <.. CU5_5_2 : <<extend>>
+
+user --> CU6
+CU6 ..> CU9 : <<include>>
+user --> CU7
+user --> CU11
+user --> CU13
+user --> CU15
+
+@enduml
