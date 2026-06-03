@@ -10,6 +10,7 @@ Table accounts {
   role TEXT [not null, default: 'user']
   created_at TIMESTAMPTZ [not null, default: `now()`]
   updated_at TIMESTAMPTZ [not null, default: `now()`]
+  points INTEGER [not null, default: 0]
 }
 
 Table parkingareas {
@@ -37,6 +38,7 @@ Table reservations {
   out_time TIMESTAMPTZ [note: 'NULL si es flujo en vivo']
   state TEXT [not null, default: 'RESERVED', note: 'Enum: RESERVED, CHECKED_IN, etc.']
   created_at TIMESTAMPTZ [not null, default: `now()`]
+  distance DOUBLE [not null, default: 0]
 }
 
 Table overstays {
@@ -53,11 +55,22 @@ Table alerts {
   parking_area_id UUID
   reservation_id UUID
 
-  alert_type TEXT
+  alert_type TEXT   
   alert_value FLOAT8
   custom_message TEXT [default: ""]
   is_read BOOLEAN [not null, default: false]
   created_at TIMESTAMPTZ [not null]
+}
+
+Table accountsthemes{
+  account_id UUID [primary key, not null]
+  theme_id UUID [primary key, not null]
+}
+
+Table themes {
+  theme_id UUID [primary key, default: `gen_random_uuid()`]
+  name TEXT [not null]
+  cost INTEGER [not null, default: 0]
 }
 
 
@@ -68,3 +81,5 @@ Ref: reservations.account_id > accounts.account_id // Un usuario hace reservas
 Ref: reservations.parking_area_id > parkingareas.parking_area_id // Reservas en un parking
 Ref: overstays.reservation_id > reservations.reservation_id // Retrasos
 Ref: alerts.account_id > accounts.account_id // Alertas
+Ref: accountsthemes.theme_id > themes.theme_id 
+Ref: accountsthemes.account_id > accounts.account_id 

@@ -1,0 +1,34 @@
+@startuml
+skinparam PointingScale 1.5
+
+start
+
+title Canjear puntos y aplicar tema
+
+:Usuario accede al apartado de "Temas";
+:Sistema consulta en Supabase el saldo de puntos y catálogo;
+
+if (¿El tema ya está desbloqueado?) then (sí)
+    :Se oculta botón "Comprar";
+    :Se muestra botón "Aplicar" habilitado;
+    :Usuario pulsa en "Aplicar";
+else (no)
+    :Se oculta botón "Aplicar";
+    if (¿El usuario tiene un saldo de puntos suficiente?) then (no)
+        :Se muestra botón "Comprar" deshabilitado;
+        end
+    else (sí)
+        :Se muestra botón "Comprar" habilitado;
+        :Usuario selecciona "Comprar por X puntos";
+        :RedeemPointsUseCase descuenta puntos en 'accounts';
+        :Supabase registra el tema en 'accountthemes';
+        :UI se actualiza: oculta "Comprar" y muestra "Aplicar";
+        :Usuario pulsa en "Aplicar";
+    endif
+endif
+
+:La interfaz muta dinámicamente su paleta de colores;
+:Se muestra la aplicación con el nuevo aspecto visual;
+
+end
+@enduml

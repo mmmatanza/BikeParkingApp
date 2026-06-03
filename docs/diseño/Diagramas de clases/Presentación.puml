@@ -259,7 +259,29 @@ package "feature.parkingmanagement" {
     MapSelectionScreen --> MapSelectionContent
     MapSelectionContent ..> MapSelectionViewModel : observe/trigger
     MapSelectionViewModel o-- MapSelectionState
+
+    class PublishAlertScreen <<Composable>>
+    class PublishAlertContent <<Composable>>
+    class PublishAlertViewModel {
+         - _state: MutableState<PublishAlertState>
+         + state: State<PublishAlertState>
+         + onMessageChange(String)
+         + onValueChange(Integer)
+         + onPublishClick(parkingAreaId: String)
+    }
+    class PublishAlertState <<State>> {
+         + message: String
+         + value: Integer
+         + isLoading: Boolean
+         + isSuccess: Boolean
+         + error: Exception?
+    }
+    PublishAlertScreen --> PublishAlertViewModel
+    PublishAlertScreen --> PublishAlertContent
+    PublishAlertContent ..> PublishAlertViewModel : observe/trigger
+    PublishAlertViewModel o-- PublishAlertState
 }
+
 package "feature.alerts"{
     class AlertsScreen <<Composable>>
     class AlertsContent <<Composable>>
@@ -281,4 +303,68 @@ package "feature.alerts"{
     AlertsContent ..> AlertsViewModel : observe/trigger
     AlertsViewModel o-- AlertsState
 }
+
+package "feature.eco" {
+
+    class EcoDashboardScreen <<Composable>>
+    class EcoDashboardContent <<Composable>>
+    class EcoDashboardViewModel {
+        - _state: MutableState<EcoDashboardState>
+        + state: State<EcoDashboardState>
+        + loadEcoMetrics()
+    }
+    class EcoDashboardState <<State>> {
+        + ecoMetrics: EcoMetrics?
+        + isLoading: Boolean
+        + error: Exception?
+    }
+    EcoDashboardScreen --> EcoDashboardViewModel
+    EcoDashboardScreen --> EcoDashboardContent
+    EcoDashboardContent ..> EcoDashboardViewModel : observe/trigger
+    EcoDashboardViewModel o-- EcoDashboardState
+
+    class AdminEcoDashboardScreen <<Composable>>
+    class AdminEcoDashboardContent <<Composable>>
+    class AdminEcoDashboardViewModel {
+        - _state: MutableState<AdminEcoDashboardState>
+        + state: State<AdminEcoDashboardState>
+        + loadRecintoMetrics(parkingAreaId: String)
+    }
+    class AdminEcoDashboardState <<State>> {
+        + adminEcoMetrics: AdminEcoMetrics?
+        + isLoading: Boolean
+        + error: Exception?
+    }
+    AdminEcoDashboardScreen --> AdminEcoDashboardViewModel
+    AdminEcoDashboardScreen --> AdminEcoDashboardContent
+    AdminEcoDashboardContent ..> AdminEcoDashboardViewModel : observe/trigger
+    AdminEcoDashboardViewModel o-- AdminEcoDashboardState
+}
+
+package "feature.theme" {
+
+    class ThemesMarketplaceScreen <<Composable>>
+    class ThemesMarketplaceContent <<Composable>>
+
+    class ThemesMarketplaceViewModel {
+        - _state: MutableState<ThemesMarketplaceState>
+        + state: State<ThemesMarketplaceState>
+        + loadMarketplace()
+        + redeemTheme(themeId: String)
+        + applyTheme(themeId: String)
+    }
+
+    class ThemesMarketplaceState <<State>> {
+        + themes: List<Theme>
+        + userPoints: Int
+        + isLoading: Boolean
+        + error: Exception?
+    }
+
+    ThemesMarketplaceScreen --> ThemesMarketplaceViewModel
+    ThemesMarketplaceScreen --> ThemesMarketplaceContent
+    ThemesMarketplaceContent ..> ThemesMarketplaceViewModel : observe/trigger
+    ThemesMarketplaceViewModel o-- ThemesMarketplaceState
+}
+
 @enduml

@@ -57,6 +57,19 @@ package "domain.repository" {
         + countUserActiveReservations(accountId: String): Int
         + countCompletedReservationsByUserInParking(accountId: String, parkingAreaId: String): Result<Int>
     }
+
+    interface EcoMetricsRepository {
+        + getUserEcoMetrics(accountId: String): Result<EcoMetrics>
+        + getAdminEcoMetrics(parkingAreaId: String): Result<AdminEcoMetrics>
+    }
+
+    interface ThemeRepository {
+        + getThemesMarketplace(accountId: String): Result<ThemesMarketplace>
+        + redeemTheme(accountId: String, themeId: String): Result<Unit>
+        + saveActiveThemeId(themeId: String): Result<Unit>
+        + getActiveThemeId(): String?
+    }
+
 }
 
 package "data.repository" {
@@ -90,6 +103,15 @@ package "data.repository" {
         - client: SupabaseClient
     }
 
+    class SupabaseEcoMetricsRepository {
+        - client: SupabaseClient
+    }
+
+    class SupabaseThemeRepository {
+        - client: SupabaseClient
+        - localDataSource: ThemeLocalDataSource
+    }
+
     ' Implementaciones
     SupabaseAuthRepository .up.|> AuthRepository
     SupabaseAccountRepository .up.|> AccountRepository
@@ -98,10 +120,13 @@ package "data.repository" {
     SupabaseReservationRepository .up.|> ReservationRepository
     AnalyticsOccupancyRepository .|> OccupancyRepository
     SupabaseAlertRepository .up.|> AlertRepository
+    SupabaseEcoMetricsRepository .up.|> EcoMetricsRepository
+    SupabaseThemeRepository .up.|> ThemeRepository
 }
 
 package "data.local"{
     class AccountLocalDataSource <<LocalData>>
+    class ThemeLocalDataSource <<LocalData>>
 }
 
 ' Dependencias externas representadas simplificadamente
@@ -115,5 +140,9 @@ SupabaseParkingAreaRepository --> SupabaseClient
 SupabaseReservationRepository --> SupabaseClient
 CompassLocationRepository --> Geolocator
 AnalyticsOccupancyRepository --> SupabaseClient
+SupabaseAlertRepository --> SupabaseClient
+SupabaseEcoMetricsRepository --> SupabaseClient
+SupabaseThemeRepository --> SupabaseClient
+SupabaseThemeRepository --> ThemeLocalDataSource
 
 @enduml

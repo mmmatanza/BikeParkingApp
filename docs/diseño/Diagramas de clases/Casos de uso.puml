@@ -247,9 +247,19 @@ package "alert"{
         - alertRepository: AlertRepository
         + invoke(accountId: String): Result<Unit>
     }
+    interface "PublishBroadcastAlertUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String, message: String, value: Double): Result<Unit>
+    }
+    class PublishBroadcastAlertUseCaseImpl {
+        - alertRepository: AlertRepository
+        + invoke(parkingAreaId: String, message: String, value: Double): Result<Unit>
+    }
+
+
     GetAlertsUseCaseImpl .up.|> GetAlertsUseCase
     MarkAlertAsReadUseCaseImpl .up.|> MarkAlertAsReadUseCase
     MarkAllAlertsAsReadUseCaseImpl .up.|> MarkAllAlertsAsReadUseCase
+    PublishBroadcastAlertUseCaseImpl .up.|> PublishBroadcastAlertUseCase
 }
 
 package "user"{
@@ -259,6 +269,10 @@ package "user"{
     interface "GetUserRoleUseCase" <<UseCase>> {
         + invoke(): Result<Role>
     }
+    interface "GetUserPointsUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<Int>
+    }
+
     class GetUserIdUseCaseImpl {
         - accountRepository: AccountRepository
         + invoke(): Result<String>
@@ -267,8 +281,68 @@ package "user"{
         - accountRepository: AccountRepository
         + invoke(): Result<Role>
     }
+    class GetUserPointsUseCaseImpl {
+        - accountRepository: AccountRepository
+        + invoke(accountId: String): Result<Int>
+    }
     GetUserIdUseCaseImpl .up.|> GetUserIdUseCase
     GetUserRoleUseCaseImpl .up.|> GetUserRoleUseCase
+    GetUserPointsUseCaseImpl .up.|> GetUserPointsUseCase
+}
+
+package "eco" {
+
+    interface "GetEcoMetricsUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<EcoMetrics>
+    }
+    class GetEcoMetricsUseCaseImpl {
+        - ecoMetricsRepository: EcoMetricsRepository
+        + invoke(accountId: String): Result<EcoMetrics>
+    }
+
+    interface "GetAdminEcoMetricsUseCase" <<UseCase>> {
+        + invoke(parkingAreaId: String): Result<AdminEcoMetrics>
+    }
+    class GetAdminEcoMetricsUseCaseImpl {
+        - ecoMetricsRepository: EcoMetricsRepository
+        + invoke(parkingAreaId: String): Result<AdminEcoMetrics>
+    }
+
+    GetEcoMetricsUseCaseImpl .up.|> GetEcoMetricsUseCase
+    GetAdminEcoMetricsUseCaseImpl .up.|> GetAdminEcoMetricsUseCase
+}
+
+package "theme" {
+
+    interface "GetThemesMarketplaceUseCase" <<UseCase>> {
+        + invoke(accountId: String): Result<List<Theme>>
+    }
+    class GetThemesMarketplaceUseCaseImpl {
+        - themeRepository: ThemeRepository
+        - accountRepository: AccountRepository
+        + invoke(accountId: String): Result<List<Theme>>
+    }
+
+    interface "RedeemPointsUseCase" <<UseCase>> {
+        + invoke(accountId: String, themeId: String): Result<Unit>
+    }
+    class RedeemPointsUseCaseImpl {
+        - themeRepository: ThemeRepository
+        - accountRepository: AccountRepository
+        + invoke(accountId: String, themeId: String): Result<Unit>
+    }
+
+    interface "ApplyThemeUseCase" <<UseCase>> {
+        + invoke(themeId: String): Result<Unit>
+    }
+    class ApplyThemeUseCaseImpl {
+        - themeRepository: ThemeRepository
+        + invoke(themeId: String): Result<Unit>
+    }
+
+    GetThemesMarketplaceUseCaseImpl .up.|> GetThemesMarketplaceUseCase
+    RedeemPointsUseCaseImpl .up.|> RedeemPointsUseCase
+    ApplyThemeUseCaseImpl .up.|> ApplyThemeUseCase
 }
 
 @enduml

@@ -10,6 +10,7 @@ class Account {
     + role: Role
     + createdAt: Instant
     + updatedAt: Instant
+    + points: Int
 }
 
 enum Role <<enumeration>> {
@@ -43,6 +44,7 @@ class Reservation {
     + outTime: Instant
     + state: ReservationState
     + createdAt: Instant
+    + distance: Double
     --
     + canCancel(): Boolean
     + canCheckOut(): Boolean
@@ -109,6 +111,12 @@ enum AlertType <<enumeration>> {
 class ParkingDiscovery{
     recommended: ParkingArea?
     allNearby: List<ParkingArea>
+}
+
+class Theme {
+    + themeId: String
+    + name: String
+    + cost: Int
 }
 
 Account "1" --> "1" Role
