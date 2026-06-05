@@ -16,6 +16,7 @@ interface AddParkingAreaUseCase {
         latitude: Double,
         longitude: Double,
         rules: List<String>,
-        openDays: Set<DayOfWeek>
+        openDays: Set<DayOfWeek>,
+        occupancyThreshold: Int? = null
     ): Result<Unit>
 }

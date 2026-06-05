@@ -12,7 +12,8 @@ CREATE OR REPLACE FUNCTION add_parking_area(
     p_opening_time TIME,
     p_closing_time TIME,
     p_open_days INTEGER[],
-    p_rules TEXT[]
+    p_rules TEXT[],
+    p_occupancy_threshold INTEGER
 )
 RETURNS VOID
 LANGUAGE sql
@@ -30,7 +31,8 @@ AS $$
         opening_time,
         closing_time,
         open_days,
-        rules
+        rules,
+        occupancy_threshold
     ) VALUES (
         p_owner_id,
         p_name,
@@ -44,7 +46,8 @@ AS $$
         p_opening_time,
         p_closing_time,
         p_open_days,
-        p_rules
+        p_rules,
+        p_occupancy_threshold
     );
 $$;
 
@@ -60,7 +63,8 @@ CREATE OR REPLACE FUNCTION update_parking_area(
     p_opening_time TIME,
     p_closing_time TIME,
     p_open_days INTEGER[],
-    p_rules TEXT[]
+    p_rules TEXT[],
+    p_occupancy_threshold INTEGER
 ) RETURNS VOID
 LANGUAGE sql AS $$
     UPDATE parkingareas SET
@@ -72,7 +76,8 @@ LANGUAGE sql AS $$
         opening_time = p_opening_time,
         closing_time = p_closing_time,
         open_days = p_open_days,
-        rules = p_rules
+        rules = p_rules,
+        occupancy_threshold = p_occupancy_threshold
     WHERE parking_area_id = p_parking_area_id;
 $$;
 
@@ -93,7 +98,8 @@ RETURNS TABLE (
     opening_time TIME,
     closing_time TIME,
     open_days INTEGER[],
-    rules TEXT[]
+    rules TEXT[],
+    occupancy_threshold INTEGER
 )
 LANGUAGE sql AS $$
     SELECT
@@ -111,7 +117,8 @@ LANGUAGE sql AS $$
         opening_time,
         closing_time,
         open_days,
-        rules
+        rules,
+        occupancy_threshold
     FROM parkingareas
     WHERE parking_area_id = p_parking_area_id;
 $$;
@@ -133,7 +140,8 @@ RETURNS TABLE (
     opening_time TIME,
     closing_time TIME,
     open_days INTEGER[],
-    rules TEXT[]
+    rules TEXT[],
+    occupancy_threshold INTEGER
 )
 LANGUAGE sql
 AS $$
@@ -152,7 +160,8 @@ AS $$
         opening_time,
         closing_time,
         open_days,
-        rules
+        rules,
+        occupancy_threshold
     FROM parkingareas
     WHERE owner_id = p_owner_id AND is_active = TRUE; -- Los desactivados no aparecen para el administrador
 $$;
@@ -178,7 +187,8 @@ RETURNS TABLE (
     opening_time TIME,
     closing_time TIME,
     open_days INTEGER[],
-    rules TEXT[]
+    rules TEXT[],
+    occupancy_threshold INTEGER
 ) AS $$
 BEGIN
     RETURN QUERY
@@ -197,7 +207,8 @@ BEGIN
         p.opening_time,
         p.closing_time,
         p.open_days,
-        p.rules
+        p.rules,
+        p.occupancy_threshold
     FROM parkingareas p
     WHERE ST_DWithin(
         p.parking_area_location,
@@ -207,3 +218,20 @@ BEGIN
     ORDER BY p.parking_area_location <-> ST_SetSRID(ST_MakePoint(user_long, user_lat), 4326)::geography;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Función para publicar una alerta manual a los usuarios con reserva activa en un parking
+CREATE OR REPLACE FUNCTION publish_parking_alert(
+    p_parking_area_id UUID,
+    p_message TEXT
+)
+RETURNS VOID
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO alerts (account_id, parking_area_id, alert_type, custom_message)
+    SELECT DISTINCT account_id, p_parking_area_id, 'PARKING_NOTIFICATION', p_message
+    FROM reservations
+    WHERE parking_area_id = p_parking_area_id
+    AND state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
+END;
+$$;

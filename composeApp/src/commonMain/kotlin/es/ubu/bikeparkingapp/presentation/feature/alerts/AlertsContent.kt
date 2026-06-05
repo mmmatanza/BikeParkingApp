@@ -33,8 +33,9 @@ import bikeparkingapp.composeapp.generated.resources.alert_abnormal_booking_patt
 import bikeparkingapp.composeapp.generated.resources.alert_abnormal_booking_pattern_title
 import bikeparkingapp.composeapp.generated.resources.alert_occupancy_limit
 import bikeparkingapp.composeapp.generated.resources.alert_occupancy_limit_title
-import bikeparkingapp.composeapp.generated.resources.alert_parking_notification
 import bikeparkingapp.composeapp.generated.resources.alert_parking_notification_title
+import bikeparkingapp.composeapp.generated.resources.alert_predicted_occupancy
+import bikeparkingapp.composeapp.generated.resources.alert_predicted_occupancy_title
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_cancellations_msg
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_cancellations_title
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_expired_msg
@@ -143,6 +144,7 @@ fun AlertItem(
 private fun getAlertTitle(alert: Alert): String {
     return when (alert.type) {
         AlertType.OCCUPANCY_LIMIT -> stringResource(Res.string.alert_occupancy_limit_title)
+        AlertType.PREDICTED_OCCUPANCY -> stringResource(Res.string.alert_predicted_occupancy_title)
         AlertType.SUSPICIOUS_RESERVATION -> stringResource(Res.string.alert_suspicious_reservation_title)
         AlertType.PARKING_NOTIFICATION -> stringResource(Res.string.alert_parking_notification_title)
         AlertType.RECURRENT_EXPIRED -> stringResource(Res.string.alert_recurrent_expired_title)
@@ -160,18 +162,19 @@ private fun getAlertTitle(alert: Alert): String {
 private fun getAlertMessage(alert: Alert): String {
     val parkingDisplay = alert.parkingName ?: alert.parkingAreaId ?: ""
     return when (alert.type) {
-        AlertType.OCCUPANCY_LIMIT -> stringResource(
-            Res.string.alert_occupancy_limit,
-            parkingDisplay
-        )
+        AlertType.OCCUPANCY_LIMIT -> {
+            val value = alert.value?.let { (it * 10).toInt() / 10.0 } ?: 0.0
+            stringResource(Res.string.alert_occupancy_limit, "$value%")
+        }
+        AlertType.PREDICTED_OCCUPANCY -> {
+            val value = alert.value?.let { (it * 10).toInt() / 10.0 } ?: 0.0
+            stringResource(Res.string.alert_predicted_occupancy, "$value%")
+        }
         AlertType.SUSPICIOUS_RESERVATION -> stringResource(
             Res.string.alert_suspicious_reservation,
             alert.reservationId ?: ""
         )
-        AlertType.PARKING_NOTIFICATION -> stringResource(
-            Res.string.alert_parking_notification,
-            alert.customMessage ?: ""
-        )
+        AlertType.PARKING_NOTIFICATION -> alert.customMessage ?: ""
         AlertType.RECURRENT_EXPIRED -> stringResource(
             Res.string.alert_recurrent_expired_msg,
             parkingDisplay,

@@ -26,7 +26,8 @@ fun ParkingAreaDto.toDomain(): ParkingArea {
         openDays = openDays
             .mapNotNull { ordinal -> DayOfWeek.entries.getOrNull(ordinal) }
             .toSet(),
-        rules = this.rules
+        rules = this.rules,
+        occupancyThreshold = this.occupancyThreshold
     )
 }
 
@@ -51,6 +52,7 @@ fun ParkingArea.toDto(): ParkingAreaDto {
         openDays = openDays
             .map { it.ordinal }
             .sorted(),
-        rules = this.rules
+        rules = this.rules,
+        occupancyThreshold = this.occupancyThreshold
     )
 }

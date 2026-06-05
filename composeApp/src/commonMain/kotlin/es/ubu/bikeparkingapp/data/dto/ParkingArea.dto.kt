@@ -21,6 +21,7 @@ import kotlinx.serialization.Serializable
  * @property closingTime Horario de cierre
  * @property openDays Días de apertura
  * @property rules Reglas del parking
+ * @property occupancyThreshold Umbral de ocupación para enviar alertas
  */
 @Serializable
 data class ParkingAreaDto(
@@ -38,5 +39,6 @@ data class ParkingAreaDto(
     @SerialName("opening_time") val openingTime: String,
     @SerialName("closing_time") val closingTime: String,
     @SerialName("open_days") val openDays: List<Int>,
-    val rules: List<String> = emptyList()
+    val rules: List<String> = emptyList(),
+    @SerialName("occupancy_threshold") val occupancyThreshold: Int? = null
 )

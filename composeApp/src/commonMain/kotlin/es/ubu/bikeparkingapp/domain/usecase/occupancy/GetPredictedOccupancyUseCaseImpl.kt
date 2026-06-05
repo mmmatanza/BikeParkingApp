@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.domain.usecase.occupancy
 
+import es.ubu.bikeparkingapp.domain.entity.OccupancyPrediction
 import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 
 /**
@@ -9,7 +10,7 @@ import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 class GetPredictedOccupancyUseCaseImpl(
     private val occupancyRepository: OccupancyRepository
 ) : GetPredictedOccupancyUseCase {
-    override suspend fun invoke(parkingAreaId: String): Result<Int> {
+    override suspend fun invoke(parkingAreaId: String): Result<OccupancyPrediction> {
         return occupancyRepository.getPredictedOccupancy(parkingAreaId)
     }
 }

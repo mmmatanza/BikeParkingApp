@@ -271,7 +271,6 @@ package "feature.parkingmanagement" {
     }
     class PublishAlertState <<State>> {
          + message: String
-         + value: Integer
          + isLoading: Boolean
          + isSuccess: Boolean
          + error: Exception?

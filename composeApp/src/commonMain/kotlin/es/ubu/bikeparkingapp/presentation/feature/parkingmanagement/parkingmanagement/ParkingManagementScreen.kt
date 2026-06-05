@@ -19,6 +19,7 @@ import es.ubu.bikeparkingapp.domain.entity.isOpen
 import es.ubu.bikeparkingapp.presentation.common.components.dialog.ConfirmationDialog
 import es.ubu.bikeparkingapp.presentation.common.components.dialog.ErrorDialog
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingreservations.ParkingReservationsScreen
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.publishalert.PublishAlertScreen
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.upsertparkingarea.UpsertParkingAreaScreen
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -89,7 +90,8 @@ class ParkingManagementScreen(
                 onDeactivateClick = viewModel::onDeactivateClick,
                 onToggleServiceClick = { viewModel.onToggleServiceClick() },
                 onViewOccupancyClick = {parkingId -> navigator.push(ParkingReservationsScreen(parkingId)) },
-                onEditDetailsClick = {parkingId -> navigator.push(UpsertParkingAreaScreen(parkingId))}
+                onEditDetailsClick = {parkingId -> navigator.push(UpsertParkingAreaScreen(parkingId))},
+                onPublishAlertClick = { parkingId -> navigator.push(PublishAlertScreen(parkingId)) }
             )
         )
     }

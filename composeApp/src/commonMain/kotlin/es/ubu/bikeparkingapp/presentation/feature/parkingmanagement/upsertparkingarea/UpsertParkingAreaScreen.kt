@@ -14,10 +14,6 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import bikeparkingapp.composeapp.generated.resources.Res
@@ -158,7 +154,9 @@ class UpsertParkingAreaScreen(
                 onDayToggle = viewModel::onDayToggle,
                 toggleOpeningPicker = viewModel::toggleOpeningPicker,
                 toggleClosingPicker = viewModel::toggleClosingPicker,
-                onOpen24HoursToggle = viewModel::onOpen24HoursToggle
+                onOpen24HoursToggle = viewModel::onOpen24HoursToggle,
+                onOccupancyThresholdChange = viewModel::onOccupancyThresholdChange,
+                onOccupancyAlertToggle = viewModel::onOccupancyAlertToggle
             )
         )
     }

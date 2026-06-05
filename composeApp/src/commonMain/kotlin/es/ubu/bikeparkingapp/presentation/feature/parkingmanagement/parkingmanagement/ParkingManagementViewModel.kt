@@ -83,6 +83,9 @@ class ParkingManagementViewModel(
                 .onSuccess { prediction ->
                     _state.value = _state.value.copy(predictedOccupancy = prediction)
                 }
+                .onFailure {
+                    it.printStackTrace()
+                }
         }
     }
 

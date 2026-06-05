@@ -1,11 +1,13 @@
 package es.ubu.bikeparkingapp.domain.usecase.occupancy
 
+import es.ubu.bikeparkingapp.domain.entity.OccupancyPrediction
 import es.ubu.bikeparkingapp.helper.repositories.FakeOccupancyRepository
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 class GetPredictedOccupancyUseCaseTest {
 
@@ -20,11 +22,12 @@ class GetPredictedOccupancyUseCaseTest {
 
     @Test
     fun `Obtener ocupacion predicha devuelve el valor del repositorio`() = runTest {
-        repository.response = 5
+        val prediction = OccupancyPrediction("park1", Instant.fromEpochMilliseconds(0), 5, 0.9)
+        repository.response = prediction
         val result = useCase("park1")
         
         assertTrue(result.isSuccess)
-        assertEquals(5, result.getOrThrow())
+        assertEquals(prediction, result.getOrThrow())
     }
 
     @Test

@@ -22,7 +22,8 @@ class AddParkingAreaUseCaseImpl(
         latitude: Double,
         longitude: Double,
         rules: List<String>,
-        openDays: Set<DayOfWeek>
+        openDays: Set<DayOfWeek>,
+        occupancyThreshold: Int?
     ): Result<Unit> {
         val parkingArea = ParkingArea(
             parkingAreaId = null,
@@ -39,7 +40,8 @@ class AddParkingAreaUseCaseImpl(
             openingTime = openingTime,
             closingTime = closingTime,
             rules = rules,
-            openDays = openDays
+            openDays = openDays,
+            occupancyThreshold = occupancyThreshold
         )
         return parkingAreaRepository.addParkingArea(parkingArea)
     }

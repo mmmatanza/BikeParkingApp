@@ -9,4 +9,5 @@ interface AlertRepository {
     suspend fun getAlertsByAccountId(accountId: String): Result<List<Alert>>
     suspend fun markAsRead(alertId: String): Result<Unit>
     suspend fun markAllAsRead(accountId: String): Result<Unit>
+    suspend fun publishParkingAlert(parkingId: String, message: String): Result<Unit>
 }

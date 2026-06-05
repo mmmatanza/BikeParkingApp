@@ -20,6 +20,8 @@ import kotlinx.datetime.DayOfWeek
  * @property toggleOpeningPicker Función para cambiar el estado del selector de horario de apertura.
  * @property toggleClosingPicker Función para cambiar el estado del selector de horario de cierre.
  * @property onOpen24HoursToggle Función para cambiar el estado de si el parking está abierto 24 horas.
+ * @property onOccupancyThresholdChange Función para cambiar el umbral de ocupación.
+ * @property onOccupancyAlertToggle Función para cambiar el estado de la alerta de ocupación.
  */
 data class UpsertParkingAreaActions(
     val onNameChange: (String) -> Unit = {},
@@ -37,5 +39,7 @@ data class UpsertParkingAreaActions(
     val onDayToggle: (DayOfWeek) -> Unit,
     val toggleOpeningPicker: (Boolean) -> Unit,
     val toggleClosingPicker: (Boolean) -> Unit,
-    val onOpen24HoursToggle: (Boolean) -> Unit
+    val onOpen24HoursToggle: (Boolean) -> Unit,
+    val onOccupancyThresholdChange: (Int?) -> Unit,
+    val onOccupancyAlertToggle: (Boolean) -> Unit
 )

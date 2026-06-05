@@ -100,14 +100,6 @@ fun MainContent(
                             onClick = actions.onMyParkingAreas
                         )
                     }
-                    item {
-                        MenuOptionCard(
-                            title = stringResource(Res.string.alerts),
-                            icon = Icons.Default.Notifications,
-                            color = MaterialTheme.colorScheme.errorContainer,
-                            onClick = actions.onNavigateToAlerts
-                        )
-                    }
                 }
 
                 // Pantallas del usuario
@@ -128,6 +120,15 @@ fun MainContent(
                             onClick = actions.onNavigateToMyTrips
                         )
                     }
+                }
+
+                item {
+                    MenuOptionCard(
+                        title = stringResource(Res.string.alerts),
+                        icon = Icons.Default.Notifications,
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        onClick = actions.onNavigateToAlerts
+                    )
                 }
 
                 // Botón de cerrar sesión

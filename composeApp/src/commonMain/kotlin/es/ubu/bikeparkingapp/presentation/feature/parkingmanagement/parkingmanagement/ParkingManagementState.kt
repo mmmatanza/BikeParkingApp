@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingmanagement
 
+import es.ubu.bikeparkingapp.domain.entity.OccupancyPrediction
 import es.ubu.bikeparkingapp.domain.entity.ParkingArea
 
 /**
@@ -17,7 +18,7 @@ data class ParkingManagementState(
     val showDeactivateDialog: Boolean = false,
     val showToggleDialog: Boolean = false,
     val parking: ParkingArea? = null,
-    val predictedOccupancy: Int? = null,
+    val predictedOccupancy: OccupancyPrediction? = null,
     val error: Exception? = null,
     val successDeactivation: Boolean = false
 )

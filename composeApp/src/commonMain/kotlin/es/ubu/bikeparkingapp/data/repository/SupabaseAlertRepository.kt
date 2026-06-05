@@ -7,8 +7,10 @@ import es.ubu.bikeparkingapp.domain.entity.Alert
 import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.rpc
 
 /**
  * Implementación del repositorio de alertas en Supabase.
@@ -41,6 +43,17 @@ class SupabaseAlertRepository(
             .update(mapOf("is_read" to true)) {
                 filter { eq("account_id", accountId) }
             }
+        Unit
+    }.recoverCatching { throw ErrorMapper.map(it) }
+
+    override suspend fun publishParkingAlert(parkingId: String, message: String): Result<Unit> = runCatching {
+        client.postgrest.rpc(
+            function = "publish_parking_alert",
+            parameters = mapOf(
+                "p_parking_area_id" to parkingId,
+                "p_message" to message
+            )
+        )
         Unit
     }.recoverCatching { throw ErrorMapper.map(it) }
 }

@@ -24,6 +24,7 @@ import kotlin.time.Clock
  * @property closingTime Horario de cierre del parking.
  * @property openDays Días de apertura del parking.
  * @property rules Lista de reglas del parking.
+ * @property occupancyThreshold Umbral de ocupación para enviar alertas.
  */
 @Serializable
 data class ParkingArea(
@@ -41,7 +42,8 @@ data class ParkingArea(
     val openingTime: String,
     val closingTime: String,
     val openDays: Set<DayOfWeek>,
-    val rules: List<String> = emptyList()
+    val rules: List<String> = emptyList(),
+    val occupancyThreshold: Int? = null
 )
 
 /**

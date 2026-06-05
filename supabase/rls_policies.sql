@@ -161,26 +161,51 @@ OR
 ---------------------------------------------------------------------------------------------------
 
 -- SELECT para alertas.
-
-create policy "SELECT reservations"
+create policy "Select Alerts"
 on "public"."alerts"
 as PERMISSIVE
 for SELECT
-to public
+to authenticated
 using (
-account_id = auth.uid()
+    (account_id = auth.uid())
+    OR
+    exists (
+    --  El usuario ve las suyas y el dueño del parking las de su recinto
+        select 1 from parkingareas
+        where parking_area_id = alerts.parking_area_id
+        and owner_id = auth.uid()
+    )
 );
 
--- UPDATE para reservas.
-create policy "UPDATE reservations"
+-- UPDATE para alertas.
+create policy "Update Alerts"
 on "public"."alerts"
 as PERMISSIVE
 for UPDATE
-to public
+to authenticated
+-- El usuario puede marcar las suyas como leídas
 using (
-account_id = auth.uid()
+    (account_id = auth.uid())
 ) with check (
-account_id = auth.uid()
+    (account_id = auth.uid())
+);
+
+-- INSERT para alertas.
+create policy "Insert Alerts"
+on "public"."alerts"
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+    -- El dueño del parking puede emitir alertas para los usuarios de su parking
+    exists (
+        select 1 from parkingareas
+        where parking_area_id = alerts.parking_area_id
+        and owner_id = auth.uid()
+    )
+    OR
+    -- El propio usuario
+    (account_id = auth.uid())
 );
 
 ---------------------------------------------------------------------------------------------------

@@ -77,10 +77,11 @@ FEATURE_TO_ALERT_TYPE = {
     'reservation_count':                'ABNORMAL_BOOKING_PATTERN',
 }
 
-# Obtiene el Dataframe de reservas, excesos de tiempo y la fecha de creación de la cuenta que reserva
+
 def get_user_history(account_id: str):
     """
-    Obtiene el historial reciente de reservas y excesos de tiempo de un usuario.
+    Obtiene el historial reciente de reservas y excesos de tiempo de un usuario
+    junto con la fecha de creación de la cuenta
     """
 
     acc_query = supabase.table("accounts") \
@@ -114,7 +115,7 @@ def get_user_history(account_id: str):
     
     return df_reservations, df_overstays, account_created_at
 
-# Obtiene el identificador del dueño del parking para crear la posible alerta
+
 def get_parking_owner_id(parking_area_id: str) -> str:
     """
     Obtiene el identificador del propietario de un área de parking.
@@ -130,7 +131,7 @@ def get_parking_owner_id(parking_area_id: str) -> str:
         return query.data.get("owner_id")
     raise ValueError(f"Parking not found with ID: {parking_area_id}")
 
-# Elabora el vector de características
+
 def build_feature_vector(new_reservation, df_reservations, df_overstays, account_created_at):
     """
     Construye el vector de características utilizado por el modelo de detección
@@ -179,24 +180,55 @@ def build_feature_vector(new_reservation, df_reservations, df_overstays, account
     return features
 
 
-# Obtiene el tipo de alerta
 def get_alert_type(df_input: pd.DataFrame) -> tuple[str, float]:
     """
     Determina el tipo de alerta asociado a una anomalía detectada.
     """
+    try:
+        shap_results = shap_explainer.shap_values(df_input)
 
-    shap_values = shap_explainer.shap_values(df_input)
-    anomaly_shap = shap_values[1][0]  # array de contribuciones para esta muestra
-    
-    # Score de anomalía
-    anomaly_score = float(np.sum(anomaly_shap[anomaly_shap > 0]))
-    
-    # Feature con mayor contribución
-    contributions = dict(zip(FEATURE_COLS, anomaly_shap))
-    top_feature = max(contributions, key=lambda f: contributions[f])
-    
-    alert_type = FEATURE_TO_ALERT_TYPE.get(top_feature, 'ABNORMAL_BOOKING_PATTERN')
-    return alert_type, anomaly_score
+        # Normalizar a un array de numpy
+        if hasattr(shap_results, "values"):
+            vals = np.array(shap_results.values)
+        elif isinstance(shap_results, list):
+            # Para clasificadores, suele ser [clase_0, clase_1]
+            vals = np.array(shap_results[1] if len(shap_results) > 1 else shap_results[0])
+        else:
+            vals = np.array(shap_results)
+
+        # Si el array es tiene 3 dimensiones, nos quedamos con la clase 1 (anomalía)
+        if vals.ndim == 3:
+            vals = vals[:, :, 1] if vals.shape[2] > 1 else vals[:, :, 0]
+
+        if vals.ndim == 2:
+            row_vals = vals[0]
+        else:
+            row_vals = vals.flatten()
+
+        # Convertimos a float puro de Python para evitar errores con tipos numpy en diccionarios o comparaciones
+        row_vals = [float(x) for x in row_vals]
+
+        # Calculamos el score de anomalía (suma de contribuciones positivas)
+        anomaly_score = sum([x for x in row_vals if x > 0])
+
+        # Mapeamos cada feature a su contribución
+        contributions = {}
+        for i, col in enumerate(FEATURE_COLS):
+            if i < len(row_vals):
+                contributions[col] = row_vals[i]
+            else:
+                contributions[col] = 0.0
+
+        # Obtenemos la feature que más ha contribuido a la decisión
+        top_feature = max(contributions, key=contributions.get)
+
+        alert_type = FEATURE_TO_ALERT_TYPE.get(top_feature, 'ABNORMAL_BOOKING_PATTERN')
+        return alert_type, anomaly_score
+
+    except Exception as e:
+        print(f"Error inside get_alert_type: {e}")
+        # Fallback por seguridad
+        return 'ABNORMAL_BOOKING_PATTERN', 0.0
 
 @app.post("/new-reservation")
 async def handle_new_reservation(request: Request):
@@ -215,7 +247,7 @@ async def handle_new_reservation(request: Request):
         if not account_id or not parking_area_id:
             return {"status": "ignored", "message": "Missing required reservation parameters"}
 
-        print(f"\n--- Processing reservation {reservation_id} for user {account_id} ---")
+        print(f"\n Processing reservation {reservation_id} for user {account_id} ")
 
         # Obtenemos la información del usuario
         df_reservations, df_overstays, account_created_at = get_user_history(account_id)
@@ -226,8 +258,9 @@ async def handle_new_reservation(request: Request):
 
         df_input = pd.DataFrame([features])
         prediction = rf_model.predict(df_input)
-        is_anomaly = bool(prediction[0])
 
+        # Convertir a booleano simple de Python de forma robusta
+        is_anomaly = bool(np.asarray(prediction).flatten()[0])
 
         if is_anomaly:
             owner_id = get_parking_owner_id(parking_area_id)
@@ -238,12 +271,49 @@ async def handle_new_reservation(request: Request):
                 "parking_area_id": parking_area_id,
                 "reservation_id":  reservation_id,
                 "alert_type":      alert_type,
-                "alert_value":     anomaly_score,
-                "custom_message":  ""
+                "alert_value":     anomaly_score
             }).execute()
             
         else:
             print("Normal booking pattern.")
+
+        try:
+            latitude, longitude, capacity, occupancy, threshold = get_parking_details(parking_area_id)
+
+            if threshold is not None:
+                # El umbral configurado por el usuario (0-100)
+                t_val = float(np.asarray(threshold).flatten()[0]) if hasattr(threshold, "__iter__") else float(threshold)
+                owner_id = get_parking_owner_id(parking_area_id)
+
+                current_occupancy_pct = (occupancy / capacity) * 100 if capacity > 0 else 0
+
+                print(f"Checking threshold for parking {parking_area_id}: Current {current_occupancy_pct:.1f}% vs Threshold {t_val}%")
+
+                if current_occupancy_pct >= t_val:
+                    print(f"Occupancy limit reached ({current_occupancy_pct:.2f}% >= {t_val:.2f}%). Sending alert.")
+                    supabase.table("alerts").insert({
+                        "account_id":      owner_id,
+                        "parking_area_id": parking_area_id,
+                        "alert_type":      "OCCUPANCY_LIMIT",
+                        "alert_value":     float(current_occupancy_pct)
+                    }).execute()
+                else:
+                    # Si no se ha superado el umbral con esta reserva, comprobamos la predicción
+                    predicted_val, prediction_ratio, _, _ = _perform_occupancy_prediction(parking_area_id, latitude, longitude, capacity, occupancy)
+                    prediction_pct = prediction_ratio * 100
+
+                    print(f"Real occupancy below threshold. Checking prediction: {prediction_pct:.1f}% vs Threshold {t_val}%")
+
+                    if prediction_pct >= t_val:
+                        print(f"Predicted occupancy ({prediction_pct:.2f}%) exceeds threshold ({t_val:.2f}%). Sending alert.")
+                        supabase.table("alerts").insert({
+                            "account_id":      owner_id,
+                            "parking_area_id": parking_area_id,
+                            "alert_type":      "PREDICTED_OCCUPANCY",
+                            "alert_value":     float(prediction_pct)
+                        }).execute()
+        except Exception as occ_err:
+            print(f"Error checking occupancy/prediction: {occ_err}")
 
         # Se devuelve una respuesta satisfactoria a Supabase para que no reintente la petición
         return {
@@ -257,12 +327,12 @@ async def handle_new_reservation(request: Request):
         return {"status": "error", "message": str(e)}
 
 
-def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
+def get_parking_details(parking_id: str) -> tuple[float, float, int, int, int]:
     """
-    Obtiene la latitud, longitud, capacidad y ocupación actual de un parking desde Supabase.
+    Obtiene la latitud, longitud, capacidad, ocupación actual y umbral de un parking desde Supabase.
     """
     query = supabase.table("parkingareas") \
-        .select("capacity, current_occupancy, parking_area_location") \
+        .select("capacity, current_occupancy, parking_area_location, occupancy_threshold") \
         .eq("parking_area_id", parking_id) \
         .single() \
         .execute()
@@ -274,7 +344,8 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
     capacity = data.get("capacity")
     occupancy = data.get("current_occupancy", 0)
     location = data.get("parking_area_location")
-    
+    threshold = data.get("occupancy_threshold")
+
     if not location:
         raise ValueError(f"Parking {parking_id} has no location data.")
 
@@ -291,7 +362,7 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
                 binary_data = bytes.fromhex(location)
                 # Extraemos los dos double del final del paquete EWKB
                 longitude, latitude = struct.unpack('<dd', binary_data[-16:])
-                return latitude, longitude, capacity, occupancy
+                return latitude, longitude, capacity, occupancy, threshold
             except Exception as binary_err:
                 raise ValueError(f"Error decoding geographic EWKB binary: {binary_err}")
 
@@ -300,9 +371,50 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int]:
         if len(coordinates) == 2:
             longitude = coordinates[0]
             latitude = coordinates[1]
-            return latitude, longitude, capacity, occupancy
+            return latitude, longitude, capacity, occupancy, threshold
 
     raise ValueError(f"Could not parse location format: {location}")
+
+def _perform_occupancy_prediction(parking_id, latitude, longitude, capacity, occupancy):
+    """
+    Lógica interna compartida para ejecutar la inferencia del modelo LightGBM.
+    """
+    traffic_index = get_congestion_index(latitude, longitude)
+    current_ratio = occupancy / capacity if capacity > 0 else 0.0
+
+    # Extraer características de tiempo basadas en la zona horaria del servidor
+    current_time = pd.Timestamp.now(tz='UTC')
+    booking_hour = current_time.hour
+    booking_weekday = current_time.dayofweek
+
+    # Construcción del vector estructurado para el modelo
+    features_dict = {
+        'current_occupancy_ratio': current_ratio,
+        'traffic_congestion_index': traffic_index,
+        'booking_hour': booking_hour,
+        'booking_weekday': booking_weekday,
+        'capacity': capacity
+    }
+
+    df_input = pd.DataFrame([features_dict], columns=FEATURE_OCCUPANCY_COLS)
+
+    if lgb_model is not None:
+        prediction_ratio = float(lgb_model.predict(df_input)[0])
+        predicted_val = int(round(prediction_ratio * capacity))
+
+        base_confidence = 0.95
+        if traffic_index == 0.0: base_confidence -= 0.15
+        if current_ratio > 0.95 or current_ratio < 0.05: base_confidence -= 0.10
+        confidence_score = max(0.50, base_confidence)
+    else:
+        # Fallback inteligente
+        prediction_offset = 1 if traffic_index > 0.5 else 0
+        predicted_val = min(capacity, occupancy + prediction_offset)
+        prediction_ratio = predicted_val / capacity if capacity > 0 else 0.0
+        confidence_score = 0.50
+
+    predicted_val = max(0, min(capacity, predicted_val))
+    return predicted_val, prediction_ratio, confidence_score, current_time
 
 def get_congestion_index(lat: float, lon: float) -> float:
     """
@@ -374,58 +486,14 @@ async def handle_prediction(
         if owner_id != user_id:
             raise HTTPException(status_code=403, detail="You do not have permission to access this data")
 
-        print(f"\nRunning inference for parking: {parking_id}")
+        print(f"\nRunning manual inference request for parking: {parking_id}")
         
-        # Obtención de variables de Supabase y TomTom
-        latitude, longitude, capacity, occupancy = get_parking_details(parking_id)
-        traffic_index = get_congestion_index(latitude, longitude)
-        current_ratio = occupancy / capacity if capacity > 0 else 0.0
-
-        # Extraer características de tiempo basadas en la zona horaria del servidor
-        current_time = pd.Timestamp.now(tz='UTC')
-        booking_hour = current_time.hour
-        booking_weekday = current_time.dayofweek
-
-        # Construcción del vector estructurado para el modelo
-        features_dict = {
-            'current_occupancy_ratio': current_ratio,
-            'traffic_congestion_index': traffic_index,
-            'booking_hour': booking_hour,
-            'booking_weekday': booking_weekday,
-            'capacity': capacity
-        }
+        # Obtención de variables de Supabase
+        latitude, longitude, capacity, occupancy, _ = get_parking_details(parking_id)
         
-        # Convertimos a DataFrame asegurando exactamente el mismo orden de columnas
-        df_input = pd.DataFrame([features_dict], columns=FEATURE_OCCUPANCY_COLS)
-        print(f"Input matrix built:\n{df_input.to_string(index=False)}")
-
-        # Predicción real y fallback operativo
-        if lgb_model is not None:
-            prediction_ratio = float(lgb_model.predict(df_input)[0])
-            predicted_val = int(round(prediction_ratio * capacity))
-            
-            # Confianza basada en la disponibilidad de datos
-            base_confidence = 0.95
-
-            # Si la API de TomTom falló o devolvió 0
-            if traffic_index == 0.0:
-                base_confidence -= 0.15
-                
-            # Si el ratio actual es extremo (parking completamente vacío o lleno, donde la varianza sube)
-            if current_ratio > 0.95 or current_ratio < 0.05:
-                base_confidence -= 0.10
-
-            confidence_score = max(0.50, base_confidence)
-
-            print(f"Model inference completed. Estimated ratio: {prediction_ratio:.4f}")
-        else:
-            # Fallback inteligente
-            prediction_offset = 1 if traffic_index > 0.5 else 0
-            predicted_val = min(capacity, occupancy + prediction_offset)
-            confidence_score = 0.50
-            print("Running fallback. Missing .pkl file")
-
-        predicted_val = max(0, min(capacity, predicted_val))
+        predicted_val, _, confidence_score, current_time = _perform_occupancy_prediction(
+            parking_id, latitude, longitude, capacity, occupancy
+        )
 
         return {
             "parkingAreaId": parking_id,

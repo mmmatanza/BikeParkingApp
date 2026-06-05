@@ -22,6 +22,8 @@ import kotlinx.datetime.DayOfWeek
  * @property showClosingPicker Indica si se debe mostrar el diálogo para seleccionar la hora de cierre.
  * @property isOpen24Hours Indica si el parking está abierto 24 horas.
  * @property upsertConfirmationDialog Indica si se debe mostrar el diálogo de confirmación de agregación.
+ * @property occupancyThreshold Umbral de ocupación para enviar alertas.
+ * @property isOccupancyAlertEnabled Indica si se debe enviar alertas de ocupación.
  */
 data class UpsertParkingAreaState(
     val parkingAreaId: String? = null,
@@ -44,4 +46,6 @@ data class UpsertParkingAreaState(
     val showClosingPicker: Boolean = false,
     val isOpen24Hours: Boolean = false,
     val upsertConfirmationDialog : Boolean = false,
+    val occupancyThreshold: Int? = null,
+    val isOccupancyAlertEnabled: Boolean = false,
 )

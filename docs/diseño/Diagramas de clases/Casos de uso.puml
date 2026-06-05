@@ -247,12 +247,12 @@ package "alert"{
         - alertRepository: AlertRepository
         + invoke(accountId: String): Result<Unit>
     }
-    interface "PublishBroadcastAlertUseCase" <<UseCase>> {
+    interface "PublishParkingAlertUseCase" <<UseCase>> {
         + invoke(parkingAreaId: String, message: String, value: Double): Result<Unit>
     }
-    class PublishBroadcastAlertUseCaseImpl {
+    class PublishParkingAlertUseCaseImpl {
         - alertRepository: AlertRepository
-        + invoke(parkingAreaId: String, message: String, value: Double): Result<Unit>
+        + invoke(parkingAreaId: String, message: String): Result<Unit>
     }
 
 

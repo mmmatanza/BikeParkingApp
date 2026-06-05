@@ -17,6 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +31,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
@@ -39,8 +42,10 @@ import bikeparkingapp.composeapp.generated.resources.deactivate
 import bikeparkingapp.composeapp.generated.resources.edit_details
 import bikeparkingapp.composeapp.generated.resources.error
 import bikeparkingapp.composeapp.generated.resources.in_service
+import bikeparkingapp.composeapp.generated.resources.model_confidence
 import bikeparkingapp.composeapp.generated.resources.out_of_service
 import bikeparkingapp.composeapp.generated.resources.predicted_occupancy
+import bikeparkingapp.composeapp.generated.resources.publish_alert
 import bikeparkingapp.composeapp.generated.resources.schedule
 import bikeparkingapp.composeapp.generated.resources.status
 import bikeparkingapp.composeapp.generated.resources.view_occupancy
@@ -174,22 +179,43 @@ fun ParkingManagementContent(
                 // Predicción
                 state.predictedOccupancy?.let { prediction ->
                     Spacer(modifier = Modifier.height(24.dp))
-                    Row(
+                    ElevatedCard(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.4f)
+                        )
                     ) {
-                        Text(
-                            text = stringResource(Res.string.predicted_occupancy),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        val capacity = parking?.capacity ?: 1
-                        val available = capacity - prediction
-                        Text(
-                            text = "$available / $capacity",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.secondary
-                        )
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(Res.string.predicted_occupancy),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                val capacity = parking?.capacity ?: 1
+                                val available = (capacity - prediction.predictedOccupancy).coerceAtLeast(0)
+                                Text(
+                                    text = "$available / $capacity",
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    fontWeight = FontWeight.Black
+                                )
+                            }
+                            
+                            val confidencePct = (prediction.confidenceScore * 100).toInt()
+                            Text(
+                                text = stringResource(Res.string.model_confidence, confidencePct),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.7f)
+                            )
+                        }
                     }
                 }
 
@@ -215,6 +241,16 @@ fun ParkingManagementContent(
                     ) {
                         Text(stringResource(Res.string.edit_details))
                     }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Emitir alerta
+                OutlinedButton(
+                    onClick = { actions.onPublishAlertClick(parking?.parkingAreaId!!) },
+                    modifier = Modifier.fillMaxWidth().handCursor()
+                ) {
+                    Text(stringResource(Res.string.publish_alert))
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

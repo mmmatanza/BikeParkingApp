@@ -19,10 +19,10 @@ import io.ktor.client.request.parameter
 class AnalyticsOccupancyRepository(
     private val httpClient: HttpClient,
     private val supabaseClient: SupabaseClient,
-    private val baseUrl: String = "http://192.168.1.25:8000"
+    private val baseUrl: String = "http://0.0.0.0:8000"
 ) : OccupancyRepository {
 
-    override suspend fun getPredictedOccupancy(parkingAreaId: String): Result<Int> = runCatching {
+    override suspend fun getPredictedOccupancy(parkingAreaId: String): Result<OccupancyPrediction> = runCatching {
         val token = supabaseClient.auth.currentAccessTokenOrNull()
             ?: throw IllegalStateException("User not authenticated")
 
@@ -30,6 +30,6 @@ class AnalyticsOccupancyRepository(
             header("Authorization", "Bearer $token")
             parameter("parking_id", parkingAreaId)
         }.body<OccupancyPrediction>()
-        response.predictedOccupancy
+        response
     }
 }

@@ -41,6 +41,7 @@ CREATE TABLE parkingareas (
     closing_time TIME NOT NULL DEFAULT '23:59:59',
     open_days INTEGER[] NOT NULL DEFAULT '{}',
     rules TEXT[] DEFAULT '{}',
+    occupancy_threshold INTEGER CHECK (occupancy_threshold >= 0 AND occupancy_threshold <= 100),
     -- La ocupación no puede superar a la capacidad
     CONSTRAINT check_occupancy_limit CHECK (current_occupancy <= capacity),
     -- No puede cerrar antes de abrir

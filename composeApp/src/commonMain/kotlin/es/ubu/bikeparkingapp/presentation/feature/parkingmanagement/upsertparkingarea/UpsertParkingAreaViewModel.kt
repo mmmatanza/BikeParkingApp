@@ -46,7 +46,9 @@ class UpsertParkingAreaViewModel(
                         latitude = parking.latitude,
                         longitude = parking.longitude,
                         openDays = parking.openDays,
-                        rules = parking.rules
+                        rules = parking.rules,
+                        occupancyThreshold = parking.occupancyThreshold,
+                        isOccupancyAlertEnabled = parking.occupancyThreshold != null
                     )
                     _state.value = _state.value.copy(isLoading = false)
                 }
@@ -76,7 +78,8 @@ class UpsertParkingAreaViewModel(
                         latitude = _state.value.latitude!!,
                         longitude = _state.value.longitude!!,
                         rules = _state.value.rules,
-                        openDays = _state.value.openDays
+                        openDays = _state.value.openDays,
+                        occupancyThreshold = if (_state.value.isOccupancyAlertEnabled) _state.value.occupancyThreshold else null
                     ).onFailure {
                         _state.value = _state.value.copy(
                             error = ErrorMapper.map(it)
@@ -96,7 +99,8 @@ class UpsertParkingAreaViewModel(
                         latitude = _state.value.latitude!!,
                         longitude = _state.value.longitude!!,
                         rules = _state.value.rules,
-                        openDays = _state.value.openDays
+                        openDays = _state.value.openDays,
+                        occupancyThreshold = if (_state.value.isOccupancyAlertEnabled) _state.value.occupancyThreshold else null
                     ).onFailure {
                         _state.value = _state.value.copy(
                             error = ErrorMapper.map(it)
@@ -196,6 +200,17 @@ class UpsertParkingAreaViewModel(
 
     fun onAddressChange(address: String) {
         _state.value = _state.value.copy(address = address)
+    }
+
+    fun onOccupancyThresholdChange(threshold: Int?) {
+        _state.value = _state.value.copy(occupancyThreshold = threshold)
+    }
+
+    fun onOccupancyAlertToggle(enabled: Boolean) {
+        _state.value = _state.value.copy(
+            isOccupancyAlertEnabled = enabled,
+            occupancyThreshold = if (enabled) _state.value.occupancyThreshold ?: 80 else null
+        )
     }
 
     fun onRuleInputChange(value: String) {

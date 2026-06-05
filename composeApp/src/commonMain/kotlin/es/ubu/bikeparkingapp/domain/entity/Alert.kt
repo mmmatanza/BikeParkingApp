@@ -33,6 +33,7 @@ data class Alert(
 @Serializable
 enum class AlertType {
     OCCUPANCY_LIMIT,
+    PREDICTED_OCCUPANCY,
     SUSPICIOUS_RESERVATION,
     PARKING_NOTIFICATION,
     RECURRENT_EXPIRED,

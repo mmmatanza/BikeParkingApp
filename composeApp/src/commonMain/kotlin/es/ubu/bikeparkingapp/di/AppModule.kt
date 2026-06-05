@@ -19,6 +19,8 @@ import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAlertAsReadUseCase
 import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAlertAsReadUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAllAlertsAsReadUseCase
 import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAllAlertsAsReadUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.alert.PublishParkingAlertUseCase
+import es.ubu.bikeparkingapp.domain.usecase.alert.PublishParkingAlertUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
@@ -78,6 +80,7 @@ import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkinga
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.parkingreservation.ParkingReservationViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.mapselection.MapSelectionViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.publishalert.PublishAlertViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingmanagement.ParkingManagementViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingreservations.ParkingReservationsViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.upsertparkingarea.UpsertParkingAreaViewModel
@@ -161,6 +164,7 @@ val appModule = module {
     single<GetAlertsUseCase> { GetAlertsUseCaseImpl(get(), get()) }
     single<MarkAlertAsReadUseCase> { MarkAlertAsReadUseCaseImpl(get()) }
     single<MarkAllAlertsAsReadUseCase> { MarkAllAlertsAsReadUseCaseImpl(get(), get()) }
+    single<PublishParkingAlertUseCase> { PublishParkingAlertUseCaseImpl(get()) }
 
     // Occupancy
     single<GetPredictedOccupancyUseCase> { GetPredictedOccupancyUseCaseImpl(get()) }
@@ -176,6 +180,7 @@ val viewModelsModule = module {
     viewModelOf(::UpsertParkingAreaViewModel)
     viewModelOf(::MapSelectionViewModel)
     viewModelOf(::ParkingManagementViewModel)
+    viewModelOf(::PublishAlertViewModel)
     viewModelOf(::NearbyParkingAreasViewModel)
     viewModelOf(::ParkingReservationViewModel)
     viewModelOf(::ParkingReservationsViewModel)

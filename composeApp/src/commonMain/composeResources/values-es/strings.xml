@@ -100,8 +100,16 @@
     <string name="add_parking_rule">Añadir regla</string>
     <string name="remove_parking_rule">Eliminar regla</string>
     <string name="rule_sample">Ej: No animales</string>
+    <string name="publish_alert">Emitir alerta</string>
+    <string name="publish_alert_title">Emitir alerta</string>
+    <string name="alert_message_label">Mensaje de la alerta</string>
+    <string name="send_alert">Enviar alerta</string>
+    <string name="alert_sent_success">Alerta enviada con éxito</string>
     <string name="not_available_parking_areas">Parkings no disponibles</string>
     <string name="recommended_for_you">Recomendado para tí</string>
+    <string name="occupancy_alerts">Alertas de ocupación</string>
+    <string name="occupancy_threshold">Umbral de ocupación (%)</string>
+    <string name="model_confidence">Confianza del modelo: %1$s %</string>
 
     <!-- Hacer reserva -->
     <string name="reservation_id">ID de reserva</string>
@@ -138,29 +146,31 @@
     <string name="no_alerts">No hay alertas disponibles</string>
     <string name="mark_as_read">Marcar como leída</string>
     <string name="mark_all_as_read">Marcar todas como leídas</string>
-    <string name="alert_occupancy_limit">Límite de ocupación alcanzado en el parking: %s</string>
-    <string name="alert_suspicious_reservation">Actividad sospechosa en la reserva: %s</string>
-    <string name="alert_parking_notification">Notificación de parking: %s</string>
+    <string name="alert_occupancy_limit">Se ha alcanzado el límite de ocupación; la ocupación actual es del %1$s</string>
+    <string name="alert_predicted_occupancy">Se prevé una ocupación alta dentro de una hora: %1$s</string>
+    <string name="alert_suspicious_reservation">Actividad sospechosa detectada en la reserva %1$s</string>
+    <string name="alert_parking_notification">Notificación del parking: %1$s</string>
 
-    <string name="alert_occupancy_limit_title">Límite de Ocupación</string>
-    <string name="alert_suspicious_reservation_title">Actividad Sospechosa</string>
-    <string name="alert_parking_notification_title">Notificación de Parking</string>
+    <string name="alert_occupancy_limit_title">Límite de ocupación</string>
+    <string name="alert_predicted_occupancy_title">Ocupación prevista</string>
+    <string name="alert_suspicious_reservation_title">Actividad sospechosa</string>
+    <string name="alert_parking_notification_title">Notificación de parking</string>
 
-    <string name="alert_recurrent_expired_title">Expiraciones Recurrentes</string>
+    <string name="alert_recurrent_expired_title">Expiraciones recurrentes</string>
     <string name="alert_recurrent_expired_msg">El usuario tiene múltiples reservas expiradas. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_recurrent_cancellations_title">Cancelaciones Recurrentes</string>
+    <string name="alert_recurrent_cancellations_title">Cancelaciones recurrentes</string>
     <string name="alert_recurrent_cancellations_msg">El usuario tiene múltiples reservas canceladas. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_recurrent_overstay_title">Exceso de Tiempo Recurrente</string>
+    <string name="alert_recurrent_overstay_title">Exceso de tiempo recurrente</string>
     <string name="alert_recurrent_overstay_msg">El usuario suele quedarse más tiempo del reservado. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_suspicious_new_account_title">Nueva Cuenta Sospechosa</string>
+    <string name="alert_suspicious_new_account_title">Nueva cuenta sospechosa</string>
     <string name="alert_suspicious_new_account_msg">Una cuenta nueva muestra actividad inusual. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_unusual_booking_frequency_title">Frecuencia de Reserva Inusual</string>
+    <string name="alert_unusual_booking_frequency_title">Frecuencia de reserva inusual</string>
     <string name="alert_unusual_booking_frequency_msg">Se ha detectado una alta frecuencia de reservas para este usuario. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_unusual_booking_hour_title">Hora de Reserva Inusual</string>
+    <string name="alert_unusual_booking_hour_title">Hora de reserva inusual</string>
     <string name="alert_unusual_booking_hour_msg">Reservas en horas poco comunes para este usuario o zona. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_unusual_booking_weekday_title">Día de Reserva Inusual</string>
+    <string name="alert_unusual_booking_weekday_title">Día de reserva inusual</string>
     <string name="alert_unusual_booking_weekday_msg">Reservas en días inusuales para el patrón del usuario. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
-    <string name="alert_abnormal_booking_pattern_title">Patrón de Reserva Anormal</string>
+    <string name="alert_abnormal_booking_pattern_title">Patrón de reserva anormal</string>
     <string name="alert_abnormal_booking_pattern_msg">Se ha detectado un comportamiento de reserva anormal general. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
 
 </resources>

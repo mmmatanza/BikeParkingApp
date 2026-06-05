@@ -13,6 +13,7 @@ import kotlin.time.Instant
 @Serializable
 data class OccupancyPrediction(
     val parkingAreaId: String,
+    @Serializable(with = InstantSerializer::class)
     val dateTime: Instant,
     val predictedOccupancy: Int,
     val confidenceScore: Double

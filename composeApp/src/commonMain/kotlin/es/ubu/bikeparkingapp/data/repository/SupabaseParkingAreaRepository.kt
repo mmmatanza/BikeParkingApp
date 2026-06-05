@@ -92,6 +92,7 @@ class SupabaseParkingAreaRepository(
                     put("p_rules", buildJsonArray {
                         parkingArea.rules.forEach { add(it) }
                     })
+                    put("p_occupancy_threshold", parkingArea.occupancyThreshold)
                 }
             )
             Unit
@@ -124,6 +125,7 @@ class SupabaseParkingAreaRepository(
                     put("p_rules", buildJsonArray {
                         parkingArea.rules.forEach { add(it) }
                     })
+                    put("p_occupancy_threshold", parkingArea.occupancyThreshold)
                 }
             )
             Unit

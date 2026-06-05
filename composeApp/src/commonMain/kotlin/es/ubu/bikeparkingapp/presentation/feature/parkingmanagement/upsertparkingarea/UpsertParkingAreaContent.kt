@@ -24,7 +24,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,33 +35,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
-import bikeparkingapp.composeapp.generated.resources.accept
 import bikeparkingapp.composeapp.generated.resources.add_parking_area
 import bikeparkingapp.composeapp.generated.resources.add_parking_rule
 import bikeparkingapp.composeapp.generated.resources.address
 import bikeparkingapp.composeapp.generated.resources.back
-import bikeparkingapp.composeapp.generated.resources.cancel
 import bikeparkingapp.composeapp.generated.resources.capacity
 import bikeparkingapp.composeapp.generated.resources.closing_time
 import bikeparkingapp.composeapp.generated.resources.friday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.location_selected
 import bikeparkingapp.composeapp.generated.resources.monday_initial_letter
 import bikeparkingapp.composeapp.generated.resources.name
+import bikeparkingapp.composeapp.generated.resources.occupancy_alerts
+import bikeparkingapp.composeapp.generated.resources.occupancy_threshold
 import bikeparkingapp.composeapp.generated.resources.open_24_hours
 import bikeparkingapp.composeapp.generated.resources.open_days
 import bikeparkingapp.composeapp.generated.resources.opening_time
@@ -234,7 +226,48 @@ fun UpsertParkingAreaContent(
                     modifier = Modifier.fillMaxWidth().handCursor()
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Alertas de ocupación
+                Column(modifier = Modifier.fillMaxWidth()) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.occupancy_alerts),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Switch(
+                            checked = state.isOccupancyAlertEnabled,
+                            onCheckedChange = actions.onOccupancyAlertToggle
+                        )
+                    }
+
+                    if (state.isOccupancyAlertEnabled) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = state.occupancyThreshold?.toString() ?: "",
+                            onValueChange = { newValue ->
+                                if (newValue.isEmpty()) {
+                                    actions.onOccupancyThresholdChange(null)
+                                } else if (newValue.all { it.isDigit() }) {
+                                    val threshold = newValue.toIntOrNull()
+                                    if (threshold != null && threshold in 0..100) {
+                                        actions.onOccupancyThresholdChange(threshold)
+                                    }
+                                }
+                            },
+                            label = { Text(stringResource(Res.string.occupancy_threshold)) },
+                            modifier = Modifier.fillMaxWidth(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            singleLine = true
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
 
                 ParkingRulesSection(
                     rules = state.rules,
