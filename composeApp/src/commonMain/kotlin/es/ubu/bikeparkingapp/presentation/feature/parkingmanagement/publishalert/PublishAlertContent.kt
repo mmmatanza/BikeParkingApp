@@ -37,17 +37,13 @@ import org.jetbrains.compose.resources.stringResource
 /**
  * Contenido de la pantalla de emitir alerta.
  * @property state Estado de la pantalla.
- * @property onMessageChange Acción al cambiar el mensaje.
- * @property onSendClick Acción al pulsar en enviar.
- * @property onBackClick Acción al pulsar en volver.
+ * @property actions Acciones de la pantalla.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PublishAlertContent(
     state: PublishAlertState,
-    onMessageChange: (String) -> Unit,
-    onSendClick: () -> Unit,
-    onBackClick: () -> Unit
+    actions: PublishAlertActions
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -55,7 +51,7 @@ fun PublishAlertContent(
             TopAppBar(
                 title = { Text(stringResource(Res.string.publish_alert_title)) },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick, modifier = Modifier.handCursor()) {
+                    IconButton(onClick = actions.onBackClick, modifier = Modifier.handCursor()) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(Res.string.back)
@@ -65,37 +61,42 @@ fun PublishAlertContent(
             )
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize().padding(paddingValues)
-                .consumeWindowInsets(paddingValues),
-            contentAlignment = Alignment.Center
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Column(
-                modifier = Modifier
-                    .widthIn(max = 480.dp)
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Box(
+                modifier = Modifier.weight(1f),
+                contentAlignment = Alignment.Center
             ) {
-                OutlinedTextField(
-                    value = state.message,
-                    onValueChange = onMessageChange,
-                    label = { Text(stringResource(Res.string.alert_message_label)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 3,
-                    maxLines = 5
-                )
-
-                Spacer(modifier = Modifier.height(32.dp))
-
-                Button(
-                    onClick = onSendClick,
-                    modifier = Modifier.fillMaxWidth().handCursor(),
-                    enabled = state.message.isNotBlank() && !state.isLoading
+                Column(
+                    modifier = Modifier.widthIn(max = 480.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(stringResource(Res.string.send_alert))
+                    OutlinedTextField(
+                        value = state.message,
+                        onValueChange = actions.onMessageChange,
+                        label = { Text(stringResource(Res.string.alert_message_label)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 3,
+                        maxLines = 5
+                    )
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Button(
+                        onClick = actions.onSendClick,
+                        modifier = Modifier.fillMaxWidth().handCursor(),
+                        enabled = state.message.isNotBlank()
+                    ) {
+                        Text(stringResource(Res.string.send_alert))
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ fun AccountDto.toDomain() = Account(
     name = name,
     taxId = taxId,
     role = Role.fromString(role),
+    points = points,
     createdAt = Instant.parse(createdAt),
     updatedAt = Instant.parse(updatedAt)
 )

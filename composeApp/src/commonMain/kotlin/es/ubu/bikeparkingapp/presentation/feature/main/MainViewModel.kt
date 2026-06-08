@@ -61,7 +61,7 @@ class MainViewModel(
                     return@launch
                 }
                 lastError = result.exceptionOrNull()
-                delay(300L * (attempt + 1)) // 300ms, 600ms, 900ms, 1200ms, 1500ms
+                delay(300L * (attempt + 1))
             }
 
             _state.value = _state.value.copy(

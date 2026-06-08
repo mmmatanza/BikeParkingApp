@@ -10,6 +10,7 @@ import kotlin.time.Instant
  * @property name Nombre del usuario.
  * @property taxId DNI o CIF del usuario.
  * @property role Rol del usuario.
+ * @property points Puntos acumulados por el usuario.
  * @property createdAt Fecha y hora de creación de la cuenta.
  * @property updatedAt Fecha y hora de la última actualización de la cuenta.
  */
@@ -19,6 +20,7 @@ data class Account(
     val name: String,
     val taxId: String,
     val role: Role,
+    val points: Int = 0,
     @Serializable(with = InstantSerializer::class)
     val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)

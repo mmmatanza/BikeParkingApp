@@ -173,4 +173,15 @@
     <string name="alert_abnormal_booking_pattern_title">Abnormal booking pattern</string>
     <string name="alert_abnormal_booking_pattern_msg">General abnormal booking behavior detected. Area: %1$s, Res: %2$s, Date: %3$s</string>
 
+    <!-- Gamificación y temas -->
+    <string name="marketplace">Themes</string>
+    <string name="points">points</string>
+    <string name="my_points">My points</string>
+    <string name="redeem">Redeem</string>
+    <string name="apply">Apply</string>
+    <string name="applied">Applied</string>
+    <string name="unlock_theme_confirm">Do you want to redeem %1$s points for the %2$s theme?</string>
+    <string name="theme_marketplace">Theme Marketplace</string>
+    <string name="insufficient_points">You don\'t have enough points</string>
+
 </resources>

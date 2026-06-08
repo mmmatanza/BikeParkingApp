@@ -1,18 +1,21 @@
 package es.ubu.bikeparkingapp.di
 
 import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
+import es.ubu.bikeparkingapp.data.local.ThemeLocalDataSource
 import es.ubu.bikeparkingapp.data.repository.AnalyticsOccupancyRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAccountRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAlertRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAuthRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseParkingAreaRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseReservationRepository
+import es.ubu.bikeparkingapp.data.repository.SupabaseThemeRepository
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
 import es.ubu.bikeparkingapp.domain.repository.ReservationRepository
+import es.ubu.bikeparkingapp.domain.repository.ThemeRepository
 import es.ubu.bikeparkingapp.domain.usecase.alert.GetAlertsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.alert.GetAlertsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.alert.MarkAlertAsReadUseCase
@@ -67,8 +70,18 @@ import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCa
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.reservation.ReleaseReservationUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.ReleaseReservationUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.theme.ApplyThemeUseCase
+import es.ubu.bikeparkingapp.domain.usecase.theme.ApplyThemeUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.theme.GetAppliedThemeUseCase
+import es.ubu.bikeparkingapp.domain.usecase.theme.GetAppliedThemeUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.theme.GetThemesMarketplaceUseCase
+import es.ubu.bikeparkingapp.domain.usecase.theme.GetThemesMarketplaceUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.theme.RedeemPointsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.theme.RedeemPointsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserIdUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.user.GetUserPointsUseCase
+import es.ubu.bikeparkingapp.domain.usecase.user.GetUserPointsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCaseImpl
 import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsViewModel
@@ -80,10 +93,11 @@ import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkinga
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.parkingreservation.ParkingReservationViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.mapselection.MapSelectionViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasViewModel
-import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.publishalert.PublishAlertViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingmanagement.ParkingManagementViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingreservations.ParkingReservationsViewModel
+import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.publishalert.PublishAlertViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.upsertparkingarea.UpsertParkingAreaViewModel
+import es.ubu.bikeparkingapp.presentation.feature.theme.ThemesMarketplaceViewModel
 import es.ubu.bikeparkingapp.presentation.feature.trips.mytrips.MyTripsViewModel
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.Auth
@@ -111,6 +125,7 @@ val appModule = module {
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
     single<AlertRepository> { SupabaseAlertRepository(get()) }
     single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get()) }
+    single<ThemeRepository> { SupabaseThemeRepository(get()) }
 
     // HttpClient para analíticas
     single {
@@ -150,7 +165,7 @@ val appModule = module {
     single<GetUserReservationsUseCase>{ GetUserReservationsUseCaseImpl(get()) }
     single<CancelReservationUseCase>{ CancelReservationUseCaseImpl(get()) }
     single<CheckInReservationUseCase>{ CheckInReservationUseCaseImpl(get()) }
-    single<CheckOutReservationUseCase>{ CheckOutReservationUseCaseImpl(get()) }
+    single<CheckOutReservationUseCase>{ CheckOutReservationUseCaseImpl(get(), get()) }
     single<ReleaseReservationUseCase>{ ReleaseReservationUseCaseImpl(get()) }
     single<GetDetailedUserReservationsUseCase>{
         GetDetailedUserReservationsUseCaseImpl(
@@ -168,6 +183,13 @@ val appModule = module {
 
     // Occupancy
     single<GetPredictedOccupancyUseCase> { GetPredictedOccupancyUseCaseImpl(get()) }
+
+    // Theme
+    single<GetThemesMarketplaceUseCase> { GetThemesMarketplaceUseCaseImpl(get()) }
+    single<ApplyThemeUseCase> { ApplyThemeUseCaseImpl(get(), get()) }
+    single<RedeemPointsUseCase> { RedeemPointsUseCaseImpl(get(), get()) }
+    single<GetUserPointsUseCase> { GetUserPointsUseCaseImpl(get()) }
+    single<GetAppliedThemeUseCase> { GetAppliedThemeUseCaseImpl(get()) }
 }
 
 // Módulo para los ViewModels
@@ -186,6 +208,7 @@ val viewModelsModule = module {
     viewModelOf(::ParkingReservationsViewModel)
     viewModelOf(::MyTripsViewModel)
     viewModelOf(::AlertsViewModel)
+    viewModelOf(::ThemesMarketplaceViewModel)
 }
 
 // Módulo para la creación del cliente Supabase
@@ -210,6 +233,9 @@ val supabaseModule = module {
 val localStorageModule = module {
     single {
         AccountLocalDataSource(get())
+    }
+    single {
+        ThemeLocalDataSource(get())
     }
 }
 

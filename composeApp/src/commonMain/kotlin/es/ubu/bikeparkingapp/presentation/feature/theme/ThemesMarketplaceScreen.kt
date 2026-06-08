@@ -1,10 +1,9 @@
-package es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.publishalert
+package es.ubu.bikeparkingapp.presentation.feature.theme
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
@@ -14,25 +13,16 @@ import es.ubu.bikeparkingapp.presentation.common.components.dialog.ErrorDialog
 import org.koin.compose.viewmodel.koinViewModel
 
 /**
- * Pantalla para emitir una alerta manual a los usuarios de un parking.
- * @property parkingId Id del parking.
+ * Pantalla que muestra el mercado de temas.
  */
-class PublishAlertScreen(
-    private val parkingId: String
-) : Screen {
+class ThemesMarketplaceScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val viewModel = koinViewModel<PublishAlertViewModel>()
+        val viewModel = koinViewModel<ThemesMarketplaceViewModel>()
         val state = viewModel.state.value
 
-        LaunchedEffect(state.isSuccess) {
-            if (state.isSuccess) {
-                navigator.pop()
-            }
-        }
-
-        if (state.isLoading) {
+        if (state.isLoading && state.themes.isEmpty()) {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 CircularProgressIndicator()
             }
@@ -45,15 +35,12 @@ class PublishAlertScreen(
             }
         }
 
-        PublishAlertContent(
+        ThemesMarketplaceContent(
             state = state,
-            actions = PublishAlertActions(
-                onMessageChange = viewModel::onMessageChange,
-                onSendClick = { viewModel.onPublishAlert(parkingId) },
-                onBackClick = {
-                    viewModel.clearState()
-                    navigator.pop()
-                }
+            actions = ThemesMarketplaceActions(
+                onBackClick = { navigator.pop() },
+                onRedeem = { viewModel.redeemTheme(it) },
+                onApply = { viewModel.applyTheme(it) }
             )
         )
     }

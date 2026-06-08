@@ -9,12 +9,34 @@ CREATE TABLE accounts (
     name TEXT NOT NULL,
     tax_id TEXT NOT NULL UNIQUE,
     role TEXT NOT NULL DEFAULT 'user',
+    points INTEGER NOT NULL DEFAULT 0 CHECK (points >= 0),
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Tabla de temas disponibles
+CREATE TABLE themes (
+    theme_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    cost INTEGER NOT NULL CHECK (cost >= 0),
+    primary_color TEXT NOT NULL,
+    secondary_color TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Tabla que relaciona usuarios con los temas que han desbloqueado
+CREATE TABLE account_themes (
+    account_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+    theme_id UUID NOT NULL REFERENCES themes(theme_id) ON DELETE CASCADE,
+    unlocked_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    is_applied BOOLEAN NOT NULL DEFAULT false,
+    PRIMARY KEY (account_id, theme_id)
+);
+
 -- Permisos
 GRANT SELECT, UPDATE, INSERT ON public.accounts TO authenticated;
+GRANT SELECT ON public.themes TO authenticated;
+GRANT SELECT, INSERT, UPDATE ON public.account_themes TO authenticated;
 
 
 

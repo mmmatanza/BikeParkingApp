@@ -119,6 +119,10 @@ class Theme {
     + themeId: String
     + name: String
     + cost: Int
+    + primaryColor: String
+    + secondaryColor: String
+    + isUnlocked: Boolean
+    + isApplied: Boolean
 }
 
 Account "1" --> "1" Role

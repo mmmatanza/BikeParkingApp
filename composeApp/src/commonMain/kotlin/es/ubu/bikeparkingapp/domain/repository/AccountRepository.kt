@@ -13,6 +13,7 @@ interface AccountRepository {
                               name: String,
                               taxId: String,
                               role: Role): Result<Account>
+    suspend fun updatePoints(accountId: String, points: Int): Result<Unit>
     suspend fun saveLocally(account: Account)
     suspend fun getCachedAccount(): Account?
     suspend fun clearAccount()

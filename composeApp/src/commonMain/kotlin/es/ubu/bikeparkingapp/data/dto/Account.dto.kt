@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
  * @property name Nombre del usuario.
  * @property taxId DNI o CIF del usuario.
  * @property role Rol del usuario.
+ * @property points Puntos acumulados por el usuario.
  * @property createdAt Fecha y hora de creación de la cuenta.
  * @property updatedAt Fecha y hora de la última actualización de la cuenta.
  */
@@ -21,6 +22,7 @@ data class AccountDto(
     @SerialName("tax_id")
     val taxId: String,
     val role: String,
+    val points: Int = 0,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String
 )

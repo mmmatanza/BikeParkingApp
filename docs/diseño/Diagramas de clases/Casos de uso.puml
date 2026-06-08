@@ -186,6 +186,7 @@ package "reservation"{
     }
     class CheckOutReservationUseCaseImpl {
         - reservationRepository: ReservationRepository
+        - accountRepository: AccountRepository
         + invoke(reservationId: String): Result<Unit>
     }
     class ExtendReservationUseCaseImpl {
@@ -319,7 +320,6 @@ package "theme" {
     }
     class GetThemesMarketplaceUseCaseImpl {
         - themeRepository: ThemeRepository
-        - accountRepository: AccountRepository
         + invoke(accountId: String): Result<List<Theme>>
     }
 
@@ -333,11 +333,12 @@ package "theme" {
     }
 
     interface "ApplyThemeUseCase" <<UseCase>> {
-        + invoke(themeId: String): Result<Unit>
+        + invoke(accountId: String, themeId: String): Result<Unit>
     }
     class ApplyThemeUseCaseImpl {
         - themeRepository: ThemeRepository
-        + invoke(themeId: String): Result<Unit>
+        - themeLocalDataSource: ThemeLocalDataSource
+        + invoke(accountId: String, themeId: String): Result<Unit>
     }
 
     GetThemesMarketplaceUseCaseImpl .up.|> GetThemesMarketplaceUseCase

@@ -12,6 +12,7 @@ import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsScreen
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasScreen
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasScreen
+import es.ubu.bikeparkingapp.presentation.feature.theme.ThemesMarketplaceScreen
 import es.ubu.bikeparkingapp.presentation.feature.trips.mytrips.MyTripsScreen
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -47,7 +48,8 @@ class MainScreen : Screen {
                 onLogout = viewModel::onSignoutClick,
                 onNavigateToNearbyParkingAreas = { navigator.push(NearbyParkingAreasScreen()) },
                 onNavigateToMyTrips = { navigator.push(MyTripsScreen()) },
-                onNavigateToAlerts = { navigator.push(AlertsScreen()) }
+                onNavigateToAlerts = { navigator.push(AlertsScreen()) },
+                onNavigateToMarketplace = { navigator.push(ThemesMarketplaceScreen()) }
             )
         )
     }

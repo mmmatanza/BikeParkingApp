@@ -173,4 +173,15 @@
     <string name="alert_abnormal_booking_pattern_title">Patrón de reserva anormal</string>
     <string name="alert_abnormal_booking_pattern_msg">Se ha detectado un comportamiento de reserva anormal general. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
 
+    <!-- Gamificación y Temas -->
+    <string name="marketplace">Temas</string>
+    <string name="points">puntos</string>
+    <string name="my_points">Mis puntos</string>
+    <string name="redeem">Canjear</string>
+    <string name="apply">Aplicar</string>
+    <string name="applied">Aplicado</string>
+    <string name="unlock_theme_confirm">¿Quieres canjear %1$s puntos por el tema %2$s?</string>
+    <string name="theme_marketplace">Mercado de temas</string>
+    <string name="insufficient_points">No tienes puntos suficientes</string>
+
 </resources>

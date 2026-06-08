@@ -15,6 +15,26 @@ BEFORE UPDATE ON accounts
 FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 
 
+-- Función para asignar el tema por defecto al crear una cuenta
+CREATE OR REPLACE FUNCTION assign_default_theme()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.account_themes (account_id, theme_id, is_applied)
+    VALUES (NEW.account_id, '00000000-0000-0000-0000-000000000000', true);
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public;
+
+-- Trigger para asignar el tema por defecto
+DROP TRIGGER IF EXISTS tr_assign_default_theme_on_account_creation ON accounts;
+CREATE TRIGGER tr_assign_default_theme_on_account_creation
+AFTER INSERT ON accounts
+FOR EACH ROW
+EXECUTE FUNCTION assign_default_theme();
+
+
 -- Función para validar cambios en el parking (desactivación y capacidad)
 CREATE OR REPLACE FUNCTION validate_parking_area_update()
 RETURNS TRIGGER AS $$

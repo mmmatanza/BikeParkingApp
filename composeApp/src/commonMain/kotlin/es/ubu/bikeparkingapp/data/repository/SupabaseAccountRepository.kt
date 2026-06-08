@@ -70,6 +70,16 @@ class SupabaseAccountRepository(
         }
     }
 
+    override suspend fun updatePoints(accountId: String, points: Int): Result<Unit> {
+        return runCatching {
+            client.from("accounts").update(
+                mapOf("points" to points)
+            ) {
+                filter { eq("account_id", accountId) }
+            }
+        }
+    }
+
     override suspend fun saveLocally(account: Account) {
         localDataSource.save(account)
     }

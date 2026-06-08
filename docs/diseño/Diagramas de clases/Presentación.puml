@@ -304,7 +304,6 @@ package "feature.alerts"{
 }
 
 package "feature.eco" {
-
     class EcoDashboardScreen <<Composable>>
     class EcoDashboardContent <<Composable>>
     class EcoDashboardViewModel {
@@ -327,7 +326,7 @@ package "feature.eco" {
     class AdminEcoDashboardViewModel {
         - _state: MutableState<AdminEcoDashboardState>
         + state: State<AdminEcoDashboardState>
-        + loadRecintoMetrics(parkingAreaId: String)
+        + loadParkingAreaMetrics(parkingAreaId: String)
     }
     class AdminEcoDashboardState <<State>> {
         + adminEcoMetrics: AdminEcoMetrics?
@@ -341,10 +340,8 @@ package "feature.eco" {
 }
 
 package "feature.theme" {
-
     class ThemesMarketplaceScreen <<Composable>>
     class ThemesMarketplaceContent <<Composable>>
-
     class ThemesMarketplaceViewModel {
         - _state: MutableState<ThemesMarketplaceState>
         + state: State<ThemesMarketplaceState>
@@ -352,14 +349,12 @@ package "feature.theme" {
         + redeemTheme(themeId: String)
         + applyTheme(themeId: String)
     }
-
     class ThemesMarketplaceState <<State>> {
         + themes: List<Theme>
         + userPoints: Int
         + isLoading: Boolean
         + error: Exception?
     }
-
     ThemesMarketplaceScreen --> ThemesMarketplaceViewModel
     ThemesMarketplaceScreen --> ThemesMarketplaceContent
     ThemesMarketplaceContent ..> ThemesMarketplaceViewModel : observe/trigger

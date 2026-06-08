@@ -28,6 +28,7 @@ package "domain.repository" {
         + saveLocally(account: Account)
         + getCachedAccount(): Account?
         + clearAccount()
+        + updatePoints(accountId: String, points: Int): Result<Unit>
     }
 
     interface LocationRepository {
@@ -64,12 +65,18 @@ package "domain.repository" {
     }
 
     interface ThemeRepository {
-        + getThemesMarketplace(accountId: String): Result<ThemesMarketplace>
-        + redeemTheme(accountId: String, themeId: String): Result<Unit>
-        + saveActiveThemeId(themeId: String): Result<Unit>
-        + getActiveThemeId(): String?
+        + getThemes(): Result<List<Theme>>
+        + getUserThemes(accountId: String): Result<List<Theme>>
+        + unlockTheme(accountId: String, themeId: String): Result<Unit>
+        + applyTheme(accountId: String, themeId: String): Result<Unit>
     }
+}
 
+package "domain.usecase.theme" {
+    class ApplyThemeUseCaseImpl {
+        - themeRepository: ThemeRepository
+        - themeLocalDataSource: ThemeLocalDataSource
+    }
 }
 
 package "data.repository" {
@@ -109,7 +116,6 @@ package "data.repository" {
 
     class SupabaseThemeRepository {
         - client: SupabaseClient
-        - localDataSource: ThemeLocalDataSource
     }
 
     ' Implementaciones
@@ -143,6 +149,7 @@ AnalyticsOccupancyRepository --> SupabaseClient
 SupabaseAlertRepository --> SupabaseClient
 SupabaseEcoMetricsRepository --> SupabaseClient
 SupabaseThemeRepository --> SupabaseClient
-SupabaseThemeRepository --> ThemeLocalDataSource
+ApplyThemeUseCaseImpl --> ThemeLocalDataSource
+ApplyThemeUseCaseImpl --> ThemeRepository
 
 @enduml

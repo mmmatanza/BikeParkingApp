@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.CardTravel
 import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.alerts
 import bikeparkingapp.composeapp.generated.resources.find_parking
+import bikeparkingapp.composeapp.generated.resources.marketplace
 import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
 import bikeparkingapp.composeapp.generated.resources.my_trips
@@ -77,6 +79,10 @@ fun MainContent(
             )
         }
     ) { paddingValues ->
+        val isUser = state.userRole == Role.USER
+        val cardColor = if (isUser) MaterialTheme.colorScheme.primaryContainer else Color(0xFF455A64)
+        val contentColor = if (isUser) MaterialTheme.colorScheme.onPrimaryContainer else Color.White
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,7 +90,6 @@ fun MainContent(
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Grid de opciones
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(minSize = 150.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -96,7 +101,8 @@ fun MainContent(
                         MenuOptionCard(
                             title = stringResource(Res.string.my_parking_areas_section),
                             icon = Icons.Default.LocalParking,
-                            color = MaterialTheme.colorScheme.errorContainer,
+                            color = cardColor,
+                            contentColor = contentColor,
                             onClick = actions.onMyParkingAreas
                         )
                     }
@@ -108,7 +114,8 @@ fun MainContent(
                         MenuOptionCard(
                             title = stringResource(Res.string.find_parking),
                             icon = Icons.Default.Search,
-                            color = MaterialTheme.colorScheme.errorContainer,
+                            color = cardColor,
+                            contentColor = contentColor,
                             onClick = actions.onNavigateToNearbyParkingAreas
                         )
                     }
@@ -116,8 +123,18 @@ fun MainContent(
                         MenuOptionCard(
                             title = stringResource(Res.string.my_trips),
                             icon = Icons.Default.CardTravel,
-                            color = MaterialTheme.colorScheme.errorContainer,
+                            color = cardColor,
+                            contentColor = contentColor,
                             onClick = actions.onNavigateToMyTrips
+                        )
+                    }
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.marketplace),
+                            icon = Icons.Default.Storefront,
+                            color = cardColor,
+                            contentColor = contentColor,
+                            onClick = actions.onNavigateToMarketplace
                         )
                     }
                 }
@@ -126,7 +143,8 @@ fun MainContent(
                     MenuOptionCard(
                         title = stringResource(Res.string.alerts),
                         icon = Icons.Default.Notifications,
-                        color = MaterialTheme.colorScheme.errorContainer,
+                        color = cardColor,
+                        contentColor = contentColor,
                         onClick = actions.onNavigateToAlerts
                     )
                 }
@@ -137,6 +155,7 @@ fun MainContent(
                         title = stringResource(Res.string.signout),
                         icon = Icons.AutoMirrored.Filled.ExitToApp,
                         color = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
                         onClick = actions.onLogout
                     )
                 }
@@ -150,6 +169,7 @@ fun MenuOptionCard(
     title: String,
     icon: ImageVector,
     color: Color = MaterialTheme.colorScheme.surfaceVariant,
+    contentColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
     onClick: () -> Unit
 ) {
     Card(
@@ -159,7 +179,10 @@ fun MenuOptionCard(
             .clickable { onClick() }
             .handCursor(),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = color)
+        colors = CardDefaults.cardColors(
+            containerColor = color,
+            contentColor = contentColor
+        )
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

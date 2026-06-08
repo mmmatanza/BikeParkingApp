@@ -7,6 +7,7 @@ import bikeparkingapp.composeapp.generated.resources.cannot_deactivate_parking_w
 import bikeparkingapp.composeapp.generated.resources.capacity_cannot_be_lower_than_occupancy
 import bikeparkingapp.composeapp.generated.resources.email_invalid
 import bikeparkingapp.composeapp.generated.resources.extension_exceeds_closing
+import bikeparkingapp.composeapp.generated.resources.generic_error
 import bikeparkingapp.composeapp.generated.resources.invalid_reservation_state
 import bikeparkingapp.composeapp.generated.resources.name_empty
 import bikeparkingapp.composeapp.generated.resources.no_internet
@@ -63,7 +64,6 @@ fun Throwable.toUserMessage(): String {
         stringResource(resource)
     } else {
         // Si no es una excepción con mensaje concreto, usamos el mensaje genérico
-        //stringResource(Res.string.generic_error)
-        this.message ?: ""
+        stringResource(Res.string.generic_error)
     }
 }
