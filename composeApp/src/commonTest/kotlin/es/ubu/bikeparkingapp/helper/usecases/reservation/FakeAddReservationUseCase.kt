@@ -10,13 +10,17 @@ class FakeAddReservationUseCase : AddReservationUseCase {
     var shouldFail = false
     var errorToReturn: Throwable = Exception("Fake error")
 
+    var receivedDistance: Double? = null
+
     override suspend operator fun invoke(
         parkingAreaId: String,
-        accountId: String
+        accountId: String,
+        distance: Double?
     ): Result<Unit> {
 
         receivedParkingAreaId = parkingAreaId
         receivedAccountId = accountId
+        receivedDistance = distance
 
         return if (shouldFail) {
             Result.failure(errorToReturn)

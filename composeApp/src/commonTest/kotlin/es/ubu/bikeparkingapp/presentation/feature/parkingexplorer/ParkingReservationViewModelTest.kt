@@ -1,6 +1,7 @@
 package es.ubu.bikeparkingapp.presentation.feature.parkingexplorer
 
 import es.ubu.bikeparkingapp.helper.TestData
+import es.ubu.bikeparkingapp.helper.usecases.location.FakeGetUserLocationUseCase
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.helper.usecases.reservation.FakeAddReservationUseCase
 import es.ubu.bikeparkingapp.helper.usecases.user.FakeGetUserIdUseCase
@@ -29,6 +30,7 @@ class ParkingReservationViewModelTest {
     private lateinit var getParkingAreaByIdUseCase: FakeGetParkingAreaByIdUseCase
     private lateinit var addReservationUseCase: FakeAddReservationUseCase
     private lateinit var getUserIdUseCase: FakeGetUserIdUseCase
+    private lateinit var getUserLocationUseCase: FakeGetUserLocationUseCase
 
     @BeforeTest
     fun setUp() {
@@ -36,11 +38,13 @@ class ParkingReservationViewModelTest {
         getParkingAreaByIdUseCase = FakeGetParkingAreaByIdUseCase()
         addReservationUseCase = FakeAddReservationUseCase()
         getUserIdUseCase = FakeGetUserIdUseCase()
+        getUserLocationUseCase = FakeGetUserLocationUseCase()
 
         viewModel = ParkingReservationViewModel(
             getParkingAreaByIdUseCase,
             addReservationUseCase,
-            getUserIdUseCase
+            getUserIdUseCase,
+            getUserLocationUseCase
         )
     }
 
@@ -51,15 +55,15 @@ class ParkingReservationViewModelTest {
 
     @Test
     fun `loadParkingArea actualiza el estado con el parking correcto`() = runTest(testDispatcher) {
-        // Preparación
+
         val parking = TestData.testParking.copy(parkingAreaId = "park_123")
         getParkingAreaByIdUseCase.response = parking
 
-        // Ejecución
+
         viewModel.loadParkingArea("park_123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertEquals(parking, viewModel.state.value.parkingArea)
         assertFalse(viewModel.state.value.isLoading)
     }
@@ -90,7 +94,7 @@ class ParkingReservationViewModelTest {
 
     @Test
     fun `addReservation completa la reserva con exito`() = runTest(testDispatcher) {
-        // Preparación
+
         val parkingId = "park1"
         val userId = "user123"
         getParkingAreaByIdUseCase.response = TestData.testParking.copy(parkingAreaId = parkingId)
@@ -99,11 +103,11 @@ class ParkingReservationViewModelTest {
         viewModel.loadParkingArea(parkingId)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.addReservation()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertTrue(viewModel.state.value.successfulReservation)
         assertFalse(viewModel.state.value.confirmReservationDialog)
         assertNull(viewModel.state.value.error)
@@ -111,7 +115,7 @@ class ParkingReservationViewModelTest {
 
     @Test
     fun `addReservation falla si el caso de uso devuelve error`() = runTest(testDispatcher) {
-        // Preparación
+
         getParkingAreaByIdUseCase.response = TestData.testParking
         getUserIdUseCase.response = "user123"
         addReservationUseCase.shouldFail = true
@@ -119,11 +123,11 @@ class ParkingReservationViewModelTest {
         viewModel.loadParkingArea("id")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.addReservation()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertNotNull(viewModel.state.value.error)
         assertFalse(viewModel.state.value.successfulReservation)
     }

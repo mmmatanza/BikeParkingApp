@@ -20,7 +20,8 @@ class FakeAddParkingAreaUseCase : AddParkingAreaUseCase {
         latitude: Double,
         longitude: Double,
         rules: List<String>,
-        openDays: Set<DayOfWeek>
+        openDays: Set<DayOfWeek>,
+        occupancyThreshold: Int?
     ): Result<Unit> {
         return if (shouldReturnError) {
             Result.failure(errorToReturn)
@@ -34,5 +35,4 @@ class FakeAddParkingAreaUseCase : AddParkingAreaUseCase {
         return addedCalls.contains(name)
     }
 
-    fun getCallsCount(): Int = addedCalls.size
 }

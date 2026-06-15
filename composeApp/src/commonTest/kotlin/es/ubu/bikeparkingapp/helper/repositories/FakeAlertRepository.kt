@@ -38,4 +38,15 @@ class FakeAlertRepository : AlertRepository {
             Result.success(Unit)
         }
     }
+
+    override suspend fun publishParkingAlert(
+        parkingId: String,
+        message: String
+    ): Result<Unit> {
+        return if (shouldReturnError) {
+            Result.failure(Exception("Alert error"))
+        } else {
+            Result.success(Unit)
+        }
+    }
 }

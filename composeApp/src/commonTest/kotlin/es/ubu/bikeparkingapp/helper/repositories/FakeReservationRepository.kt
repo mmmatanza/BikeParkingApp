@@ -7,7 +7,7 @@ import kotlin.time.Instant
 
 class FakeReservationRepository : ReservationRepository {
 
-    private val reservations = mutableListOf<Reservation>()
+    val reservations = mutableListOf<Reservation>()
     var shouldReturnError = false
     var errorToReturn: Throwable = Exception("Fake Error")
 

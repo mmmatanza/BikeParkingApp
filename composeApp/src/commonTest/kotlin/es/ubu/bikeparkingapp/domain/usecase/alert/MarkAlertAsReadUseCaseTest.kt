@@ -20,14 +20,14 @@ class MarkAlertAsReadUseCaseTest {
 
     @Test
     fun `Marcar alerta como leida actualiza el repositorio correctamente`() = runTest {
-        // Preparación
+
         val alert = TestData.testAlert.copy(alertId = "a1", isRead = false)
         repository.alerts.add(alert)
 
-        // Ejecución
+
         val result = useCase("a1")
 
-        // Assert
+
         assertTrue(result.isSuccess)
         assertTrue(repository.alerts[0].isRead)
     }

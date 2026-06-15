@@ -48,7 +48,7 @@ class NearbyParkingAreasViewModelTest {
     @Test
     fun `loadUserLocation actualiza coordenadas y separa parkings correctamente`() =
         runTest(testDispatcher) {
-            // Preparación
+
             val lat = 40.0
             val lon = -3.0
             getUserLocationUseCase.response = UserLocation(lat, lon)
@@ -74,13 +74,13 @@ class NearbyParkingAreasViewModelTest {
                 allNearby = listOf(pLibre, pLleno)
             )
 
-            // Ejecución
+
             viewModel.loadUserLocation()
 
             // Avanzamos
             testDispatcher.scheduler.advanceUntilIdle()
 
-            // Asserts
+
             val state = viewModel.state.value
 
             assertEquals(lat, state.userLatitude, "La latitud no se actualizó en el estado")

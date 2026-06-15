@@ -25,7 +25,7 @@ class MarkAllAlertsAsReadUseCaseTest {
 
     @Test
     fun `Marcar todas las alertas como leidas actualiza todas las alertas del usuario`() = runTest {
-        // Preparación
+
         val userId = "user-123"
         authRepository.currentUserIdResult = Result.success(userId)
         
@@ -33,10 +33,10 @@ class MarkAllAlertsAsReadUseCaseTest {
         alertRepository.alerts.add(TestData.testAlert.copy(alertId = "a2", accountId = userId, isRead = false))
         alertRepository.alerts.add(TestData.testAlert.copy(alertId = "a3", accountId = "other", isRead = false))
 
-        // Ejecución
+
         val result = useCase()
 
-        // Assert
+
         assertTrue(result.isSuccess)
         assertEquals(alertRepository.alerts.find { it.alertId == "a1" }?.isRead, true)
         assertEquals(alertRepository.alerts.find { it.alertId == "a2" }?.isRead, true)

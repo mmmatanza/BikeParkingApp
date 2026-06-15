@@ -19,6 +19,11 @@ class FakeAccountRepository : AccountRepository {
         role: Role
     ): Result<Account> = createAccountResult
 
+    override suspend fun updatePoints(accountId: String, points: Int): Result<Unit> {
+        getAccountResult = getAccountResult.map { it.copy(points = points) }
+        return Result.success(Unit)
+    }
+
     override suspend fun saveLocally(account: Account) {
         cachedAccount = account
     }

@@ -42,7 +42,7 @@ class GetParkingDiscoveryUseCaseTest {
 
     @Test
     fun `El parking recomendado es el mas cercano si no hay historial de visitas`() = runTest {
-        // Preparación
+
         val p1 = TestData.testParking.copy(parkingAreaId = "p1", latitude = 40.0009, longitude = -3.0, capacity = 10, currentOccupancy = 0)
         val p2 = TestData.testParking.copy(parkingAreaId = "p2", latitude = 40.0045, longitude = -3.0, capacity = 10, currentOccupancy = 0)
         

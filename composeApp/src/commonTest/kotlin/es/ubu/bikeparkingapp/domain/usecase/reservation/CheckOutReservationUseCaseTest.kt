@@ -4,6 +4,7 @@ import es.ubu.bikeparkingapp.domain.entity.ReservationState
 import es.ubu.bikeparkingapp.domain.exception.InvalidReservationStateException
 import es.ubu.bikeparkingapp.domain.exception.ReservationNotFoundException
 import es.ubu.bikeparkingapp.helper.TestData
+import es.ubu.bikeparkingapp.helper.repositories.FakeAccountRepository
 import es.ubu.bikeparkingapp.helper.repositories.FakeReservationRepository
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
@@ -14,58 +15,65 @@ import kotlin.test.assertTrue
 class CheckOutReservationUseCaseTest {
 
     private lateinit var reservationRepository: FakeReservationRepository
+    private lateinit var accountRepository: FakeAccountRepository
     private lateinit var useCase: CheckOutReservationUseCaseImpl
 
     @BeforeTest
     fun setUp() {
         reservationRepository = FakeReservationRepository()
-        useCase = CheckOutReservationUseCaseImpl(reservationRepository)
+        accountRepository = FakeAccountRepository()
+        useCase = CheckOutReservationUseCaseImpl(reservationRepository, accountRepository)
     }
 
     @Test
     fun `Check-out exitoso cuando la reserva esta en uso`() = runTest {
-        // Preparación
+
         val resId = "res_out_1"
+        val userId = "user1"
+        val initialPoints = 10
         // Una reserva en estado CHECKED_IN debería poder pasar a CHECKED_OUT
         reservationRepository.save(
             TestData.testReservation.copy(
             reservationId = resId,
+            accountId = userId,
             state = ReservationState.CHECKED_IN
         ))
+        accountRepository.getAccountResult = Result.success(TestData.testAccount.copy(accountId = userId, points = initialPoints))
 
-        // Ejecución
+
         val result = useCase(resId)
 
-        // Assert
+
         assertTrue(result.isSuccess)
         val updatedRes = reservationRepository.findById(resId).getOrThrow()
         assertEquals(ReservationState.CHECKED_OUT, updatedRes.state)
+        assertEquals(initialPoints + 2, accountRepository.getAccount(userId).getOrThrow().points)
     }
 
     @Test
     fun `Fallo al hacer check-out si la reserva no existe`() = runTest {
 
-        // Ejecución
+
         val result = useCase("res_no_existe")
 
-        // Assert
+
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is ReservationNotFoundException)
     }
 
     @Test
     fun `Fallo al hacer check-out si la reserva ya estaba completada`() = runTest {
-        // Preparación
+
         val resId = "res_ya_finalizada"
         reservationRepository.save(TestData.testReservation.copy(
             reservationId = resId,
             state = ReservationState.CHECKED_OUT
         ))
 
-        // Ejecución
+
         val result = useCase(resId)
 
-        // Assert
+
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is InvalidReservationStateException)
     }

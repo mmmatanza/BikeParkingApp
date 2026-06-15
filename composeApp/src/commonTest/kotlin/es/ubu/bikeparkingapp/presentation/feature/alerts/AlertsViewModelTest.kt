@@ -55,11 +55,11 @@ class AlertsViewModelTest {
         
         getAlertsUseCase.response = listOf(a1, a2, a3)
 
-        // Ejecución
+
         viewModel.loadAlerts()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         val state = viewModel.state.value
         assertFalse(state.isLoading)
         assertEquals(3, state.alerts.size)
@@ -72,47 +72,47 @@ class AlertsViewModelTest {
 
     @Test
     fun `markAsRead actualiza el estado local tras el exito del caso de uso`() = runTest(testDispatcher) {
-        // Preparación
+
         val alert = TestData.testAlert.copy(alertId = "a1", isRead = false)
         getAlertsUseCase.response = listOf(alert)
         viewModel.loadAlerts()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.markAsRead("a1")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertTrue(viewModel.state.value.alerts.first { it.alertId == "a1" }.isRead)
     }
 
     @Test
     fun `markAllAsRead actualiza todas las alertas en el estado local`() = runTest(testDispatcher) {
-        // Preparación
+
         val a1 = TestData.testAlert.copy(alertId = "a1", isRead = false)
         val a2 = TestData.testAlert.copy(alertId = "a2", isRead = false)
         getAlertsUseCase.response = listOf(a1, a2)
         viewModel.loadAlerts()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.markAllAsRead()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertTrue(viewModel.state.value.alerts.all { it.isRead })
     }
 
     @Test
     fun `error en loadAlerts actualiza el estado con el error mapeado`() = runTest(testDispatcher) {
-        // Preparación
+
         getAlertsUseCase.shouldReturnError = true
 
-        // Ejecución
+
         viewModel.loadAlerts()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertNotNull(viewModel.state.value.error)
         assertFalse(viewModel.state.value.isLoading)
     }

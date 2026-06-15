@@ -66,17 +66,17 @@ class ParkingManagementViewModelTest {
 
     @Test
     fun `onToggleConfirm cambia el estado operativo del parking con exito`() = runTest(testDispatcher) {
-        // Preparación
+
         val initialParking = TestData.testParking.copy(isOperative = true)
         getParkingAreaByIdUseCase.response = initialParking
         viewModel.loadParkingArea("id")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.onToggleConfirm()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertFalse(viewModel.state.value.parking!!.isOperative)
         assertFalse(viewModel.state.value.showToggleDialog)
         assertNull(viewModel.state.value.error)
@@ -84,16 +84,16 @@ class ParkingManagementViewModelTest {
 
     @Test
     fun `onDeactivateConfirm marca exito tras desactivacion`() = runTest(testDispatcher) {
-        // Preparación
+
         getParkingAreaByIdUseCase.response = TestData.testParking
         viewModel.loadParkingArea("id")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Ejecución
+
         viewModel.onDeactivateConfirm()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Assert
+
         assertTrue(viewModel.state.value.successDeactivation)
         assertFalse(viewModel.state.value.showDeactivateDialog)
     }

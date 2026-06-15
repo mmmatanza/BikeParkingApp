@@ -11,7 +11,7 @@ import kotlinx.serialization.json.Json
  * Clase que guarda localmente la preferencia de tema aplicado.
  * Utiliza un StateFlow para permitir la reactividad en la UI.
  */
-class ThemeLocalDataSource(private val settings: Settings) {
+open class ThemeLocalDataSource(private val settings: Settings) {
     companion object {
         private const val KEY = "applied_theme"
     }

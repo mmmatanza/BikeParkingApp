@@ -24,16 +24,16 @@ class GetAlertsUseCaseTest {
 
     @Test
     fun `Obtener alertas devuelve la lista del repositorio para el usuario logueado`() = runTest {
-        // Preparación
+
         val userId = "user-123"
         authRepository.currentUserIdResult = Result.success(userId)
         alertRepository.alerts.add(TestData.testAlert.copy(alertId = "a1", accountId = userId))
         alertRepository.alerts.add(TestData.testAlert.copy(alertId = "a2", accountId = "other"))
 
-        // Ejecución
+
         val result = useCase()
 
-        // Assert
+
         assertTrue(result.isSuccess)
         assertEquals(1, result.getOrThrow().size)
         assertEquals("a1", result.getOrThrow()[0].alertId)

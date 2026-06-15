@@ -33,7 +33,7 @@ class AlertIntegrationTest {
 
     @Test
     fun `Flujo completo de alertas - Obtener, marcar una y marcar todas`() = runTest {
-        // Preparación
+
         // Usuario autenticado con 2 alertas sin leer
         val userId = "user-123"
         authRepository.currentUserIdResult = Result.success(userId)
@@ -42,7 +42,7 @@ class AlertIntegrationTest {
         val a2 = TestData.testAlert.copy(alertId = "a2", accountId = userId, isRead = false)
         alertRepository.alerts.addAll(listOf(a1, a2))
 
-        // Ejecución
+
         // Recuperar alertas iniciales
         val initialAlerts = getAlertsUseCase().getOrThrow()
         assertEquals(2, initialAlerts.size, "Debería haber 2 alertas")
@@ -67,14 +67,14 @@ class AlertIntegrationTest {
         // Marcar todas como leídas
         markAllAlertsAsReadUseCase().getOrThrow()
 
-        // Verificación final
+
         val finalAlerts = getAlertsUseCase().getOrThrow()
         assertTrue(finalAlerts.all { it.isRead }, "Todas las alertas del usuario deberían estar leídas")
     }
 
     @Test
     fun `Las acciones de alerta fallan si el usuario no esta autenticado`() = runTest {
-        // Preparación
+
         // Usuario no autenticado
         authRepository.currentUserIdResult = Result.failure(Exception("No session"))
 

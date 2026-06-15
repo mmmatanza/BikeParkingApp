@@ -23,7 +23,8 @@ class FakeUpdateParkingAreaUseCase : UpdateParkingAreaUseCase {
         latitude: Double,
         longitude: Double,
         rules: List<String>,
-        openDays: Set<DayOfWeek>
+        openDays: Set<DayOfWeek>,
+        occupancyThreshold: Int?
     ): Result<Unit> {
 
         receivedParkingArea = ParkingArea(
@@ -41,7 +42,8 @@ class FakeUpdateParkingAreaUseCase : UpdateParkingAreaUseCase {
             openingTime = openingTime,
             closingTime = closingTime,
             openDays = openDays,
-            rules = rules
+            rules = rules,
+            occupancyThreshold = occupancyThreshold
         )
 
         return if (shouldFail) {

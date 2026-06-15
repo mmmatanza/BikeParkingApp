@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.turbine)
+            implementation(libs.russhwolf.settings.test)
         }
 
         androidMain.dependencies {
@@ -58,7 +59,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 // Aquí russhwolf usará LocalStorage del navegador
-                implementation(libs.russhlwolf.multiplatform.settings)
+                implementation(libs.russhwolf.settings)
                 // Ktor
                 implementation(libs.ktor.client.js)
                 // Ubicación
@@ -97,8 +98,8 @@ kotlin {
             implementation(libs.material.icons.extended)
 
             // Para almacenamiento de datos simples
-            implementation(libs.russhlwolf.multiplatform.settings)
-            implementation(libs.russhlwolf.multiplatform.settings.serialization)
+            implementation(libs.russhwolf.settings)
+            implementation(libs.russhwolf.settings.serialization)
 
             // Ktor
             implementation(libs.ktor.client.core)

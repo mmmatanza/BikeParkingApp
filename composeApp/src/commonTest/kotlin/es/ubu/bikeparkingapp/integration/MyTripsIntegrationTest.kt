@@ -10,6 +10,7 @@ import es.ubu.bikeparkingapp.domain.usecase.reservation.GetDetailedUserReservati
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.reservation.GetUserReservationsUseCaseImpl
 import es.ubu.bikeparkingapp.helper.TestData
+import es.ubu.bikeparkingapp.helper.repositories.FakeAccountRepository
 import es.ubu.bikeparkingapp.helper.repositories.FakeReservationRepository
 import es.ubu.bikeparkingapp.helper.usecases.parking.FakeGetParkingAreaByIdUseCase
 import es.ubu.bikeparkingapp.helper.usecases.user.FakeGetUserIdUseCase
@@ -35,6 +36,7 @@ class MyTripsIntegrationTest {
     private val testDispatcher = StandardTestDispatcher()
 
     private lateinit var fakeReservationRepo: FakeReservationRepository
+    private lateinit var fakeAccountRepo: FakeAccountRepository
     private lateinit var viewModel: MyTripsViewModel
     private lateinit var getUserReservationsUseCase: GetUserReservationsUseCase
     private lateinit var getParkingAreaByIdUseCase: GetParkingAreaByIdUseCase
@@ -44,6 +46,7 @@ class MyTripsIntegrationTest {
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         fakeReservationRepo = FakeReservationRepository()
+        fakeAccountRepo = FakeAccountRepository()
         getUserReservationsUseCase = GetUserReservationsUseCaseImpl(fakeReservationRepo)
         getParkingAreaByIdUseCase = FakeGetParkingAreaByIdUseCase()
 
@@ -53,10 +56,12 @@ class MyTripsIntegrationTest {
         )
         val cancelUseCase = CancelReservationUseCaseImpl(fakeReservationRepo)
         val checkInUseCase = CheckInReservationUseCaseImpl(fakeReservationRepo)
-        val checkOutUseCase = CheckOutReservationUseCaseImpl(fakeReservationRepo)
+        val checkOutUseCase = CheckOutReservationUseCaseImpl(fakeReservationRepo, fakeAccountRepo)
         val extendUseCase = ExtendReservationUseCaseImpl(fakeReservationRepo)
         val userIdUseCase = FakeGetUserIdUseCase()
         userIdUseCase.response = "user123"
+
+        fakeAccountRepo.getAccountResult = Result.success(TestData.testAccount.copy(accountId = "user123"))
 
         viewModel = MyTripsViewModel(
             userIdUseCase = userIdUseCase,
@@ -100,7 +105,7 @@ class MyTripsIntegrationTest {
             viewModel.cancelReservation()
             testDispatcher.scheduler.advanceUntilIdle()
 
-            // Asserts
+
             val finalState =
                 viewModel.state.value.reservations.first { it.reservation.reservationId == resId }
             assertEquals(ReservationState.CANCELLED, finalState.reservation.state)
