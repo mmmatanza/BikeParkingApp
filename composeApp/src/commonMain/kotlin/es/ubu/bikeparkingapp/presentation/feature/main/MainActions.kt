@@ -8,6 +8,7 @@ package es.ubu.bikeparkingapp.presentation.feature.main
  * @param onNavigateToMyTrips Función a ejecutar al hacer clic en el botón de ver mis viajes.
  * @param onNavigateToAlerts Función a ejecutar al hacer clic en el botón de ver alertas.
  * @param onNavigateToMarketplace Función a ejecutar al hacer clic en el botón de ver la tienda de temas.
+ * @param onNavigateToImpact Función a ejecutar al hacer clic en el botón de ver el dashboard de impacto ecológico.
  */
 data class MainActions (
     val onLogout: () -> Unit = {},
@@ -15,5 +16,6 @@ data class MainActions (
     val onMyParkingAreas: () -> Unit = {},
     val onNavigateToMyTrips: () -> Unit = {},
     val onNavigateToAlerts: () -> Unit = {},
-    val onNavigateToMarketplace: () -> Unit = {}
+    val onNavigateToMarketplace: () -> Unit = {},
+    val onNavigateToImpact: () -> Unit = {}
 )

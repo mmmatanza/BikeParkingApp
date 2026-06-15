@@ -303,33 +303,39 @@ package "feature.alerts"{
     AlertsViewModel o-- AlertsState
 }
 
-package "feature.eco" {
-    class EcoDashboardScreen <<Composable>>
-    class EcoDashboardContent <<Composable>>
-    class EcoDashboardViewModel {
-        - _state: MutableState<EcoDashboardState>
-        + state: State<EcoDashboardState>
-        + loadEcoMetrics()
+package "feature.myimpact" {
+    class UserEcoDashboardScreen <<Composable>>
+    class UserEcoDashboardContent <<Composable>>
+    class UserEcoDashboardViewModel {
+        - _state: MutableState<UserEcoDashboardState>
+        + state: State<UserEcoDashboardState>
+        + loadMetrics()
+        + onPeriodSelected(EcoPeriod)
     }
-    class EcoDashboardState <<State>> {
-        + ecoMetrics: EcoMetrics?
+    class UserEcoDashboardState <<State>> {
+        + metrics: UserEcoMetrics?
+        + selectedPeriod: EcoPeriod
         + isLoading: Boolean
         + error: Exception?
     }
-    EcoDashboardScreen --> EcoDashboardViewModel
-    EcoDashboardScreen --> EcoDashboardContent
-    EcoDashboardContent ..> EcoDashboardViewModel : observe/trigger
-    EcoDashboardViewModel o-- EcoDashboardState
+    UserEcoDashboardScreen --> UserEcoDashboardViewModel
+    UserEcoDashboardScreen --> UserEcoDashboardContent
+    UserEcoDashboardContent ..> UserEcoDashboardViewModel : observe/trigger
+    UserEcoDashboardViewModel o-- UserEcoDashboardState
+}
 
+package "feature.eco" {
     class AdminEcoDashboardScreen <<Composable>>
     class AdminEcoDashboardContent <<Composable>>
     class AdminEcoDashboardViewModel {
         - _state: MutableState<AdminEcoDashboardState>
         + state: State<AdminEcoDashboardState>
-        + loadParkingAreaMetrics(parkingAreaId: String)
+        + loadMetrics()
+        + onPeriodSelected(EcoPeriod)
     }
     class AdminEcoDashboardState <<State>> {
-        + adminEcoMetrics: AdminEcoMetrics?
+        + metrics: AdminEcoMetrics?
+        + selectedPeriod: EcoPeriod
         + isLoading: Boolean
         + error: Exception?
     }

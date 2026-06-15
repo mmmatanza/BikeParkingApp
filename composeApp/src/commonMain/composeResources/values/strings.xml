@@ -105,6 +105,19 @@
     <string name="alert_message_label">Alert message</string>
     <string name="send_alert">Send alert</string>
     <string name="alert_sent_success">Alert sent successfully</string>
+    <string name="eco_dashboard">Eco Dashboard</string>
+    <string name="my_impact">My Impact</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="total_distance_saved">Total distance saved</string>
+    <string name="co2_saved">CO2 saved</string>
+    <string name="pm25_saved">PM2.5 saved</string>
+    <string name="trees_saved">Trees saved</string>
+    <string name="global_ranking">Global Ranking</string>
+    <string name="ranking_position">You are in position %1$s of %2$s users</string>
+    <string name="top_eco_users">Top Eco-Users</string>
+    <string name="no_data_available">No data available</string>
     <string name="not_available_parking_areas">Not available parking areas</string>
     <string name="recommended_for_you">Recommended for you</string>
     <string name="occupancy_alerts">Occupancy alerts</string>
@@ -146,8 +159,8 @@
     <string name="no_alerts">No alerts found</string>
     <string name="mark_as_read">Mark as read</string>
     <string name="mark_all_as_read">Mark all as read</string>
-    <string name="alert_occupancy_limit">Occupancy limit reached; current occupancy is %1$s</string>
-    <string name="alert_predicted_occupancy">High occupancy predicted in one hour: %1$s</string>
+    <string name="alert_occupancy_limit">Occupancy limit reached; current occupancy is %1$s for the parking %2$s</string>
+    <string name="alert_predicted_occupancy">High occupancy predicted in one hour: %1$s for the parking %2$s</string>
     <string name="alert_suspicious_reservation">Suspicious activity: %1$s</string>
     <string name="alert_parking_notification">Parking notification: %1$s</string>
 

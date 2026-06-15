@@ -28,7 +28,8 @@ class AddReservationUseCaseImpl(
 
     override suspend fun invoke(
         parkingAreaId: String,
-        accountId: String
+        accountId: String,
+        distance: Double?
     ): Result<Unit> = runCatching {
 
         // Validamos que el usuario no tenga una reserva activa
@@ -80,6 +81,7 @@ class AddReservationUseCaseImpl(
                 inTime = inTime,
                 outTime = outTime,
                 state = ReservationState.RESERVED,
+                distance = distance,
                 createdAt = nowInstant
             )
         )

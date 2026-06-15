@@ -15,6 +15,7 @@ fun ReservationDto.toDomain() = Reservation(
     inTime = Instant.parse(inTime),
     outTime = Instant.parse(outTime),
     state = ReservationState.fromString(state),
+    distance = distance,
     createdAt = Instant.parse(createdAt)
 )
 
@@ -28,5 +29,6 @@ fun Reservation.toDto() = ReservationDto(
     inTime = inTime.toString(),
     outTime = outTime.toString(),
     state = state.toString(),
+    distance = distance,
     createdAt = createdAt.toString()
 )

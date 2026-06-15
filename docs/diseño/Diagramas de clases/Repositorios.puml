@@ -60,8 +60,8 @@ package "domain.repository" {
     }
 
     interface EcoMetricsRepository {
-        + getUserEcoMetrics(accountId: String): Result<EcoMetrics>
-        + getAdminEcoMetrics(parkingAreaId: String): Result<AdminEcoMetrics>
+        + getUserEcoMetrics(accountId: String): Result<UserEcoMetrics>
+        + getAdminEcoMetrics(): Result<AdminEcoMetrics>
     }
 
     interface ThemeRepository {

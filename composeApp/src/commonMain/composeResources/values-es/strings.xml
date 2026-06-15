@@ -105,6 +105,19 @@
     <string name="alert_message_label">Mensaje de la alerta</string>
     <string name="send_alert">Enviar alerta</string>
     <string name="alert_sent_success">Alerta enviada con éxito</string>
+    <string name="eco_dashboard">Panel ecológico</string>
+    <string name="my_impact">Mi impacto</string>
+    <string name="weekly">Semanal</string>
+    <string name="monthly">Mensual</string>
+    <string name="yearly">Anual</string>
+    <string name="total_distance_saved">Distancia total ahorrada</string>
+    <string name="co2_saved">CO2 ahorrado</string>
+    <string name="pm25_saved">PM2.5 ahorrado</string>
+    <string name="trees_saved">Árboles salvados</string>
+    <string name="global_ranking">Ranking global</string>
+    <string name="ranking_position">Estás en la posición %1$s de %2$s usuarios</string>
+    <string name="top_eco_users">Top eco-usuarios</string>
+    <string name="no_data_available">No hay datos disponibles</string>
     <string name="not_available_parking_areas">Parkings no disponibles</string>
     <string name="recommended_for_you">Recomendado para tí</string>
     <string name="occupancy_alerts">Alertas de ocupación</string>
@@ -146,8 +159,8 @@
     <string name="no_alerts">No hay alertas disponibles</string>
     <string name="mark_as_read">Marcar como leída</string>
     <string name="mark_all_as_read">Marcar todas como leídas</string>
-    <string name="alert_occupancy_limit">Se ha alcanzado el límite de ocupación; la ocupación actual es del %1$s</string>
-    <string name="alert_predicted_occupancy">Se prevé una ocupación alta dentro de una hora: %1$s</string>
+    <string name="alert_occupancy_limit">Se ha alcanzado el límite de ocupación; la ocupación actual es del %1$s para el parking %2$s</string>
+    <string name="alert_predicted_occupancy">Se prevé una ocupación alta dentro de una hora: %1$s para el parking %2$s</string>
     <string name="alert_suspicious_reservation">Actividad sospechosa detectada en la reserva %1$s</string>
     <string name="alert_parking_notification">Notificación del parking: %1$s</string>
 

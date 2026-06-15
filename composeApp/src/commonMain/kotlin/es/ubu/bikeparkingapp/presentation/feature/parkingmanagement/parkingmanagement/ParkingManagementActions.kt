@@ -7,6 +7,7 @@ package es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.parkingmana
  * @property onToggleServiceClick Acción al hacer click en el botón de cambiar el estado operativo.
  * @property onDeactivateClick Acción al hacer click en el botón de desactivar el parking.
  * @property onPublishAlertClick Acción al hacer click en el botón de publicar alerta.
+ * @property onViewEcoDashboardClick Acción al hacer click en el botón de ver dashboard ecológico.
  * @property onBackClick Acción al hacer click en el botón de volver.
  */
 data class ParkingManagementActions(
@@ -15,5 +16,6 @@ data class ParkingManagementActions(
     val onToggleServiceClick: () -> Unit = {},
     val onDeactivateClick: () -> Unit = {},
     val onPublishAlertClick: (String) -> Unit = {},
+    val onViewEcoDashboardClick: (String) -> Unit = {},
     val onBackClick: () -> Unit = {}
 )

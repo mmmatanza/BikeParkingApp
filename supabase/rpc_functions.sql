@@ -235,3 +235,191 @@ BEGIN
     AND state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
 END;
 $$;
+
+
+-- Función para obtener el top 3 de usuarios por distancia recorrida en un parking
+CREATE OR REPLACE FUNCTION get_parking_top_users(p_parking_area_id UUID)
+RETURNS TABLE (
+    period TEXT,
+    user_name TEXT,
+    total_distance FLOAT8
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    -- Control de seguridad para que solo el propietario del parking pueda llamar a esta función
+    IF NOT EXISTS (
+        SELECT 1 FROM public.parkingareas
+        WHERE parking_area_id = p_parking_area_id
+          AND owner_id = auth.uid()
+    ) THEN
+        RETURN;
+    END IF;
+
+    RETURN QUERY
+    WITH periods AS (
+        -- Definimos los límites de tiempo
+        SELECT 'WEEK'::TEXT AS p, NOW() - INTERVAL '7 days' AS start_date
+        UNION ALL
+        SELECT 'MONTH'::TEXT, NOW() - INTERVAL '30 days'
+        UNION ALL
+        SELECT 'YEAR'::TEXT, NOW() - INTERVAL '1 year'
+    ),
+    filtered_reservations AS (
+        -- Escaneamos las reservas de este parking una sola vez para el año completo
+        SELECT
+            p.p AS period_name,
+            r.account_id,
+            r.distance
+        FROM periods p
+        JOIN reservations r ON r.created_at >= p.start_date
+        WHERE r.parking_area_id = p_parking_area_id
+          AND r.state = 'CHECKED_OUT'
+          AND r.distance IS NOT NULL
+    ),
+    user_sums AS (
+        -- Agrupamos por periodo y usuario para tener sus kilómetros totales
+        SELECT
+            fr.period_name,
+            fr.account_id,
+            SUM(fr.distance)::FLOAT8 AS total_dist
+        FROM filtered_reservations fr
+        GROUP BY fr.period_name, fr.account_id
+    ),
+    ranked_users AS (
+        -- Calculamos la posición de cada usuario dentro de su periodo
+        SELECT
+            us.period_name,
+            us.account_id,
+            us.total_dist,
+            ROW_NUMBER() OVER (
+                PARTITION BY us.period_name
+                ORDER BY us.total_dist DESC
+            ) AS rn
+        FROM user_sums us
+    )
+    -- Hacemos el JOIN con las cuentas exclusivamente para los que entraron en el Top 3
+    SELECT
+        ru.period_name,
+        a.name,
+        ru.total_dist
+    FROM ranked_users ru
+    JOIN accounts a ON ru.account_id = a.account_id
+    WHERE ru.rn <= 3
+    ORDER BY
+        CASE ru.period_name WHEN 'WEEK' THEN 1 WHEN 'MONTH' THEN 2 WHEN 'YEAR' THEN 3 END,
+        ru.total_dist DESC;
+END;
+$$;
+
+-- Función para obtener la distancia total sumada de las reservas CHECKED_OUT de un parking por periodos
+CREATE OR REPLACE FUNCTION get_parking_eco_metrics(p_parking_area_id UUID)
+RETURNS TABLE (
+    period TEXT,
+    total_distance FLOAT8
+)
+LANGUAGE plpgsql
+STABLE
+AS $$
+BEGIN
+    RETURN QUERY
+    WITH raw_data AS (
+        -- Escaneamos la tabla el periodo máximo (1 año)
+        SELECT
+            created_at,
+            distance::FLOAT8 AS dist
+        FROM reservations
+        WHERE parking_area_id = p_parking_area_id
+          AND created_at >= (NOW() - INTERVAL '1 year')
+          AND state = 'CHECKED_OUT'
+          AND distance IS NOT NULL
+    ),
+    periods AS (
+        SELECT 'WEEK'::TEXT AS p UNION ALL
+        SELECT 'MONTH'::TEXT UNION ALL
+        SELECT 'YEAR'::TEXT
+    )
+    SELECT
+        p.p,
+        CASE
+            WHEN p.p = 'WEEK'  THEN COALESCE(SUM(rd.dist) FILTER (WHERE rd.created_at >= NOW() - INTERVAL '7 days'), 0)::FLOAT8
+            WHEN p.p = 'MONTH' THEN COALESCE(SUM(rd.dist) FILTER (WHERE rd.created_at >= NOW() - INTERVAL '30 days'), 0)::FLOAT8
+            WHEN p.p = 'YEAR'  THEN COALESCE(SUM(rd.dist), 0)::FLOAT8
+        END AS total_distance
+    FROM periods p
+    LEFT JOIN raw_data rd ON true
+    GROUP BY p.p
+    ORDER BY CASE p.p WHEN 'WEEK' THEN 1 WHEN 'MONTH' THEN 2 WHEN 'YEAR' THEN 3 END;
+END;
+$$;
+
+-- Función para obtener las métricas ecológicas y posición en el ranking de un usuario
+CREATE OR REPLACE FUNCTION get_user_eco_metrics(p_user_id UUID)
+RETURNS TABLE (
+    period TEXT,
+    user_distance FLOAT8,
+    ranking_position BIGINT,
+    total_users BIGINT
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+    RETURN QUERY
+    WITH periods AS (
+        -- Definimos los intervalos de tiempo en una tabla temporal
+        SELECT 'WEEK'::TEXT AS p, NOW() - INTERVAL '7 days' AS start_date
+        UNION ALL
+        SELECT 'MONTH'::TEXT, NOW() - INTERVAL '30 days'
+        UNION ALL
+        SELECT 'YEAR'::TEXT, NOW() - INTERVAL '1 year'
+    ),
+    filtered_reservations AS (
+        -- Filtramos las reservas válidas cruzando con los períodos
+        SELECT
+            p.p AS period_name,
+            r.account_id,
+            r.distance
+        FROM periods p
+        JOIN reservations r ON r.created_at >= p.start_date
+        WHERE r.state = 'CHECKED_OUT'
+          AND r.distance IS NOT NULL
+    ),
+    aggregated_stats AS (
+        -- Agrupamos por periodo y usuario, calculando la distancia total de cada uno
+        SELECT
+            fr.period_name,
+            fr.account_id,
+            SUM(fr.distance)::FLOAT8 AS total_dist
+        FROM filtered_reservations fr
+        GROUP BY fr.period_name, fr.account_id
+    ),
+    ranked_stats AS (
+        -- Calculamos el ranking y el total de usuarios por periodo
+        SELECT
+            ags.period_name,
+            ags.account_id,
+            ags.total_dist,
+            RANK() OVER(PARTITION BY ags.period_name ORDER BY ags.total_dist DESC)::BIGINT AS pos,
+            COUNT(*) OVER(PARTITION BY ags.period_name)::BIGINT AS total_u
+        FROM aggregated_stats ags
+    )
+    -- Seleccionamos el resultado final asegurando que si el usuario no tiene registros devuelva 0
+    SELECT
+        p.p,
+        COALESCE(rs.total_dist, 0)::FLOAT8,
+        COALESCE(rs.pos, p_total.total_u + 1)::BIGINT, -- Si no tiene registros, es último
+        COALESCE(p_total.total_u, 0)::BIGINT
+    FROM periods p
+    -- Subconsulta para saber cuántos usuarios hay por periodo
+    LEFT JOIN (
+        SELECT period_name, COUNT(DISTINCT account_id) as total_u
+        FROM filtered_reservations GROUP BY period_name
+    ) p_total ON p.p = p_total.period_name
+    -- Cruzamos con los datos específicos del usuario solicitado
+    LEFT JOIN ranked_stats rs ON p.p = rs.period_name AND rs.account_id = p_user_id
+    ORDER BY
+        CASE p.p WHEN 'WEEK' THEN 1 WHEN 'MONTH' THEN 2 WHEN 'YEAR' THEN 3 END;
+END;
+$$;

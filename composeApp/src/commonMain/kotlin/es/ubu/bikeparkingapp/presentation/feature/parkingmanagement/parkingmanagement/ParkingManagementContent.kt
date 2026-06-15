@@ -39,6 +39,7 @@ import bikeparkingapp.composeapp.generated.resources.available_spots
 import bikeparkingapp.composeapp.generated.resources.back
 import bikeparkingapp.composeapp.generated.resources.closed
 import bikeparkingapp.composeapp.generated.resources.deactivate
+import bikeparkingapp.composeapp.generated.resources.eco_dashboard
 import bikeparkingapp.composeapp.generated.resources.edit_details
 import bikeparkingapp.composeapp.generated.resources.error
 import bikeparkingapp.composeapp.generated.resources.in_service
@@ -246,11 +247,23 @@ fun ParkingManagementContent(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Emitir alerta
-                OutlinedButton(
-                    onClick = { actions.onPublishAlertClick(parking?.parkingAreaId!!) },
-                    modifier = Modifier.fillMaxWidth().handCursor()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Text(stringResource(Res.string.publish_alert))
+                    OutlinedButton(
+                        onClick = { actions.onPublishAlertClick(parking?.parkingAreaId!!) },
+                        modifier = Modifier.weight(1f).handCursor()
+                    ) {
+                        Text(stringResource(Res.string.publish_alert))
+                    }
+                    
+                    OutlinedButton(
+                        onClick = { actions.onViewEcoDashboardClick(parking?.parkingAreaId!!) },
+                        modifier = Modifier.weight(1f).handCursor()
+                    ) {
+                        Text(stringResource(Res.string.eco_dashboard))
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

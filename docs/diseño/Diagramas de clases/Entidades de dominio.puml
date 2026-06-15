@@ -125,6 +125,18 @@ class Theme {
     + isApplied: Boolean
 }
 
+class UserEcoMetrics {
+    + weeklyMetrics: UserPeriodMetrics
+    + monthlyMetrics: UserPeriodMetrics
+    + yearlyMetrics: UserPeriodMetrics
+}
+
+class UserPeriodMetrics {
+    + distance: Double
+    + rankingPosition: Int
+    + totalUsers: Int
+}
+
 Account "1" --> "1" Role
 Reservation "1" --> "1" ReservationState
 ReservationDetail "1" o-- "1" Reservation

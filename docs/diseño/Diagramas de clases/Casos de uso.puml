@@ -293,23 +293,24 @@ package "user"{
 
 package "eco" {
 
-    interface "GetEcoMetricsUseCase" <<UseCase>> {
-        + invoke(accountId: String): Result<EcoMetrics>
+    interface "GetUserEcoMetricsUseCase" <<UseCase>> {
+        + invoke(): Result<UserEcoMetrics>
     }
-    class GetEcoMetricsUseCaseImpl {
+    class GetUserEcoMetricsUseCaseImpl {
+        - authRepository: AuthRepository
         - ecoMetricsRepository: EcoMetricsRepository
-        + invoke(accountId: String): Result<EcoMetrics>
+        + invoke(): Result<UserEcoMetrics>
     }
 
     interface "GetAdminEcoMetricsUseCase" <<UseCase>> {
-        + invoke(parkingAreaId: String): Result<AdminEcoMetrics>
+        + invoke(): Result<AdminEcoMetrics>
     }
     class GetAdminEcoMetricsUseCaseImpl {
         - ecoMetricsRepository: EcoMetricsRepository
-        + invoke(parkingAreaId: String): Result<AdminEcoMetrics>
+        + invoke(): Result<AdminEcoMetrics>
     }
 
-    GetEcoMetricsUseCaseImpl .up.|> GetEcoMetricsUseCase
+    GetUserEcoMetricsUseCaseImpl .up.|> GetUserEcoMetricsUseCase
     GetAdminEcoMetricsUseCaseImpl .up.|> GetAdminEcoMetricsUseCase
 }
 

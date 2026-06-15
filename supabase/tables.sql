@@ -93,6 +93,7 @@ CREATE TABLE reservations (
     -- Estado con restricción para asegurar que solo entren valores válidos del Enum
     state TEXT NOT NULL DEFAULT 'RESERVED'
         CHECK (state IN ('RESERVED', 'CHECKED_IN', 'CHECKED_OUT', 'CANCELLED', 'EXPIRED', 'OVERDUE')),
+    distance FLOAT8,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     -- La hora de entrada debe ser anterior a la de salida (si existe)
     CONSTRAINT check_reservation_times CHECK (out_time IS NULL OR in_time < out_time)
@@ -138,3 +139,4 @@ CREATE INDEX idx_alerts_account_unread ON alerts(account_id) WHERE is_read = fal
 
 -- Permisos
 GRANT SELECT, INSERT, UPDATE ON public.alerts TO authenticated;
+

@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.CardTravel
+import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
@@ -40,6 +41,7 @@ import bikeparkingapp.composeapp.generated.resources.Res
 import bikeparkingapp.composeapp.generated.resources.alerts
 import bikeparkingapp.composeapp.generated.resources.find_parking
 import bikeparkingapp.composeapp.generated.resources.marketplace
+import bikeparkingapp.composeapp.generated.resources.my_impact
 import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
 import bikeparkingapp.composeapp.generated.resources.my_trips
@@ -135,6 +137,15 @@ fun MainContent(
                             color = cardColor,
                             contentColor = contentColor,
                             onClick = actions.onNavigateToMarketplace
+                        )
+                    }
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.my_impact),
+                            icon = Icons.Default.Eco,
+                            color = cardColor,
+                            contentColor = contentColor,
+                            onClick = actions.onNavigateToImpact
                         )
                     }
                 }

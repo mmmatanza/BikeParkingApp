@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
  * @property inTime Fecha y hora de inicio de la reserva (el margen de entrada puede variar)
  * @property outTime Fecha y hora de finalización de la reserva
  * @property state Estado actual de la reserva
+ * @property distance Distancia recorrida en la reserva
  * @property createdAt Fecha y hora de creación de la reserva
  */
 
@@ -22,6 +23,7 @@ data class ReservationDto(
     @SerialName("in_time") val inTime: String,
     @SerialName("out_time") val outTime: String,
     val state: String,
+    val distance: Double? = null,
     @SerialName("created_at") val createdAt: String
 )
 

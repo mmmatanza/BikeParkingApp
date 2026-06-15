@@ -91,7 +91,8 @@ class ParkingManagementScreen(
                 onToggleServiceClick = { viewModel.onToggleServiceClick() },
                 onViewOccupancyClick = {parkingId -> navigator.push(ParkingReservationsScreen(parkingId)) },
                 onEditDetailsClick = {parkingId -> navigator.push(UpsertParkingAreaScreen(parkingId))},
-                onPublishAlertClick = { parkingId -> navigator.push(PublishAlertScreen(parkingId)) }
+                onPublishAlertClick = { parkingId -> navigator.push(PublishAlertScreen(parkingId)) },
+                onViewEcoDashboardClick = { parkingId -> navigator.push(es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.ecodashboard.AdminEcoDashboardScreen(parkingId)) }
             )
         )
     }

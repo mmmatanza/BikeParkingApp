@@ -164,11 +164,11 @@ private fun getAlertMessage(alert: Alert): String {
     return when (alert.type) {
         AlertType.OCCUPANCY_LIMIT -> {
             val value = alert.value?.let { (it * 10).toInt() / 10.0 } ?: 0.0
-            stringResource(Res.string.alert_occupancy_limit, "$value%")
+            stringResource(Res.string.alert_occupancy_limit, "$value%", parkingDisplay)
         }
         AlertType.PREDICTED_OCCUPANCY -> {
             val value = alert.value?.let { (it * 10).toInt() / 10.0 } ?: 0.0
-            stringResource(Res.string.alert_predicted_occupancy, "$value%")
+            stringResource(Res.string.alert_predicted_occupancy, "$value%", parkingDisplay)
         }
         AlertType.SUSPICIOUS_RESERVATION -> stringResource(
             Res.string.alert_suspicious_reservation,

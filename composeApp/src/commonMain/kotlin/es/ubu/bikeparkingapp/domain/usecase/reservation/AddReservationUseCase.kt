@@ -6,6 +6,7 @@ package es.ubu.bikeparkingapp.domain.usecase.reservation
 interface AddReservationUseCase {
     suspend operator fun invoke(
         parkingAreaId: String,
-        accountId: String
+        accountId: String,
+        distance: Double? = null
     ): Result<Unit>
 }
