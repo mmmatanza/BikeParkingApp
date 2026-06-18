@@ -1,0 +1,16 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+
+actor Usuario as user
+
+rectangle {
+    ' Casos de uso del usuario
+    usecase "CU-16 Interactuar con el chat inteligente" as CU16
+}
+
+user --> CU16
+
+@enduml
