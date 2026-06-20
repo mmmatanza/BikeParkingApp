@@ -1,3 +1,5 @@
+// Código para generar el diagrama en https://dbdiagram.io
+
 // Tabla externa de Supabase/Auth para mantener la integridad visual
 Table auth.users {
   id UUID [primary key]
@@ -65,12 +67,22 @@ Table alerts {
 Table accountsthemes{
   account_id UUID [primary key, not null]
   theme_id UUID [primary key, not null]
+  unlocked_at TIMESTAMPTZ [not null, default: `now()`]
+  is_applied BOOLEAN [not null, default: false]
 }
 
 Table themes {
   theme_id UUID [primary key, default: `gen_random_uuid()`]
   name TEXT [not null]
   cost INTEGER [not null, default: 0]
+}
+
+Table chatmessages {
+  chat_message_id UUID [primary key, default: `gen_random_uuid()`]
+  account_id UUID [primary key, not null]
+  is_reply BOOLEAN [not null, default: false]
+  content TEXT [not null, default: ""]
+  created_at TIMESTAMPTZ [not null, default: `now()`]
 }
 
 
@@ -81,5 +93,7 @@ Ref: reservations.account_id > accounts.account_id // Un usuario hace reservas
 Ref: reservations.parking_area_id > parkingareas.parking_area_id // Reservas en un parking
 Ref: overstays.reservation_id > reservations.reservation_id // Retrasos
 Ref: alerts.account_id > accounts.account_id // Alertas
-Ref: accountsthemes.theme_id > themes.theme_id 
-Ref: accountsthemes.account_id > accounts.account_id 
+Ref: accountsthemes.theme_id > themes.theme_id // Temas desbloqueados
+Ref: accountsthemes.account_id > accounts.account_id // Propietario de tema
+Ref: chatmessages.account_id > accounts.account_id // Mensajes de una cuenta
+

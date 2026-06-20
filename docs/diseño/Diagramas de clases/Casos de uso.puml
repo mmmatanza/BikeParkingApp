@@ -347,4 +347,25 @@ package "theme" {
     ApplyThemeUseCaseImpl .up.|> ApplyThemeUseCase
 }
 
+package "chat" {
+    interface "GetChatHistoryUseCase" <<UseCase>> {
+        + invoke(): Flow<List<ChatMessage>>
+    }
+    interface "SendChatMessageUseCase" <<UseCase>> {
+        + invoke(text: String): Result<Unit>
+    }
+
+    class GetChatHistoryUseCaseImpl {
+        - chatRepository: ChatRepository
+        + invoke(): Flow<List<ChatMessage>>
+    }
+    class SendChatMessageUseCaseImpl {
+        - chatRepository: ChatRepository
+        + invoke(text: String): Result<Unit>
+    }
+
+    GetChatHistoryUseCaseImpl .up.|> GetChatHistoryUseCase
+    SendChatMessageUseCaseImpl .up.|> SendChatMessageUseCase
+}
+
 @enduml

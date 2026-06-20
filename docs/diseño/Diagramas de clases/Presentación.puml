@@ -367,4 +367,28 @@ package "feature.theme" {
     ThemesMarketplaceViewModel o-- ThemesMarketplaceState
 }
 
+package "feature.chat" {
+    class SmartChatScreen <<Composable>>
+    class SmartChatContent <<Composable>>
+    class SmartChatViewModel {
+        - _state: MutableState<SmartChatState>
+        + state: State<SmartChatState>
+        + loadHistory()
+        + onTextChanged(String)
+        + onSendMessage()
+    }
+    class SmartChatState <<State>> {
+        + messages: List<ChatMessage>
+        + inputText: String
+        + isLoading: Boolean
+        + isSending: Boolean
+        + error: Exception?
+    }
+
+    SmartChatScreen --> SmartChatViewModel
+    SmartChatScreen --> SmartChatContent
+    SmartChatContent ..> SmartChatViewModel : observe/trigger
+    SmartChatViewModel o-- SmartChatState
+}
+
 @enduml

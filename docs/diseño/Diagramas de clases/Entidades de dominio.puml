@@ -137,6 +137,21 @@ class UserPeriodMetrics {
     + totalUsers: Int
 }
 
+class ChatMessage {
+    + id: String
+    + text: String
+    + sender: MessageSender
+    + createdAt: Instant
+}
+
+enum MessageSender <<enumeration>> {
+    USER
+    ASSISTANT
+    --
+    {static} + fromString(value: String): MessageSender
+}
+
+ChatMessage "1" --> "1" MessageSender
 Account "1" --> "1" Role
 Reservation "1" --> "1" ReservationState
 ReservationDetail "1" o-- "1" Reservation

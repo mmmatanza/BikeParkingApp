@@ -1,0 +1,29 @@
+@startuml
+
+start
+:El usuario accede a la sección 'Chat Inteligente' desde el menú principal;
+:SmartChatViewModel invoca a GetChatHistoryUseCase;
+:Se consulta el historial de mensajes en Supabase filtrando por userId;
+:SmartChatViewModel renderiza el historial de conversación en la interfaz;
+
+:El usuario redacta una consulta y pulsa el botón de enviar;
+:SmartChatViewModel invoca a SendChatMessageUseCase;
+:Se delega la petición al componente ChatRepository;
+:El backend procesa la solicitud del mensaje entrante;
+
+:El backend establece comunicación con el servicio externo de chat;
+
+if (¿El servicio de IA responde correctamente?) then (sí)
+    :Se genera la respuesta en lenguaje natural;
+    :El backend recibe la respuesta del servicio externo;
+    :Se almacena el mensaje del usuario y la respuesta del servicio;
+    :SmartChatViewModel recibe la actualización y renderiza la nueva burbuja de texto;
+    :El usuario visualiza la respuesta del asistente inteligente;
+    stop
+else (no)
+    :El backend captura el error de tiempo de espera o indisponibilidad de la API;
+    :SmartChatViewModel renderiza un mensaje de error amigable en la interfaz;
+    :El usuario visualiza el aviso "Servicio no disponible";
+    end
+endif
+@endum

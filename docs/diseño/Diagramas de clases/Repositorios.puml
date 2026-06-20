@@ -3,6 +3,11 @@
 
 package "domain.repository" {
 
+    interface ChatRepository {
+        + getMessages(): Flow<List<ChatMessage>>
+        + sendMessage(text: String): Result<Unit>
+    }
+
     interface OccupancyRepository{
         + getPredictedOccupancy(parkingAreaId): Result<Int>
     }
@@ -72,14 +77,14 @@ package "domain.repository" {
     }
 }
 
-package "domain.usecase.theme" {
-    class ApplyThemeUseCaseImpl {
-        - themeRepository: ThemeRepository
-        - themeLocalDataSource: ThemeLocalDataSource
-    }
-}
-
 package "data.repository" {
+
+    class SupabaseChatRepository {
+        - client: SupabaseClient
+        + getMessages(): Flow<List<ChatMessage>>
+        + sendMessage(text: String): Result<Unit>
+    }
+
     class SupabaseAuthRepository {
         - client: SupabaseClient
     }
@@ -149,7 +154,7 @@ AnalyticsOccupancyRepository --> SupabaseClient
 SupabaseAlertRepository --> SupabaseClient
 SupabaseEcoMetricsRepository --> SupabaseClient
 SupabaseThemeRepository --> SupabaseClient
-ApplyThemeUseCaseImpl --> ThemeLocalDataSource
-ApplyThemeUseCaseImpl --> ThemeRepository
+SupabaseChatRepository .up.|> ChatRepository
+SupabaseChatRepository --> SupabaseClient
 
 @enduml
