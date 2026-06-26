@@ -1,0 +1,17 @@
+@startuml
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+
+
+[Caso de Uso] as UC
+[Repositorio] as Repo
+[Fuente de datos remota] as RemoteDS
+[Fuente de datos local] as LocalDS
+
+
+' Interacciones
+UC --> Repo : ""
+Repo --> RemoteDS : ""
+Repo --> LocalDS : ""
+
+@endum()

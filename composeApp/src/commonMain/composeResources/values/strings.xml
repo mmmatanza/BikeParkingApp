@@ -197,4 +197,10 @@
     <string name="theme_marketplace">Theme Marketplace</string>
     <string name="insufficient_points">You don\'t have enough points</string>
 
+    <!-- Chat -->
+    <string name="smart_chat">Smart Chat</string>
+    <string name="chat_placeholder">Type a message to start chatting</string>
+    <string name="chat_send">Send</string>
+    <string name="chat_assistant_title">Smart Assistant</string>
+
 </resources>

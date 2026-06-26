@@ -1,0 +1,42 @@
+@startuml
+skinparam Archimate {
+    RoundCorner 8
+    Shadowing false
+}
+skinparam RectangleBackgroundColor #ffffff
+skinparam RectangleBorderColor #2B2B2B
+skinparam databaseBackgroundColor #ffffff
+skinparam databaseBorderColor #2B2B2B
+skinparam nodeBackgroundColor #ffffff
+skinparam nodeBorderColor #2B2B2B
+skinparam componentBackgroundColor #ffffff
+skinparam componentBorderColor #2B2B2B
+
+node "Capa de cliente" as ClienteNode {
+    component "BikeParkingApp" as AppClient
+}
+
+node "Backend-as-a-Service" as BaasNode {
+    database "Supabase\n(Autenticación, REST & RPC)" as SupabaseDB
+}
+
+node "Servicios inteligentes" as ServerNode {
+    component "API del nodo" as FastAPI
+    component "Lógica de negocio del nodo" as LogicaNodo
+}
+
+node "APIs e infraestructura externa" as ExternalAPIs {
+    component "Google AI Studio" as GoogleAI
+    component "TomTom API" as TomTom
+}
+
+AppClient --> SupabaseDB : Autenticación y ejecución de operaciones
+AppClient --> FastAPI : Consultas analíticas e inteligentes
+
+FastAPI --> LogicaNodo : Procesamiento interno
+
+LogicaNodo --> SupabaseDB : Interacción con datos y webhooks
+LogicaNodo --> TomTom : Consulta de tráfico en tiempo real
+LogicaNodo --> GoogleAI : Petición al LLM
+
+@endum

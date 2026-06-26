@@ -19,6 +19,7 @@ import androidx.compose.material.icons.filled.CardTravel
 import androidx.compose.material.icons.filled.Eco
 import androidx.compose.material.icons.filled.LocalParking
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Storefront
 import androidx.compose.material3.Card
@@ -46,6 +47,7 @@ import bikeparkingapp.composeapp.generated.resources.my_panel
 import bikeparkingapp.composeapp.generated.resources.my_parking_areas_section
 import bikeparkingapp.composeapp.generated.resources.my_trips
 import bikeparkingapp.composeapp.generated.resources.signout
+import bikeparkingapp.composeapp.generated.resources.smart_chat
 import es.ubu.bikeparkingapp.domain.entity.Role
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.common.ext.handCursor
@@ -146,6 +148,15 @@ fun MainContent(
                             color = cardColor,
                             contentColor = contentColor,
                             onClick = actions.onNavigateToImpact
+                        )
+                    }
+                    item {
+                        MenuOptionCard(
+                            title = stringResource(Res.string.smart_chat),
+                            icon = Icons.Default.QuestionAnswer,
+                            color = cardColor,
+                            contentColor = contentColor,
+                            onClick = actions.onNavigateToChat
                         )
                     }
                 }

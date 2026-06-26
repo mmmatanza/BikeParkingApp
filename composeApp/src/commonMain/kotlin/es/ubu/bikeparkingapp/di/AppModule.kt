@@ -6,6 +6,7 @@ import es.ubu.bikeparkingapp.data.repository.AnalyticsOccupancyRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAccountRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAlertRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseAuthRepository
+import es.ubu.bikeparkingapp.data.repository.SupabaseChatRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseEcoMetricsRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseParkingAreaRepository
 import es.ubu.bikeparkingapp.data.repository.SupabaseReservationRepository
@@ -13,6 +14,7 @@ import es.ubu.bikeparkingapp.data.repository.SupabaseThemeRepository
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import es.ubu.bikeparkingapp.domain.repository.AlertRepository
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
+import es.ubu.bikeparkingapp.domain.repository.ChatRepository
 import es.ubu.bikeparkingapp.domain.repository.EcoMetricsRepository
 import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 import es.ubu.bikeparkingapp.domain.repository.ParkingAreaRepository
@@ -36,6 +38,10 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.chat.GetChatHistoryUseCase
+import es.ubu.bikeparkingapp.domain.usecase.chat.GetChatHistoryUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.chat.SendChatMessageUseCase
+import es.ubu.bikeparkingapp.domain.usecase.chat.SendChatMessageUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.eco.GetAdminEcoMetricsUseCase
 import es.ubu.bikeparkingapp.domain.usecase.eco.GetAdminEcoMetricsUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.eco.GetUserEcoMetricsUseCase
@@ -96,6 +102,7 @@ import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
+import es.ubu.bikeparkingapp.presentation.feature.chat.ChatViewModel
 import es.ubu.bikeparkingapp.presentation.feature.main.MainViewModel
 import es.ubu.bikeparkingapp.presentation.feature.myimpact.UserEcoDashboardViewModel
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasViewModel
@@ -137,8 +144,9 @@ val appModule = module {
     single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get()) }
     single<ThemeRepository> { SupabaseThemeRepository(get()) }
     single<EcoMetricsRepository> { SupabaseEcoMetricsRepository(get()) }
+    single<ChatRepository> { SupabaseChatRepository(get(), get()) }
 
-    // HttpClient para analíticas
+    // HttpClient para analíticas y chat
     single {
         HttpClient {
             install(ContentNegotiation) {
@@ -203,6 +211,10 @@ val appModule = module {
     single<GetUserPointsUseCase> { GetUserPointsUseCaseImpl(get()) }
     single<GetAppliedThemeUseCase> { GetAppliedThemeUseCaseImpl(get()) }
 
+    // Chat
+    single<GetChatHistoryUseCase> { GetChatHistoryUseCaseImpl(get()) }
+    single<SendChatMessageUseCase> { SendChatMessageUseCaseImpl(get()) }
+
     // Eco
     single<GetAdminEcoMetricsUseCase> { GetAdminEcoMetricsUseCaseImpl(get()) }
     single<GetUserEcoMetricsUseCase> { GetUserEcoMetricsUseCaseImpl(get(), get()) }
@@ -227,6 +239,7 @@ val viewModelsModule = module {
     viewModelOf(::ThemesMarketplaceViewModel)
     viewModelOf(::AdminEcoDashboardViewModel)
     viewModelOf(::UserEcoDashboardViewModel)
+    viewModelOf(::ChatViewModel)
 }
 
 // Módulo para la creación del cliente Supabase

@@ -368,27 +368,28 @@ package "feature.theme" {
 }
 
 package "feature.chat" {
-    class SmartChatScreen <<Composable>>
-    class SmartChatContent <<Composable>>
-    class SmartChatViewModel {
-        - _state: MutableState<SmartChatState>
-        + state: State<SmartChatState>
-        + loadHistory()
-        + onTextChanged(String)
-        + onSendMessage()
+    class ChatScreen <<Composable>>
+    class ChatContent <<Composable>>
+    class ChatViewModel {
+        - _state: MutableState<ChatState>
+        + state: State<ChatState>
+        + loadChatHistory()
+        + onInputChange(String)
+        + sendMessage()
+        + clearError()
+        + clearState()
     }
-    class SmartChatState <<State>> {
+    class ChatState <<State>> {
         + messages: List<ChatMessage>
-        + inputText: String
+        + currentInput: String
         + isLoading: Boolean
-        + isSending: Boolean
-        + error: Exception?
+        + error: Throwable?
     }
 
-    SmartChatScreen --> SmartChatViewModel
-    SmartChatScreen --> SmartChatContent
-    SmartChatContent ..> SmartChatViewModel : observe/trigger
-    SmartChatViewModel o-- SmartChatState
+    ChatScreen --> ChatViewModel
+    ChatScreen --> ChatContent
+    ChatContent ..> ChatViewModel : observe/trigger
+    ChatViewModel o-- ChatState
 }
 
 @enduml

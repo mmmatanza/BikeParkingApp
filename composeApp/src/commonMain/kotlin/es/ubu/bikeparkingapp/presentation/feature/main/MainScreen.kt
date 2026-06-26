@@ -10,6 +10,7 @@ import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.presentation.common.components.dialog.ErrorDialog
 import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsScreen
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginScreen
+import es.ubu.bikeparkingapp.presentation.feature.chat.ChatScreen
 import es.ubu.bikeparkingapp.presentation.feature.myimpact.UserEcoDashboardScreen
 import es.ubu.bikeparkingapp.presentation.feature.parkingexplorer.nearbyparkingareas.NearbyParkingAreasScreen
 import es.ubu.bikeparkingapp.presentation.feature.parkingmanagement.myparkingareas.MyParkingAreasScreen
@@ -51,7 +52,8 @@ class MainScreen : Screen {
                 onNavigateToMyTrips = { navigator.push(MyTripsScreen()) },
                 onNavigateToAlerts = { navigator.push(AlertsScreen()) },
                 onNavigateToMarketplace = { navigator.push(ThemesMarketplaceScreen()) },
-                onNavigateToImpact = { navigator.push(UserEcoDashboardScreen()) }
+                onNavigateToImpact = { navigator.push(UserEcoDashboardScreen()) },
+                onNavigateToChat = { navigator.push(ChatScreen()) }
             )
         )
     }

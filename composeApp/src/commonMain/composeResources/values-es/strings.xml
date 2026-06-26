@@ -197,4 +197,11 @@
     <string name="theme_marketplace">Mercado de temas</string>
     <string name="insufficient_points">No tienes puntos suficientes</string>
 
+    <!-- Chat Inteligente -->
+    <string name="smart_chat">Chat inteligente</string>
+    <string name="chat_placeholder">Escribe tu mensaje...</string>
+    <string name="chat_send">Enviar</string>
+    <string name="chat_empty_history">Escribe alguna duda para comenzar a chatear</string>
+    <string name="chat_error_service">El servicio de asistencia no está disponible en este momento.</string>
+
 </resources>

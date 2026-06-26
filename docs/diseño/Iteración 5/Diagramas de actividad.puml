@@ -1,7 +1,7 @@
 @startuml
 
 start
-:El usuario accede a la sección 'Chat Inteligente' desde el menú principal;
+:El usuario accede a la sección 'Chat inteligente' desde el menú principal;
 :SmartChatViewModel invoca a GetChatHistoryUseCase;
 :Se consulta el historial de mensajes en Supabase filtrando por userId;
 :SmartChatViewModel renderiza el historial de conversación en la interfaz;

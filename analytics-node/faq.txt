@@ -1,0 +1,40 @@
+PREGUNTAS FRECUENTES - BIKEPARKINGAPP
+
+Pregunta: ¿Qué pasa si no me acuerdo de la contraseña?
+Respuesta: En la pantalla de inicio de sesión se dispone de un 
+
+Pregunta: ¿Para qué sirven los puntos en mi perfil?
+Respuesta: Los puntos se obtienen realizando reservas y completando estacionamientos. Puedes canjearlos en el "Mercado de Temas" para desbloquear colores y estilos visuales exclusivos para tu interfaz.
+
+Pregunta: ¿Cómo reservo una plaza de parking?
+Respuesta: En el mapa principal o lista, selecciona un parking disponible. Verás información sobre su capacidad actual y horario. Pulsa el botón "Confirmar reserva" para asegurar tu plaza. Recuerda que solo puedes tener una reserva activa a la vez.
+
+Pregunta: ¿Qué es el "Check-in" y cómo se hace?
+Respuesta: El Check-in es la acción de confirmar que ya has llegado al parking y has dejado tu bicicleta. Debes hacerlo desde la sección "Mis Viajes" al llegar al recinto.
+
+Pregunta: ¿Qué pasa si me retraso de la hora prevista de salida?
+Respuesta: Si superas la hora de salida, tu reserva pasará al estado "Atrasada". Es importante que gestiones tu salida lo antes posible. Puedes intentar usar la opción "Extender Reserva" si el parking y el horario lo permite. Si ya se ha atrasado la reserva, realiza el Check-out cuanto antes.
+
+Pregunta: ¿Cómo finalizo mi estancia (Check-out)?
+Respuesta: Cuando recojas tu bicicleta, abre la aplicación, ve a "Mis Viajes" y selecciona "Check-out". Esto liberará la plaza para otro ciclista y te permitirá ganar puntos en la aplicación.
+
+Pregunta: El parking aparece como "Fuera de servicio". ¿Qué significa?
+Respuesta: Significa que el administrador ha pausado el servicio temporalmente o que actualmente está cerrado. El parking es posible que se encuentre en mantenimiento, limpieza u otro estado. No podrás realizar nuevas reservas hasta que vuelva a estar disponible.
+
+Pregunta: El parking aparece en rojo. ¿Qué significa?
+Respuesta: Significa que el administrador ha pausado el servicio temporalmente o que actualmente está cerrado. El parking es posible que se encuentre en mantenimiento, limpieza u otro estado. No podrás realizar nuevas reservas hasta que vuelva a estar disponible.
+
+Pregunta: ¿Puedo aparcar en cualquier momento del día?
+Respuesta: No todos los parkings son 24h. Cada parking tiene su propio horario de apertura y cierre, además de días específicos de operación. En la pantalla de búsqueda de parking aparecerán los parking disponibles en verde.
+
+Pregunta: ¿En el mapa aparece un parking de color morado, qué significa? 
+Respuesta: Si aparece un parking de color morado significa que ese parking se recomienda para tí en base a tu historial y preferencias. 
+
+Pregunta: He tenido un problema en el parking. ¿Qué hago?
+Respuesta: BikeParkingApp es una plataforma de gestión. Ante incidencias de seguridad, contacta inmediatamente con las autoridades locales o con el servicio de soporte del propietario del parking (pide ayuda en el parking o revisa sus instalaciones en busca de más información).
+
+Pregunta: No puedo hacer Check-in porque la app da error.
+Respuesta: Asegúrate de tener conexión a internet y de que la reserva no ha expirado. En caso de una reserva expirada, realiza una nueva lo más pronto posible para asegurarte una plaza.
+
+Pregunta: ¿Cómo se calcula mi impacto ecológico?
+Respuesta: Calculamos la distancia entre tu ubicación de origen y el parking. En base a esos kilómetros, estimamos el CO2 que has evitado emitir, las partículas PM2.5 ahorradas y el ahorro energético comparado con un coche promedio (6.5L/100km).

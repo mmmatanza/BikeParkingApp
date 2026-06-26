@@ -5,25 +5,30 @@ start
 
 title Canjear puntos y aplicar tema
 
-:Usuario accede al apartado de "Temas";
-:Sistema consulta en Supabase el saldo de puntos y catálogo;
+:El usuario accede al apartado de "Temas";
+:El sistema consulta en Supabase el saldo de puntos y catálogo;
 
-if (¿El tema ya está desbloqueado?) then (sí)
-    :Se oculta botón "Comprar";
-    :Se muestra botón "Aplicar" habilitado;
-    :Usuario pulsa en "Aplicar";
+if (¿El tema está aplicado actualmente?) then (sí)
+    :Se muestra indicador de "Aplicado";
+    end
 else (no)
-    :Se oculta botón "Aplicar";
-    if (¿El usuario tiene un saldo de puntos suficiente?) then (no)
-        :Se muestra botón "Comprar" deshabilitado;
-        end
-    else (sí)
-        :Se muestra botón "Comprar" habilitado;
-        :Usuario selecciona "Comprar por X puntos";
-        :RedeemPointsUseCase descuenta puntos en 'accounts';
-        :Supabase registra el tema en 'accountthemes';
-        :UI se actualiza: oculta "Comprar" y muestra "Aplicar";
+    if (¿El tema ya está desbloqueado?) then (sí)
+        :Se oculta botón "Canjear";
+        :Se muestra botón "Aplicar" habilitado;
         :Usuario pulsa en "Aplicar";
+    else (no)
+        :Se oculta botón "Aplicar";
+        if (¿El usuario tiene un saldo de puntos suficiente?) then (no)
+            :Se muestra botón "Canjear" deshabilitado;
+            end
+        else (sí)
+            :Se muestra botón "Canjear" habilitado;
+            :El usuario selecciona "Canjear";
+            :RedeemPointsUseCase descuenta puntos en 'accounts';
+            :Supabase registra el tema en 'accountthemes';
+            :La interfaz se actualiza: oculta "Canjear" y muestra "Aplicar";
+            :El usuario pulsa en "Aplicar";
+        endif
     endif
 endif
 

@@ -6,11 +6,13 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from supabase import create_client, Client
 import pandas as pd
-import joblib 
+import joblib
 import shap
 import numpy as np
 import requests
 import json
+from google import genai
+from google.genai import types
 
 load_dotenv()
 
@@ -28,7 +30,59 @@ app.add_middleware(
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 TOMTOM_KEY = os.getenv("TOMTOM_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+client_genai = genai.Client(api_key=GOOGLE_API_KEY)
+
+# Cargamos el contenido de FAQ.txt
+FAQ_PATH = "faq.txt"
+def load_faq():
+    if os.path.exists(FAQ_PATH):
+        with open(FAQ_PATH, "r", encoding="utf-8") as f:
+            return f.read()
+    return "No hay información de FAQ disponible."
+
+FAQ_CONTENT = load_faq()
+
+SYSTEM_INSTRUCTION = (
+    "Eres el asistente virtual oficial de 'BikeParkingApp'. Tu único objetivo es resolver dudas "
+    "de los usuarios basándote exclusivamente en el documento de FAQ provisto abajo.\n\n"
+
+    "NORMAS DE OBLIGADO CUMPLIMIENTO:\n"
+    "1. IDIOMA: Responde siempre de forma amable y concisa en el mismo idioma en el que el usuario te hable o pregunte.\n"
+    "2. RESTRICCIÓN DE CONTEXTO: Contesta única y exclusivamente utilizando la información que aparezca en las FAQ. "
+    "Si la respuesta no se encuentra explícitamente en el texto de referencia, di cortésmente que no dispones de "
+    "esa información en este momento y redirígelos al soporte técnico habitual.\n"
+    "3. EVITAR DESVÍOS: Ignora cualquier petición de conversar sobre temas ajenos a la app, código, "
+    "juegos de rol, opiniones personales o cualquier asunto fuera del ámbito del parking de bicicletas. "
+    "Mantén una postura neutral, profesional y acotada al guión.\n\n"
+
+    f"INFORMACIÓN DE REFERENCIA (FAQ):\n{FAQ_CONTENT}"
+)
+
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+def get_chat_context(account_id: str, limit: int = 5):
+    """Recupera los últimos mensajes para dar contexto al modelo."""
+    try:
+        query = supabase.table("chat_messages") \
+            .select("role, content") \
+            .eq("account_id", account_id) \
+            .order("created_at", desc=True) \
+            .limit(limit) \
+            .execute()
+
+        # Invertimos para que estén en orden cronológico
+        messages = query.data[::-1]
+
+        gemini_history = []
+        for msg in messages:
+            role = "user" if msg["role"].lower() == "user" else "model"
+            gemini_history.append(types.Content(role=role, parts=[types.Part(text=msg["content"])]))
+        return gemini_history
+    except Exception as e:
+        print(f"Error fetching chat context: {e}")
+        return []
 
 # Carga del modelo rf de anomalias
 MODEL_ANOMALIES_PATH = "models/random_forest_anomalies.pkl"
@@ -89,7 +143,7 @@ def get_user_history(account_id: str):
         .eq("account_id", account_id) \
         .single() \
         .execute()
-    
+
     account_created_at = acc_query.data.get("created_at") if acc_query.data else None
 
     res_query = supabase.table("reservations") \
@@ -98,9 +152,9 @@ def get_user_history(account_id: str):
         .order("created_at", desc=True) \
         .limit(20) \
         .execute()
-    
+
     reservations = res_query.data
-    
+
     if not reservations:
         return pd.DataFrame(), pd.DataFrame(), account_created_at
 
@@ -112,7 +166,7 @@ def get_user_history(account_id: str):
 
     df_reservations = pd.DataFrame(reservations)
     df_overstays = pd.DataFrame(over_query.data)
-    
+
     return df_reservations, df_overstays, account_created_at
 
 
@@ -239,11 +293,11 @@ async def handle_new_reservation(request: Request):
     try:
         payload = await request.json()
         new_reservation = payload.get("record", {})
-        
+
         account_id      = new_reservation.get("account_id")
         reservation_id  = new_reservation.get("reservation_id")
         parking_area_id = new_reservation.get("parking_area_id")
-        
+
         if not account_id or not parking_area_id:
             return {"status": "ignored", "message": "Missing required reservation parameters"}
 
@@ -251,7 +305,7 @@ async def handle_new_reservation(request: Request):
 
         # Obtenemos la información del usuario
         df_reservations, df_overstays, account_created_at = get_user_history(account_id)
-        
+
         # Elaboramos la entrada para el modelo
         features = build_feature_vector(new_reservation, df_reservations, df_overstays, account_created_at)
         print(f"Feature vector: {features}")
@@ -273,7 +327,7 @@ async def handle_new_reservation(request: Request):
                 "alert_type":      alert_type,
                 "alert_value":     anomaly_score
             }).execute()
-            
+
         else:
             print("Normal booking pattern.")
 
@@ -321,7 +375,7 @@ async def handle_new_reservation(request: Request):
             "processed_reservation": reservation_id,
             "anomaly_detected": is_anomaly
         }
-        
+
     except Exception as e:
         print(f"Error processing anomaly analysis: {e}")
         return {"status": "error", "message": str(e)}
@@ -336,11 +390,11 @@ def get_parking_details(parking_id: str) -> tuple[float, float, int, int, int]:
         .eq("parking_area_id", parking_id) \
         .single() \
         .execute()
-    
+
     data = query.data
     if not data:
         raise ValueError(f"Parking not found: {parking_id}")
-        
+
     capacity = data.get("capacity")
     occupancy = data.get("current_occupancy", 0)
     location = data.get("parking_area_location")
@@ -423,32 +477,32 @@ def get_congestion_index(lat: float, lon: float) -> float:
 
     # Usamos un zoom de 18 para afinar al máximo en la calle del parking
     url = f"https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/18/json"
-    
+
     params = {
         "key": TOMTOM_KEY,
         "point": f"{lat},{lon}",
         "unit": "KMPH"
     }
-    
+
     try:
         response = requests.get(url, params=params)
         response.raise_for_status()
         data = response.json()
-        
+
         # freeFlowSpeed es la velocidad máxima de la vía sin congestión
         flow_data = data.get("flowSegmentData", {})
         current_speed = flow_data.get("currentSpeed", 0)
         free_flow_speed = flow_data.get("freeFlowSpeed", 0)
-        
+
         if free_flow_speed == 0:
             return 0.0
-            
+
         # Calculamos el índice de congestión
         congestion_index = 1.0 - (current_speed / free_flow_speed)
 
         # Aseguramos que el valor esté entre 0 y 1
         return max(0.0, min(1.0, congestion_index))
-        
+
     except Exception as e:
         print(f"Error querying TomTom: {e}")
         # Fallback: si la API falla, devolvemos 0 para no romper el modelo
@@ -487,10 +541,10 @@ async def handle_prediction(
             raise HTTPException(status_code=403, detail="You do not have permission to access this data")
 
         print(f"\nRunning manual inference request for parking: {parking_id}")
-        
+
         # Obtención de variables de Supabase
         latitude, longitude, capacity, occupancy, _ = get_parking_details(parking_id)
-        
+
         predicted_val, _, confidence_score, current_time = _perform_occupancy_prediction(
             parking_id, latitude, longitude, capacity, occupancy
         )
@@ -501,7 +555,7 @@ async def handle_prediction(
             "predictedOccupancy": predicted_val,
             "confidenceScore": confidence_score
         }
-        
+
     except HTTPException as http_ex:
         raise http_ex
     except ValueError as ve:
@@ -511,7 +565,51 @@ async def handle_prediction(
         print(f"Critical error in prediction pipeline: {e}")
         raise HTTPException(status_code=500, detail="Internal Analytical Server Error")
 
+@app.post("/chat")
+async def handle_chat(request: Request, user_id: str = Depends(get_current_user)):
+    """
+    Endpoint para el chat inteligente con historial y FAQ.
+    """
+    try:
+        payload = await request.json()
+        message = payload.get("message")
+        account_id = payload.get("account_id")
 
+        # Validación estricta de entrada
+        if not message:
+            raise HTTPException(status_code=400, detail="Message is required")
 
+        if not account_id:
+            account_id = user_id
+        elif account_id != user_id:
+            raise HTTPException(status_code=403, detail="You do not have permission to access this chat")
+
+        print(f"Secured chat request from user: {user_id} for account: {account_id}")
+
+        # Recuperar historial previo
+        history = get_chat_context(account_id)
+
+        # Añadir el mensaje actual al historial para la generación
+        history.append(types.Content(role="user", parts=[types.Part(text=message)]))
+
+        # Generación de respuesta
+        response = client_genai.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=history,
+            config=types.GenerateContentConfig(
+                system_instruction=SYSTEM_INSTRUCTION
+            )
+        )
+
+        return {
+            "response": response.text,
+            "status": "success"
+        }
+
+    except HTTPException as http_ex:
+        raise http_ex
+    except Exception as e:
+        print(f"Error in chat endpoint: {e}")
+        raise HTTPException(status_code=500, detail="Chat service currently unavailable")
 if __name__ == "__main__":
     uvicorn.run("node:app", host="0.0.0.0", port=8000, reload=True)

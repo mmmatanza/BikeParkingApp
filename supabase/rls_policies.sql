@@ -209,3 +209,89 @@ with check (
 );
 
 ---------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Tabla de temas
+---------------------------------------------------------------------------------------------------
+
+-- SELECT para temas. Los puede consultar cualquier usuario
+create policy "Select Themes"
+on "public"."themes"
+as PERMISSIVE
+for SELECT
+to authenticated
+using (
+    true
+);
+
+---------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Tabla de relación usuario-temas
+---------------------------------------------------------------------------------------------------
+
+-- SELECT de los propios temas desbloqueados
+create policy "Select Account Themes"
+on "public"."account_themes"
+as PERMISSIVE
+for SELECT
+to authenticated
+using (
+    (account_id = auth.uid())
+);
+
+-- INSERT de un tema desbloqueado por el usuario
+create policy "Insert Account Themes"
+on "public"."account_themes"
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+    (account_id = auth.uid())
+);
+
+-- UPDATE para que el usuario pueda aplicar el tema
+create policy "Update Account Themes"
+on "public"."account_themes"
+as PERMISSIVE
+for UPDATE
+to authenticated
+using (
+    (account_id = auth.uid())
+) with check (
+    (account_id = auth.uid())
+);
+
+---------------------------------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Tabla de mensajes de chat
+---------------------------------------------------------------------------------------------------
+
+-- SELECT del historial de mensajes del propio usuario
+create policy "Select Chat Messages"
+on "public"."chat_messages"
+as PERMISSIVE
+for SELECT
+to authenticated
+using (
+    (account_id = auth.uid())
+);
+
+-- INSERT de mensajes por parte del usuario
+create policy "Insert Chat Messages"
+on "public"."chat_messages"
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+    (account_id = auth.uid())
+);
+
+---------------------------------------------------------------------------------------------------

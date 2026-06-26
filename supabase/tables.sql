@@ -140,3 +140,18 @@ CREATE INDEX idx_alerts_account_unread ON alerts(account_id) WHERE is_read = fal
 -- Permisos
 GRANT SELECT, INSERT, UPDATE ON public.alerts TO authenticated;
 
+-- Tabla de mensajes del chat
+CREATE TABLE chat_messages (
+    message_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    account_id UUID NOT NULL REFERENCES accounts(account_id) ON DELETE CASCADE,
+    role TEXT NOT NULL CHECK (role IN ('USER', 'ASSISTANT')),
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Índice para el historial del usuario
+CREATE INDEX idx_chat_messages_account ON chat_messages(account_id);
+
+-- Permisos
+GRANT SELECT, INSERT ON public.chat_messages TO authenticated;
+
