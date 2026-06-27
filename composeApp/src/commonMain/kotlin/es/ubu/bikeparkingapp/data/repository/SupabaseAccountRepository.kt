@@ -2,10 +2,10 @@ package es.ubu.bikeparkingapp.data.repository
 
 import es.ubu.bikeparkingapp.data.dto.AccountDto
 import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.Account
 import es.ubu.bikeparkingapp.domain.entity.Role
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.repository.AccountRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
@@ -30,14 +30,7 @@ class SupabaseAccountRepository(
                 }
                 .decodeSingle<AccountDto>()
                 .toDomain()
-        }.recoverCatching { cause ->
-            when {
-                cause.message?.contains("Unable to resolve host") == true ||
-                        cause.message?.contains("Failed to connect") == true ->
-                    throw NoNetworkException()
-                else -> throw Exception(cause)
-            }
-        }
+        }.onFailure { throw ErrorMapper.map(it) }
     }
 
     override suspend fun createAccount(
@@ -60,14 +53,7 @@ class SupabaseAccountRepository(
                 }
                 .decodeSingle<AccountDto>()
                 .toDomain()
-        }.recoverCatching { cause ->
-            when {
-                cause.message?.contains("Unable to resolve host") == true ||
-                        cause.message?.contains("Failed to connect") == true ->
-                    throw NoNetworkException()
-                else -> throw Exception(cause)
-            }
-        }
+        }.onFailure { throw ErrorMapper.map(it) }
     }
 
     override suspend fun updatePoints(accountId: String, points: Int): Result<Unit> {
@@ -77,7 +63,8 @@ class SupabaseAccountRepository(
             ) {
                 filter { eq("account_id", accountId) }
             }
-        }
+            Unit
+        }.onFailure { throw ErrorMapper.map(it) }
     }
 
     override suspend fun saveLocally(account: Account) {

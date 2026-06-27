@@ -1,15 +1,14 @@
 package es.ubu.bikeparkingapp.data.repository
 
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
 import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
-import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
-import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.exceptions.RestException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
@@ -41,23 +40,17 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
                 this.password = pass
             }
             client.auth.currentUserOrNull()?.id ?: throw NoActiveSessionException()
-        }.recoverCatching { cause ->
-            when (cause) {
-                is HttpRequestException -> throw NoNetworkException()
-                is RestException -> throw InvalidCredentialsException()
-                else -> throw Exception(cause)
-            }
+        }.onFailure { cause ->
+            throw if (cause is RestException) InvalidCredentialsException()
+            else ErrorMapper.map(cause)
         }
     }
 
     override suspend fun signout(): Result<Unit> {
         return runCatching {
             client.auth.signOut()
-        }.recoverCatching { cause ->
-            when (cause) {
-                is HttpRequestException -> throw NoNetworkException()
-                else -> throw Exception(cause)
-            }
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
         }
     }
 
@@ -71,11 +64,8 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
                 this.password = password
             }
             result?.id ?: error("No user after register")
-        }.recoverCatching { cause ->
-            when (cause) {
-                is HttpRequestException -> throw NoNetworkException()
-                else -> throw Exception(cause)
-            }
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
         }
     }
 
@@ -83,17 +73,16 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
         return runCatching {
             // Si el email no existe no se produce excepción ni mensaje de error
             client.auth.resetPasswordForEmail(email)
-        }.recoverCatching { cause ->
-            when (cause) {
-                is HttpRequestException -> throw NoNetworkException()
-                else -> throw Exception(cause)
-            }
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
         }
     }
 
     override suspend fun getCurrentUserId(): Result<String> {
         return runCatching {
             client.auth.currentUserOrNull()?.id ?: throw NoActiveSessionException()
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
         }
     }
 }

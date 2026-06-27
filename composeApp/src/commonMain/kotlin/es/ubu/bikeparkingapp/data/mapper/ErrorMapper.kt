@@ -3,11 +3,13 @@ package es.ubu.bikeparkingapp.data.mapper
 import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
 import es.ubu.bikeparkingapp.domain.exception.CannotDeactivateParkingWithActiveReservationsException
 import es.ubu.bikeparkingapp.domain.exception.CapacityCannotBeLowerThanOccupancyException
+import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.ParkingClosingSoonException
 import es.ubu.bikeparkingapp.domain.exception.ParkingHasNoFreeSpotsException
 import es.ubu.bikeparkingapp.domain.exception.ParkingIsClosedException
 import es.ubu.bikeparkingapp.domain.exception.ReservationExtensionBeyondClosingTimeException
 import es.ubu.bikeparkingapp.domain.exception.ReservationInTimeCannotBeModifiedException
+import io.github.jan.supabase.exceptions.HttpRequestException
 
 /**
  * Clase que mapea los errores de la aplicación.
@@ -16,11 +18,13 @@ import es.ubu.bikeparkingapp.domain.exception.ReservationInTimeCannotBeModifiedE
 object ErrorMapper {
 
     /**
-     * Mapea una excepción del trigger a una excepción de dominio
-     * @param throwable Excepción del trigger
+     * Mapea una excepción a una excepción de dominio
+     * @param throwable Excepción original
      * @return Excepción de dominio
      */
     fun map(throwable: Throwable): Throwable {
+        if (throwable is HttpRequestException) return NoNetworkException()
+
         // Obtenemos el mensaje de error
         val errorMessage = throwable.message ?: ""
 

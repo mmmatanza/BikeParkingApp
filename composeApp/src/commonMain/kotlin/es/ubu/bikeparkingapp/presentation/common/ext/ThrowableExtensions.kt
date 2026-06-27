@@ -70,6 +70,6 @@ fun Throwable.toUserMessage(): String {
         stringResource(resource)
     } else {
         // Si no es una excepción con mensaje concreto, usamos el mensaje genérico
-        this.message ?: stringResource(Res.string.generic_error)
+        stringResource(Res.string.generic_error)
     }
 }

@@ -1,6 +1,7 @@
 package es.ubu.bikeparkingapp.data.repository
 
 import es.ubu.bikeparkingapp.data.dto.ChatMessageDto
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.ChatMessage
 import es.ubu.bikeparkingapp.domain.entity.MessageRole
@@ -41,7 +42,7 @@ class SupabaseChatRepository(
             }
             .decodeList<ChatMessageDto>()
             .map { it.toDomain() }
-    }
+    }.onFailure { throw ErrorMapper.map(it) }
 
     override suspend fun sendMessage(accountId: String, content: String): Result<ChatMessage> = runCatching {
         val token = supabaseClient.auth.currentAccessTokenOrNull()
@@ -69,7 +70,7 @@ class SupabaseChatRepository(
         } catch (e: NoActiveSessionException) {
             throw e
         } catch (e: Exception) {
-            throw ChatServiceUnavailableException()
+            throw ErrorMapper.map(e)
         }
 
         val now = Clock.System.now().toString()
@@ -93,5 +94,5 @@ class SupabaseChatRepository(
         supabaseClient.from("chat_messages").insert(assistantResponse)
         
         assistantResponse.toDomain()
-    }
+    }.onFailure { throw ErrorMapper.map(it) }
 }

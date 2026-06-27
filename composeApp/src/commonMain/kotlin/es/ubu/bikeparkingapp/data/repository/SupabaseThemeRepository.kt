@@ -4,6 +4,7 @@ import es.ubu.bikeparkingapp.data.dto.AccountThemeDto
 import es.ubu.bikeparkingapp.data.dto.ThemeDto
 import es.ubu.bikeparkingapp.data.dto.UnlockThemeRequest
 import es.ubu.bikeparkingapp.data.local.ThemeLocalDataSource
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.data.mapper.toDomain
 import es.ubu.bikeparkingapp.domain.entity.Theme
 import es.ubu.bikeparkingapp.domain.repository.ThemeRepository
@@ -21,7 +22,7 @@ class SupabaseThemeRepository(
 
     override suspend fun getThemes(): Result<List<Theme>> = runCatching {
         supabaseClient.postgrest["themes"].select().decodeList<ThemeDto>().map { it.toDomain() }
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override suspend fun getUserThemes(accountId: String): Result<List<Theme>> = runCatching {
         val allThemes = supabaseClient.postgrest["themes"].select().decodeList<ThemeDto>()
@@ -39,7 +40,7 @@ class SupabaseThemeRepository(
                 isApplied = unlocked?.isApplied ?: false
             )
         }
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override suspend fun unlockTheme(accountId: String, themeId: String): Result<Unit> = runCatching {
         supabaseClient.postgrest["account_themes"].insert(
@@ -49,7 +50,8 @@ class SupabaseThemeRepository(
                 isApplied = false
             )
         )
-    }
+        Unit
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override suspend fun applyTheme(accountId: String, themeId: String): Result<Unit> = runCatching {
         // Primero nos aseguramos de que están todos sin aplicar
@@ -75,7 +77,7 @@ class SupabaseThemeRepository(
         val appliedTheme = themes.find { it.themeId == themeId }
             ?: throw Exception("Theme not found")
         themeLocalDataSource.saveAppliedTheme(appliedTheme)
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override fun getAppliedTheme(): Flow<Theme?> = themeLocalDataSource.appliedTheme
 }
