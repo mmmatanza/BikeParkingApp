@@ -29,7 +29,7 @@ import kotlin.time.Clock
 class SupabaseChatRepository(
     private val supabaseClient: SupabaseClient,
     private val httpClient: HttpClient,
-    private val baseUrl: String = "http://192.168.1.25:8000"
+    private val baseUrl: String
 ) : ChatRepository {
 
     override suspend fun getChatHistory(accountId: String): Result<List<ChatMessage>> = runCatching {
@@ -42,7 +42,7 @@ class SupabaseChatRepository(
             }
             .decodeList<ChatMessageDto>()
             .map { it.toDomain() }
-    }.onFailure { throw ErrorMapper.map(it) }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override suspend fun sendMessage(accountId: String, content: String): Result<ChatMessage> = runCatching {
         val token = supabaseClient.auth.currentAccessTokenOrNull()
@@ -67,8 +67,6 @@ class SupabaseChatRepository(
                 HttpStatusCode.Unauthorized -> throw NoActiveSessionException()
                 else -> throw ChatServiceUnavailableException()
             }
-        } catch (e: NoActiveSessionException) {
-            throw e
         } catch (e: Exception) {
             throw ErrorMapper.map(e)
         }
@@ -94,5 +92,5 @@ class SupabaseChatRepository(
         supabaseClient.from("chat_messages").insert(assistantResponse)
         
         assistantResponse.toDomain()
-    }.onFailure { throw ErrorMapper.map(it) }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 }

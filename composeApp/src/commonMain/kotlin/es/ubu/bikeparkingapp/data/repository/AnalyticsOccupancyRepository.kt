@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.data.repository
 
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.domain.entity.OccupancyPrediction
 import es.ubu.bikeparkingapp.domain.repository.OccupancyRepository
 import io.github.jan.supabase.SupabaseClient
@@ -19,17 +20,16 @@ import io.ktor.client.request.parameter
 class AnalyticsOccupancyRepository(
     private val httpClient: HttpClient,
     private val supabaseClient: SupabaseClient,
-    private val baseUrl: String = "http://0.0.0.0:8000"
+    private val baseUrl: String
 ) : OccupancyRepository {
 
     override suspend fun getPredictedOccupancy(parkingAreaId: String): Result<OccupancyPrediction> = runCatching {
         val token = supabaseClient.auth.currentAccessTokenOrNull()
             ?: throw IllegalStateException("User not authenticated")
 
-        val response = httpClient.get("$baseUrl/predict") {
+        httpClient.get("$baseUrl/predict") {
             header("Authorization", "Bearer $token")
             parameter("parking_id", parkingAreaId)
         }.body<OccupancyPrediction>()
-        response
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 }

@@ -3,6 +3,7 @@ package es.ubu.bikeparkingapp.data.repository
 import es.ubu.bikeparkingapp.data.dto.ParkingDistanceDto
 import es.ubu.bikeparkingapp.data.dto.ParkingTopUserDto
 import es.ubu.bikeparkingapp.data.dto.UserEcoMetricsDto
+import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.domain.entity.AdminEcoMetrics
 import es.ubu.bikeparkingapp.domain.entity.UserEcoMetrics
 import es.ubu.bikeparkingapp.domain.entity.UserPeriodMetrics
@@ -42,7 +43,7 @@ class SupabaseEcoMetricsRepository(
             monthlyTopUsers = topUsers.filter { it.period == "MONTH" }.map { UserRanking(it.userName, it.totalDistance) },
             yearlyTopUsers = topUsers.filter { it.period == "YEAR" }.map { UserRanking(it.userName, it.totalDistance) }
         )
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 
     override suspend fun getUserEcoMetrics(userId: String): Result<UserEcoMetrics> = runCatching {
         val results = client.postgrest.rpc(
@@ -59,5 +60,5 @@ class SupabaseEcoMetricsRepository(
             monthlyMetrics = mapToPeriod("MONTH"),
             yearlyMetrics = mapToPeriod("YEAR")
         )
-    }
+    }.recoverCatching { throw ErrorMapper.map(it) }
 }

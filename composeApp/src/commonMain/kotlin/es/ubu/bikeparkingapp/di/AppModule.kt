@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.di
 
+import es.ubu.bikeparkingapp.config.AppConfig
 import es.ubu.bikeparkingapp.data.local.AccountLocalDataSource
 import es.ubu.bikeparkingapp.data.local.ThemeLocalDataSource
 import es.ubu.bikeparkingapp.data.repository.AnalyticsOccupancyRepository
@@ -141,10 +142,10 @@ val appModule = module {
     single<ParkingAreaRepository> { SupabaseParkingAreaRepository(get()) }
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
     single<AlertRepository> { SupabaseAlertRepository(get()) }
-    single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get()) }
+    single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get(), get<AppConfig>().analyticsBaseUrl) }
     single<ThemeRepository> { SupabaseThemeRepository(get(), get()) }
     single<EcoMetricsRepository> { SupabaseEcoMetricsRepository(get()) }
-    single<ChatRepository> { SupabaseChatRepository(get(), get()) }
+    single<ChatRepository> { SupabaseChatRepository(get(), get(), get<AppConfig>().chatBaseUrl) }
 
     // HttpClient para analíticas y chat
     single {
@@ -244,12 +245,11 @@ val viewModelsModule = module {
 
 // Módulo para la creación del cliente Supabase
 val supabaseModule = module {
-    // Devolverá la misma instancia de SupabaseClient cada vez que se la necesite
     single {
+        val config = get<AppConfig>()
         createSupabaseClient(
-            supabaseUrl = "https://cdnbauyltzxbtxiwipnd.supabase.co",
-            // Es la publishable key
-            supabaseKey = "sb_publishable_kdMhoPCU7e9Y6XmGX2Fxuw_iPLVIe5v"
+            supabaseUrl = config.supabaseUrl,
+            supabaseKey = config.supabaseKey
         ) {
             install(Auth)
             install(Postgrest)

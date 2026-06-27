@@ -130,6 +130,8 @@ android {
         versionName = "1.0"
         buildConfigField("String", "SUPABASE_URL", "\"${localProps.getProperty("SUPABASE_URL")}\"")
         buildConfigField("String", "SUPABASE_KEY", "\"${localProps.getProperty("SUPABASE_KEY")}\"")
+        buildConfigField("String", "ANALYTICS_BASE_URL", "\"${localProps.getProperty("ANALYTICS_BASE_URL")}\"")
+        buildConfigField("String", "CHAT_BASE_URL", "\"${localProps.getProperty("CHAT_BASE_URL")}\"")
     }
     packaging {
         resources {

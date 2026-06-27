@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.data.repository
 
+import dev.jordond.compass.Priority
 import dev.jordond.compass.geolocation.Geolocator
 import dev.jordond.compass.geolocation.GeolocatorResult
 import es.ubu.bikeparkingapp.domain.model.UserLocation
@@ -14,7 +15,8 @@ class CompassLocationRepository(
 ) : LocationRepository {
 
     override suspend fun getUserLocation(): UserLocation {
-        return when (val result = geolocator.current()) {
+        // Solicitamos alta precisión para que el marcador sea preciso en el móvil
+        return when (val result = geolocator.current(Priority.HighAccuracy)) {
             is GeolocatorResult.Success -> UserLocation(
                 latitude = result.data.coordinates.latitude,
                 longitude = result.data.coordinates.longitude

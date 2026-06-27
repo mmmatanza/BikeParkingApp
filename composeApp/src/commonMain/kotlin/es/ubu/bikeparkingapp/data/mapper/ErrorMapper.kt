@@ -3,6 +3,7 @@ package es.ubu.bikeparkingapp.data.mapper
 import es.ubu.bikeparkingapp.domain.exception.AccountHasActiveReservationException
 import es.ubu.bikeparkingapp.domain.exception.CannotDeactivateParkingWithActiveReservationsException
 import es.ubu.bikeparkingapp.domain.exception.CapacityCannotBeLowerThanOccupancyException
+import es.ubu.bikeparkingapp.domain.exception.ChatServiceUnavailableException
 import es.ubu.bikeparkingapp.domain.exception.NoNetworkException
 import es.ubu.bikeparkingapp.domain.exception.ParkingClosingSoonException
 import es.ubu.bikeparkingapp.domain.exception.ParkingHasNoFreeSpotsException
@@ -10,6 +11,9 @@ import es.ubu.bikeparkingapp.domain.exception.ParkingIsClosedException
 import es.ubu.bikeparkingapp.domain.exception.ReservationExtensionBeyondClosingTimeException
 import es.ubu.bikeparkingapp.domain.exception.ReservationInTimeCannotBeModifiedException
 import io.github.jan.supabase.exceptions.HttpRequestException
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
 
 /**
  * Clase que mapea los errores de la aplicación.
@@ -23,9 +27,28 @@ object ErrorMapper {
      * @return Excepción de dominio
      */
     fun map(throwable: Throwable): Throwable {
-        if (throwable is HttpRequestException) return NoNetworkException()
+        val message = throwable.message ?: ""
+        val exceptionName = throwable::class.simpleName ?: ""
 
-        // Obtenemos el mensaje de error
+        // Error al conectar con el servicio
+        if (message.contains("Connection refused", ignoreCase = true) || 
+            exceptionName == "ConnectException"
+        ) {
+            return ChatServiceUnavailableException()
+        }
+
+        // Errores de "sin red"
+        if (throwable is HttpRequestException || 
+            throwable is ConnectTimeoutException || 
+            throwable is SocketTimeoutException || 
+            throwable is HttpRequestTimeoutException ||
+            message.contains("No route to host", ignoreCase = true) ||
+            message.contains("UnknownHostException", ignoreCase = true) ||
+            exceptionName == "UnknownHostException"
+        ) {
+            return NoNetworkException()
+        }
+
         val errorMessage = throwable.message ?: ""
 
         return when {

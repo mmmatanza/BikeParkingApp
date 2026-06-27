@@ -4,6 +4,7 @@ import android.content.Context
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.SharedPreferencesSettings
 import dev.jordond.compass.geolocation.Geolocator
+import dev.jordond.compass.geolocation.MobileGeolocator
 import es.ubu.bikeparkingapp.data.repository.CompassLocationRepository
 import es.ubu.bikeparkingapp.domain.repository.LocationRepository
 import es.ubu.bikeparkingapp.domain.usecase.location.GetUserLocationUseCase
@@ -19,7 +20,7 @@ actual val settingsModule = module {
 }
 
 actual val locationModule = module {
-    single<Geolocator> { Geolocator() }
+    single<Geolocator> { MobileGeolocator() }
     single<LocationRepository> { CompassLocationRepository(get()) }
     single<GetUserLocationUseCase>{ GetUserLocationUseCaseImpl(get()) }
 }
