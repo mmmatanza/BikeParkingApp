@@ -76,6 +76,9 @@ CREATE TABLE parkingareas (
 -- Índice para la ubicación
 CREATE INDEX parking_area_location_idx ON parkingareas USING GIST (parking_area_location);
 
+-- Optimiza la carga de parkings para el administrador
+CREATE INDEX idx_parkingareas_owner ON parkingareas(owner_id);
+
 -- Permisos
 GRANT SELECT, UPDATE, INSERT ON public.parkingareas TO authenticated;
 
@@ -105,6 +108,10 @@ CREATE INDEX idx_reservations_account ON reservations(account_id);
 -- Índice para acelerar el cálculo de ocupación por parking
 CREATE INDEX idx_reservations_parking_active ON reservations(parking_area_id)
 WHERE state IN ('RESERVED', 'CHECKED_IN', 'OVERDUE');
+
+-- Optimiza los cálculos de impacto ecológico y rankings
+CREATE INDEX idx_reservations_eco_metrics ON reservations(parking_area_id, account_id)
+WHERE state = 'CHECKED_OUT';
 
 -- Permisos
 GRANT SELECT, UPDATE, INSERT ON public.reservations TO authenticated;
@@ -136,6 +143,9 @@ CREATE TABLE alerts (
 
 -- Índice para buscar alertas no leídas de un usuario
 CREATE INDEX idx_alerts_account_unread ON alerts(account_id) WHERE is_read = false;
+
+-- Optimiza la carga del tablón de alertas completo ordenado por fecha
+CREATE INDEX idx_alerts_account_created ON alerts(account_id, created_at DESC);
 
 -- Permisos
 GRANT SELECT, INSERT, UPDATE ON public.alerts TO authenticated;
