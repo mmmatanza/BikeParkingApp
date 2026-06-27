@@ -1,6 +1,7 @@
 package es.ubu.bikeparkingapp.domain.repository
 
 import es.ubu.bikeparkingapp.domain.entity.Theme
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Interfaz que define el repositorio de temas.
@@ -11,4 +12,5 @@ interface ThemeRepository {
     suspend fun getUserThemes(accountId: String): Result<List<Theme>>
     suspend fun unlockTheme(accountId: String, themeId: String): Result<Unit>
     suspend fun applyTheme(accountId: String, themeId: String): Result<Unit>
+    fun getAppliedTheme(): Flow<Theme?>
 }

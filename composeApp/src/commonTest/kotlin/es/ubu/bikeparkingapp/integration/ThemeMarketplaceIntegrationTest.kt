@@ -39,13 +39,13 @@ class ThemeMarketplaceIntegrationTest {
     @BeforeTest
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
-        fakeThemeRepo = FakeThemeRepository()
-        fakeAccountRepo = FakeAccountRepository()
         fakeLocalDataSource = FakeThemeLocalDataSource()
+        fakeThemeRepo = FakeThemeRepository(fakeLocalDataSource)
+        fakeAccountRepo = FakeAccountRepository()
 
         val getMarketplaceUseCase = GetThemesMarketplaceUseCaseImpl(fakeThemeRepo)
         val redeemUseCase = RedeemPointsUseCaseImpl(fakeThemeRepo, fakeAccountRepo)
-        val applyUseCase = ApplyThemeUseCaseImpl(fakeThemeRepo, fakeLocalDataSource)
+        val applyUseCase = ApplyThemeUseCaseImpl(fakeThemeRepo)
         val getPointsUseCase = GetUserPointsUseCaseImpl(fakeAccountRepo)
         val getUserIdUseCase = FakeGetUserIdUseCase().apply { response = userId }
 

@@ -142,7 +142,7 @@ val appModule = module {
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
     single<AlertRepository> { SupabaseAlertRepository(get()) }
     single<OccupancyRepository> { AnalyticsOccupancyRepository(get(), get()) }
-    single<ThemeRepository> { SupabaseThemeRepository(get()) }
+    single<ThemeRepository> { SupabaseThemeRepository(get(), get()) }
     single<EcoMetricsRepository> { SupabaseEcoMetricsRepository(get()) }
     single<ChatRepository> { SupabaseChatRepository(get(), get()) }
 
@@ -206,7 +206,7 @@ val appModule = module {
 
     // Theme
     single<GetThemesMarketplaceUseCase> { GetThemesMarketplaceUseCaseImpl(get()) }
-    single<ApplyThemeUseCase> { ApplyThemeUseCaseImpl(get(), get()) }
+    single<ApplyThemeUseCase> { ApplyThemeUseCaseImpl(get()) }
     single<RedeemPointsUseCase> { RedeemPointsUseCaseImpl(get(), get()) }
     single<GetUserPointsUseCase> { GetUserPointsUseCaseImpl(get()) }
     single<GetAppliedThemeUseCase> { GetAppliedThemeUseCaseImpl(get()) }

@@ -338,13 +338,21 @@ package "theme" {
     }
     class ApplyThemeUseCaseImpl {
         - themeRepository: ThemeRepository
-        - themeLocalDataSource: ThemeLocalDataSource
         + invoke(accountId: String, themeId: String): Result<Unit>
+    }
+
+    interface "GetAppliedThemeUseCase" <<UseCase>> {
+        + invoke(): Flow<Theme?>
+    }
+    class GetAppliedThemeUseCaseImpl {
+        - themeRepository: ThemeRepository
+        + invoke(): Flow<Theme?>
     }
 
     GetThemesMarketplaceUseCaseImpl .up.|> GetThemesMarketplaceUseCase
     RedeemPointsUseCaseImpl .up.|> RedeemPointsUseCase
     ApplyThemeUseCaseImpl .up.|> ApplyThemeUseCase
+    GetAppliedThemeUseCaseImpl .up.|> GetAppliedThemeUseCase
 }
 
 package "chat" {
