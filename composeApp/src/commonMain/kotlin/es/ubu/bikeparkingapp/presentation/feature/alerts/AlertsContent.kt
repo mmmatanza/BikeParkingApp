@@ -42,6 +42,8 @@ import bikeparkingapp.composeapp.generated.resources.alert_recurrent_expired_msg
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_expired_title
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_overstay_msg
 import bikeparkingapp.composeapp.generated.resources.alert_recurrent_overstay_title
+import bikeparkingapp.composeapp.generated.resources.alert_reservation_cancelled_msg
+import bikeparkingapp.composeapp.generated.resources.alert_reservation_cancelled_title
 import bikeparkingapp.composeapp.generated.resources.alert_suspicious_new_account_msg
 import bikeparkingapp.composeapp.generated.resources.alert_suspicious_new_account_title
 import bikeparkingapp.composeapp.generated.resources.alert_suspicious_reservation
@@ -155,6 +157,7 @@ private fun getAlertTitle(alert: Alert): String {
         AlertType.UNUSUAL_BOOKING_HOUR -> stringResource(Res.string.alert_unusual_booking_hour_title)
         AlertType.UNUSUAL_BOOKING_WEEKDAY -> stringResource(Res.string.alert_unusual_booking_weekday_title)
         AlertType.ABNORMAL_BOOKING_PATTERN -> stringResource(Res.string.alert_abnormal_booking_pattern_title)
+        AlertType.RESERVATION_CANCELLED -> stringResource(Res.string.alert_reservation_cancelled_title)
     }
 }
 
@@ -222,6 +225,10 @@ private fun getAlertMessage(alert: Alert): String {
             parkingDisplay,
             alert.reservationId ?: "",
             formatInstant(alert.createdAt)
+        )
+        AlertType.RESERVATION_CANCELLED -> stringResource(
+            Res.string.alert_reservation_cancelled_msg,
+            parkingDisplay
         )
     }
 }

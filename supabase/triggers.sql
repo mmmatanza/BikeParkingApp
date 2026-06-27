@@ -213,6 +213,12 @@ BEGIN
             SET current_occupancy = GREATEST(0, current_occupancy - 1)
             WHERE parking_area_id = NEW.parking_area_id;
 
+            -- Si la reserva ha sido cancelada, insertamos un aviso para el usuario
+            IF (NEW.state = 'CANCELLED') THEN
+                INSERT INTO alerts (account_id, parking_area_id, reservation_id, alert_type, is_read)
+                VALUES (NEW.account_id, NEW.parking_area_id, NEW.reservation_id, 'RESERVATION_CANCELLED', false);
+            END IF;
+
         -- Lógica por si en el futuro se implementase algún cambio de estado inverso
         ELSIF (OLD.state IN ('CHECKED_OUT', 'CANCELLED', 'EXPIRED') AND
                NEW.state NOT IN ('CHECKED_OUT', 'CANCELLED', 'EXPIRED')) THEN

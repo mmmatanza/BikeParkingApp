@@ -43,7 +43,8 @@ enum class AlertType {
     UNUSUAL_BOOKING_FREQUENCY,
     UNUSUAL_BOOKING_HOUR,
     UNUSUAL_BOOKING_WEEKDAY,
-    ABNORMAL_BOOKING_PATTERN;
+    ABNORMAL_BOOKING_PATTERN,
+    RESERVATION_CANCELLED;
 
     companion object {
         fun fromString(value: String): AlertType = entries.find { it.name == value } ?: PARKING_NOTIFICATION

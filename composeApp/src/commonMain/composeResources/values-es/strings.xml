@@ -185,6 +185,8 @@
     <string name="alert_unusual_booking_weekday_msg">Reservas en días inusuales para el patrón del usuario. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
     <string name="alert_abnormal_booking_pattern_title">Patrón de reserva anormal</string>
     <string name="alert_abnormal_booking_pattern_msg">Se ha detectado un comportamiento de reserva anormal general. Área: %1$s, Res: %2$s, Fecha: %3$s</string>
+    <string name="alert_reservation_cancelled_title">Reserva Cancelada</string>
+    <string name="alert_reservation_cancelled_msg">Su reserva para el parking %1$s ha sido cancelada.</string>
 
     <!-- Gamificación y Temas -->
     <string name="marketplace">Temas</string>
@@ -201,6 +203,7 @@
     <string name="smart_chat">Chat inteligente</string>
     <string name="chat_placeholder">Escribe tu mensaje...</string>
     <string name="chat_send">Enviar</string>
+    <string name="chat_assistant_title">Asistente inteligente</string>
     <string name="chat_empty_history">Escribe alguna duda para comenzar a chatear</string>
     <string name="chat_error_service">El servicio de asistencia no está disponible en este momento.</string>
 

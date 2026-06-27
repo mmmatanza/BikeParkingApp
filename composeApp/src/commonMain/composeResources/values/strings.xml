@@ -185,6 +185,8 @@
     <string name="alert_unusual_booking_weekday_msg">Bookings on unusual days for this user pattern. Area: %1$s, Res: %2$s, Date: %3$s</string>
     <string name="alert_abnormal_booking_pattern_title">Abnormal booking pattern</string>
     <string name="alert_abnormal_booking_pattern_msg">General abnormal booking behavior detected. Area: %1$s, Res: %2$s, Date: %3$s</string>
+    <string name="alert_reservation_cancelled_title">Reservation Cancelled</string>
+    <string name="alert_reservation_cancelled_msg">Your reservation for %1$s parking area has been cancelled.</string>
 
     <!-- Gamificación y temas -->
     <string name="marketplace">Themes</string>
