@@ -150,7 +150,7 @@ fun UserEcoDashboardContent(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val co2Avoided = totalDistanceKm * 150.15 // g de CO2
+                        val co2Avoided = totalDistanceKm * 171.00 // g de CO2
                         val pm25Avoided = totalDistanceKm * 0.005 // g de PM2.5
                         // 1 árbol absorbe aprox 20.000g de CO2 al año
                         val treesEquivalent = co2Avoided / 20000.0 

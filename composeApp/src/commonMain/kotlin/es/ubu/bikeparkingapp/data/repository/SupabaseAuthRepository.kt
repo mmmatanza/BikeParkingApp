@@ -1,5 +1,6 @@
 package es.ubu.bikeparkingapp.data.repository
 
+import es.ubu.bikeparkingapp.config.AppConfig
 import es.ubu.bikeparkingapp.data.mapper.ErrorMapper
 import es.ubu.bikeparkingapp.domain.exception.InvalidCredentialsException
 import es.ubu.bikeparkingapp.domain.exception.NoActiveSessionException
@@ -7,6 +8,7 @@ import es.ubu.bikeparkingapp.domain.model.AuthState
 import es.ubu.bikeparkingapp.domain.repository.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.parseSessionFromUrl
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.exceptions.RestException
@@ -17,8 +19,12 @@ import kotlinx.coroutines.flow.transform
  * Representa la implementación del repositorio de autenticación en Supabase.
  *
  * @property client Cliente Supabase para interactuar con la base de datos.
+ * @property config Configuración de la aplicación.
  */
-class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepository {
+class SupabaseAuthRepository(
+    private val client: SupabaseClient,
+    private val config: AppConfig
+) : AuthRepository {
     override fun getAuthStateFlow(): Flow<AuthState> =
         client.auth.sessionStatus.transform { status ->
             emit(
@@ -71,8 +77,31 @@ class SupabaseAuthRepository(private val client: SupabaseClient) : AuthRepositor
 
     override suspend fun requestPasswordReset(email: String): Result<Unit> {
         return runCatching {
-            // Si el email no existe no se produce excepción ni mensaje de error
-            client.auth.resetPasswordForEmail(email)
+            client.auth.resetPasswordForEmail(
+                email,
+                redirectUrl = config.passwordResetUrl
+            )
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
+        }
+    }
+
+    override suspend fun updatePassword(newPassword: String): Result<Unit> {
+        return runCatching {
+            client.auth.updateUser {
+                password = newPassword
+            }
+            Unit
+        }.onFailure { cause ->
+            throw ErrorMapper.map(cause)
+        }
+    }
+
+    override suspend fun handleDeepLink(url: String): Result<Unit> {
+        return runCatching {
+            val session = client.auth.parseSessionFromUrl(url)
+            client.auth.importSession(session)
+            Unit
         }.onFailure { cause ->
             throw ErrorMapper.map(cause)
         }

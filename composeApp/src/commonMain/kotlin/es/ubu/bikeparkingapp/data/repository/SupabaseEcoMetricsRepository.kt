@@ -29,6 +29,10 @@ class SupabaseEcoMetricsRepository(
             parameters = buildJsonObject { put("p_parking_area_id", parkingAreaId) }
         ).decodeList<ParkingDistanceDto>()
 
+        for(distance in distances){
+            println("DEBUG: Dashboard Response -> ${distance.totalDistance}")
+        }
+
         // Obtenemos los tops de usuarios por periodo
         val topUsers = client.postgrest.rpc(
             function = "get_parking_top_users",
@@ -48,7 +52,7 @@ class SupabaseEcoMetricsRepository(
     override suspend fun getUserEcoMetrics(userId: String): Result<UserEcoMetrics> = runCatching {
         val results = client.postgrest.rpc(
             function = "get_user_eco_metrics",
-            parameters = buildJsonObject { put("p_user_id", userId) }
+            parameters = buildJsonObject {}
         ).decodeList<UserEcoMetricsDto>()
 
         fun mapToPeriod(period: String) = results.find { it.period == period }?.let {

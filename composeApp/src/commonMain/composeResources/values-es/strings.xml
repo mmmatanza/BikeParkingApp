@@ -17,6 +17,9 @@
     <string name="forgot_password">¿Has olvidado tu contraseña?</string>
     <string name="back">Atrás</string>
     <string name="reset_password">Restablecer contraseña</string>
+    <string name="new_password">Nueva contraseña</string>
+    <string name="update_password">Actualizar contraseña</string>
+    <string name="password_updated_success">Contraseña actualizada con éxito</string>
     <string name="accept">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="yes">Sí</string>

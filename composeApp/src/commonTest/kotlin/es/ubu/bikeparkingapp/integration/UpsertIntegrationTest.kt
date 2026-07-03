@@ -1,4 +1,4 @@
-package es.ubu.bikeparkingapp.integration
+Spackage es.ubu.bikeparkingapp.integration
 
 import es.ubu.bikeparkingapp.domain.usecase.parking.AddParkingAreaUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.parking.UpdateParkingAreaUseCaseImpl

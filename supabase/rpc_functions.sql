@@ -17,6 +17,7 @@ CREATE OR REPLACE FUNCTION add_parking_area(
 )
 RETURNS VOID
 LANGUAGE sql
+SET search_path = public
 AS $$
     INSERT INTO parkingareas (
         owner_id,
@@ -66,7 +67,9 @@ CREATE OR REPLACE FUNCTION update_parking_area(
     p_rules TEXT[],
     p_occupancy_threshold INTEGER
 ) RETURNS VOID
-LANGUAGE sql AS $$
+LANGUAGE sql
+SET search_path = public
+AS $$
     UPDATE parkingareas SET
         name = p_name,
         address = p_address,
@@ -101,7 +104,9 @@ RETURNS TABLE (
     rules TEXT[],
     occupancy_threshold INTEGER
 )
-LANGUAGE sql AS $$
+LANGUAGE sql
+SET search_path = public
+AS $$
     SELECT
         parking_area_id,
         owner_id,
@@ -144,6 +149,7 @@ RETURNS TABLE (
     occupancy_threshold INTEGER
 )
 LANGUAGE sql
+SET search_path = public
 AS $$
     SELECT
         parking_area_id,
@@ -189,7 +195,10 @@ RETURNS TABLE (
     open_days INTEGER[],
     rules TEXT[],
     occupancy_threshold INTEGER
-) AS $$
+)
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
 BEGIN
     RETURN QUERY
     SELECT
@@ -217,7 +226,7 @@ BEGIN
     )
     ORDER BY p.parking_area_location <-> ST_SetSRID(ST_MakePoint(user_long, user_lat), 4326)::geography;
 END;
-$$ LANGUAGE plpgsql;
+$$;
 
 -- Función para publicar una alerta manual a los usuarios con reserva activa en un parking
 CREATE OR REPLACE FUNCTION publish_parking_alert(
@@ -226,6 +235,7 @@ CREATE OR REPLACE FUNCTION publish_parking_alert(
 )
 RETURNS VOID
 LANGUAGE plpgsql
+SET search_path = public
 AS $$
 BEGIN
     INSERT INTO alerts (account_id, parking_area_id, alert_type, custom_message)
@@ -246,6 +256,7 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
 BEGIN
     -- Control de seguridad para que solo el propietario del parking pueda llamar a esta función
@@ -320,9 +331,18 @@ RETURNS TABLE (
     total_distance FLOAT8
 )
 LANGUAGE plpgsql
-STABLE
+SECURITY DEFINER
+SET search_path = public
 AS $$
 BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM public.parkingareas
+        WHERE parking_area_id = p_parking_area_id
+        AND owner_id = auth.uid()
+    )  THEN
+        RAISE EXCEPTION 'Access forbidden.';
+    END IF;
+
     RETURN QUERY
     WITH raw_data AS (
         -- Escaneamos la tabla el periodo máximo (1 año)
@@ -355,7 +375,7 @@ END;
 $$;
 
 -- Función para obtener las métricas ecológicas y posición en el ranking de un usuario
-CREATE OR REPLACE FUNCTION get_user_eco_metrics(p_user_id UUID)
+CREATE OR REPLACE FUNCTION get_user_eco_metrics()
 RETURNS TABLE (
     period TEXT,
     user_distance FLOAT8,
@@ -364,8 +384,19 @@ RETURNS TABLE (
 )
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
+DECLARE
+    v_current_user_id UUID;
 BEGIN
+    -- Capturamos el ID del usuario autenticado inmediatamente
+    v_current_user_id := auth.uid();
+
+    -- Control de seguridad: Si no hay un usuario autenticado, disparamos un error explícito
+    IF v_current_user_id IS NULL THEN
+        RAISE EXCEPTION 'NOT LOGGED.';
+    END IF;
+
     RETURN QUERY
     WITH periods AS (
         -- Definimos los intervalos de tiempo en una tabla temporal
@@ -376,7 +407,7 @@ BEGIN
         SELECT 'YEAR'::TEXT, NOW() - INTERVAL '1 year'
     ),
     filtered_reservations AS (
-        -- Filtramos las reservas válidas cruzando con los períodos
+        -- Filtramos las reservas válidas cruzando con los períodos (Requiere saltarse RLS para armar el ranking global)
         SELECT
             p.p AS period_name,
             r.account_id,
@@ -409,16 +440,16 @@ BEGIN
     SELECT
         p.p,
         COALESCE(rs.total_dist, 0)::FLOAT8,
-        COALESCE(rs.pos, p_total.total_u + 1)::BIGINT, -- Si no tiene registros, es último
-        COALESCE(p_total.total_u, 0)::BIGINT
+        COALESCE(rs.pos, COALESCE(p_total.total_u, 0) + 1)::BIGINT,
+        COALESCE(p_total.total_u, 1)::BIGINT
     FROM periods p
-    -- Subconsulta para saber cuántos usuarios hay por periodo
+    -- Subconsulta para saber cuántos usuarios únicos hay por periodo
     LEFT JOIN (
         SELECT period_name, COUNT(DISTINCT account_id) as total_u
         FROM filtered_reservations GROUP BY period_name
     ) p_total ON p.p = p_total.period_name
-    -- Cruzamos con los datos específicos del usuario solicitado
-    LEFT JOIN ranked_stats rs ON p.p = rs.period_name AND rs.account_id = p_user_id
+    -- Cruzamos únicamente con los datos específicos del usuario que invocó la petición
+    LEFT JOIN ranked_stats rs ON p.p = rs.period_name AND rs.account_id = v_current_user_id
     ORDER BY
         CASE p.p WHEN 'WEEK' THEN 1 WHEN 'MONTH' THEN 2 WHEN 'YEAR' THEN 3 END;
 END;

@@ -16,6 +16,9 @@
     <string name="forgot_password">Did you forget your password?</string>
     <string name="back">Back</string>
     <string name="reset_password">Reset Password</string>
+    <string name="new_password">New Password</string>
+    <string name="update_password">Update Password</string>
+    <string name="password_updated_success">Password updated successfully</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
@@ -81,7 +84,7 @@
     <string name="save_parking_area">Save parking area</string>
     <string name="save_parking_area_confirmation">Are you sure you want to save this parking area?</string>
     <string name="clear_coords">Clear coordinates</string>
-    <string name="parking_management">Gestión de parking</string>
+    <string name="parking_management">Parking management</string>
     <string name="status">Status</string>
     <string name="out_of_service">Out of service</string>
     <string name="in_service">In service</string>
@@ -204,5 +207,7 @@
     <string name="chat_placeholder">Type a message to start chatting</string>
     <string name="chat_send">Send</string>
     <string name="chat_assistant_title">Smart Assistant</string>
+    <string name="chat_empty_history">Type a question to start chatting</string>
+    <string name="chat_error_service">The assistance service is not available at this time.</string>
 
 </resources>

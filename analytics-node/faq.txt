@@ -1,7 +1,10 @@
 PREGUNTAS FRECUENTES - BIKEPARKINGAPP
 
+Pregunta: ¿Cómo puedo reservar plaza en un parking?
+Respuesta: Desde el menú principal pincha en la opción "Buscar parking". Desde ahí, selecciona un parking disponible y pincha en "Confirmar reserva".
+
 Pregunta: ¿Qué pasa si no me acuerdo de la contraseña?
-Respuesta: En la pantalla de inicio de sesión se dispone de un 
+Respuesta: En la pantalla de inicio de sesión se dispone de un botón de restablecimiento.
 
 Pregunta: ¿Para qué sirven los puntos en mi perfil?
 Respuesta: Los puntos se obtienen realizando reservas y completando estacionamientos. Puedes canjearlos en el "Mercado de Temas" para desbloquear colores y estilos visuales exclusivos para tu interfaz.
@@ -37,4 +40,16 @@ Pregunta: No puedo hacer Check-in porque la app da error.
 Respuesta: Asegúrate de tener conexión a internet y de que la reserva no ha expirado. En caso de una reserva expirada, realiza una nueva lo más pronto posible para asegurarte una plaza.
 
 Pregunta: ¿Cómo se calcula mi impacto ecológico?
-Respuesta: Calculamos la distancia entre tu ubicación de origen y el parking. En base a esos kilómetros, estimamos el CO2 que has evitado emitir, las partículas PM2.5 ahorradas y el ahorro energético comparado con un coche promedio (6.5L/100km).
+Respuesta: Calculamos la distancia entre tu ubicación de origen y el parking. En base a esos kilómetros, estimamos el CO2 que has evitado emitir, las partículas PM2.5 ahorradas y el ahorro energético comparado con un coche promedio.
+
+Pregunta: ¿Por qué la aplicación necesita acceso a mi ubicación? 
+Respuesta: Necesitamos tu ubicación para dos cosas fundamentales: encontrarte los parkings más cercanos y calcular con exactitud los kilómetros recorridos para tus métricas de impacto ecológico y ranking.
+
+Pregunta: ¿Qué es el ranking de usuarios? 
+Respuesta: Es una clasificación basada en la distancia total que has recorrido para llegar a los parkings. Cuanto más uses la bicicleta en lugar del coche, más subirás en el ranking semanal, mensual o anual de la comunidad.
+
+Pregunta: ¿Puedo cancelar una reserva si cambio de opinión? 
+Respuesta: Sí, puedes cancelar tu reserva desde "Mis Viajes" siempre que no hayas realizado el Check-in. Te pedimos que lo hagas lo antes posible para liberar la plaza para otro ciclista.
+
+Pregunta: ¿Hasta qué hora puedo ampliar mi reserva? 
+Respuesta: Hasta el cierre del establecimiento.

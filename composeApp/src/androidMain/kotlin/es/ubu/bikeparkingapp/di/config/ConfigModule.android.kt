@@ -10,7 +10,8 @@ actual val configModule = module {
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_KEY,
             analyticsBaseUrl = BuildConfig.ANALYTICS_BASE_URL,
-            chatBaseUrl = BuildConfig.CHAT_BASE_URL
+            chatBaseUrl = BuildConfig.CHAT_BASE_URL,
+            passwordResetUrl = BuildConfig.PASSWORD_RESET_URL
         )
     }
 }

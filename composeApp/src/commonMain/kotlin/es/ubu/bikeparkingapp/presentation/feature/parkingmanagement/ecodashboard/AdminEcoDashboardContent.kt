@@ -154,7 +154,7 @@ fun AdminEcoDashboardContent(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        val co2Avoided = totalDistanceKm * 150.15 // g de CO2 (aprox 6.5L/100km)
+                        val co2Avoided = totalDistanceKm * 171.00 // g de CO2
                         val pm25Avoided = totalDistanceKm * 0.005 // g de PM2.5
                         val energySaved = totalDistanceKm * 0.60  // kWh
 

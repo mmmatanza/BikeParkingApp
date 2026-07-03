@@ -31,6 +31,8 @@ import es.ubu.bikeparkingapp.domain.usecase.alert.PublishParkingAlertUseCase
 import es.ubu.bikeparkingapp.domain.usecase.alert.PublishParkingAlertUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.GetAuthStateUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.auth.HandleDeepLinkUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.HandleDeepLinkUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.LoginUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.RegisterUseCase
@@ -39,6 +41,8 @@ import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.RequestPasswordResetUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCase
 import es.ubu.bikeparkingapp.domain.usecase.auth.SignoutUseCaseImpl
+import es.ubu.bikeparkingapp.domain.usecase.auth.UpdatePasswordUseCase
+import es.ubu.bikeparkingapp.domain.usecase.auth.UpdatePasswordUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.chat.GetChatHistoryUseCase
 import es.ubu.bikeparkingapp.domain.usecase.chat.GetChatHistoryUseCaseImpl
 import es.ubu.bikeparkingapp.domain.usecase.chat.SendChatMessageUseCase
@@ -101,6 +105,7 @@ import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCase
 import es.ubu.bikeparkingapp.domain.usecase.user.GetUserRoleUseCaseImpl
 import es.ubu.bikeparkingapp.presentation.feature.alerts.AlertsViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.login.LoginViewModel
+import es.ubu.bikeparkingapp.presentation.feature.auth.newpassword.NewPasswordViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.passwordreset.PasswordResetViewModel
 import es.ubu.bikeparkingapp.presentation.feature.auth.register.RegisterViewModel
 import es.ubu.bikeparkingapp.presentation.feature.chat.ChatViewModel
@@ -137,7 +142,7 @@ import org.koin.dsl.module
 val appModule = module {
 
     // Repositorios
-    single<AuthRepository> { SupabaseAuthRepository(get()) }
+    single<AuthRepository> { SupabaseAuthRepository(get(), get()) }
     single<AccountRepository> { SupabaseAccountRepository(get(),get()) }
     single<ParkingAreaRepository> { SupabaseParkingAreaRepository(get()) }
     single<ReservationRepository> { SupabaseReservationRepository(get()) }
@@ -167,6 +172,8 @@ val appModule = module {
     single<GetAuthStateUseCase> { GetAuthStateUseCaseImpl(get()) }
     single<RegisterUseCase> { RegisterUseCaseImpl(get(), get()) }
     single<RequestPasswordResetUseCase> { RequestPasswordResetUseCaseImpl(get()) }
+    single<UpdatePasswordUseCase> { UpdatePasswordUseCaseImpl(get()) }
+    single<HandleDeepLinkUseCase> { HandleDeepLinkUseCaseImpl(get()) }
     single<GetUserRoleUseCase> { GetUserRoleUseCaseImpl(get()) }
     single<GetUserIdUseCase> { GetUserIdUseCaseImpl(get()) }
     // Parking
@@ -227,6 +234,7 @@ val viewModelsModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::PasswordResetViewModel)
+    viewModelOf(::NewPasswordViewModel)
     viewModelOf(::MyParkingAreasViewModel)
     viewModelOf(::UpsertParkingAreaViewModel)
     viewModelOf(::MapSelectionViewModel)
